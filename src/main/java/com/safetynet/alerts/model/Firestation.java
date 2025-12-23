@@ -19,4 +19,10 @@ public class Firestation {
     public void setStation(int station) {
         this.station = station;
     }
+    public Firestation() {
+    }
+    public Firestation(String address, int station) {
+        this.address = address;
+        this.station = station;
+    }
 }
