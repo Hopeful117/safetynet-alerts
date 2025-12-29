@@ -3,6 +3,7 @@ package com.safetynet.alerts.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -58,5 +59,29 @@ public class FirestationServiceImplTest {
         assertEquals(1, response.getAdultCount());  // John 1984 → adulte
         assertEquals(2, response.getChildCount());  // Jacob et Tenley → enfants
         assertEquals(3, response.getPersons().size()); // 3 personnes
+    }
+    @Test
+    public void testAddFirestationMappingSuccess() {
+        List<Firestation> firestations = new ArrayList<>();
+        when(repository.getFirestations()).thenReturn(firestations);
+
+        Firestation result = service.addFirestationMapping(5,"123 New St");
+
+        assertEquals("123 New St", result.getAddress());
+        assertEquals(5, result.getStation());
+        assertEquals(1, firestations.size());
+    }
+
+    @Test
+    public void testAddFirestationMappingAlreadyExists() {
+        List<Firestation> firestations = new ArrayList<>();
+        firestations.add(new Firestation("123 New St", 3));
+        when(repository.getFirestations()).thenReturn(firestations);
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            service.addFirestationMapping( 5,"123 New St");
+        });
+
+        assertEquals("Cette adresse a déjà un mapping.", exception.getMessage());
     }
 }

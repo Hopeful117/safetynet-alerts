@@ -4,9 +4,11 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.safetynet.alerts.dto.FirestationRequestDTO;
 import com.safetynet.alerts.model.Firestation;
 import org.springframework.stereotype.Service;
 
@@ -78,4 +80,19 @@ public class FirestationServiceImpl implements FirestationService {
         LocalDate birth = LocalDate.parse(birthdate, FORMATTER);
         return Period.between(birth, LocalDate.now()).getYears();
     }
+    public Firestation addFirestationMapping(int station,String address) {
+        // Vérifie si l'adresse existe déjà
+        Optional<Firestation> existing = repository.getFirestations().stream()
+                .filter(fs -> fs.getAddress().equalsIgnoreCase(address))
+                .findFirst();
+
+        if (existing.isPresent()) {
+            throw new IllegalArgumentException("Cette adresse a déjà un mapping.");
+        }
+
+        Firestation newMapping = new Firestation(address, station);
+        repository.getFirestations().add(newMapping);
+        return newMapping;
+    }
+
 }
