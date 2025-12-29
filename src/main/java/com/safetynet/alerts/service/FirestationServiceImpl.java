@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 import com.safetynet.alerts.dto.FirestationRequestDTO;
 import com.safetynet.alerts.model.Firestation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import com.safetynet.alerts.dto.FireStationPersonDTO;
@@ -24,6 +26,7 @@ public class FirestationServiceImpl implements FirestationService {
     private final SafetyNetRepository repository;
     private static final DateTimeFormatter FORMATTER =
             DateTimeFormatter.ofPattern("MM/dd/yyyy");
+    private static final Logger LOGGER = LogManager.getLogger(FirestationServiceImpl.class);
 
     public FirestationServiceImpl(SafetyNetRepository repository) {
         this.repository = repository;
@@ -31,17 +34,20 @@ public class FirestationServiceImpl implements FirestationService {
 
     @Override
     public FireStationResponseDTO getFirestationCoverage(int stationNumber) {
+        LOGGER.info("Calcul couverture pour la station numéro {}", stationNumber);
 
         // 1️⃣ Adresses couvertes par la station
         Set<String> addresses = repository.getFirestations().stream()
                 .filter(fs -> fs.getStation() == stationNumber)
                 .map(Firestation::getAddress)
                 .collect(Collectors.toSet());
+        LOGGER.debug("Adresses couvertes par la station {}: {}", stationNumber, addresses);
 
         // 2️⃣ Personnes habitant à ces adresses
         List<Person> coveredPersons = repository.getPersons().stream()
                 .filter(p -> addresses.contains(p.getAddress()))
                 .toList();
+        LOGGER.info("{} personnes trouvées pour la station {}", coveredPersons.size(), stationNumber);
 
         // 3️⃣ Calcul adultes / enfants
         int adultCount = 0;
@@ -58,8 +64,10 @@ public class FirestationServiceImpl implements FirestationService {
                 int age = calculateAge(record.getBirthdate());
                 if (age < 18) {
                     childCount++;
+                    LOGGER.debug("Enfant trouvé: {} {} ({} ans)", person.getFirstName(), person.getLastName(), age);
                 } else {
                     adultCount++;
+                    LOGGER.debug("Adulte trouvé: {} {} ({} ans)", person.getFirstName(), person.getLastName(), age);
                 }
             }
         }
@@ -72,26 +80,32 @@ public class FirestationServiceImpl implements FirestationService {
                         p.getAddress(),
                         p.getPhone()))
                 .collect(Collectors.toList());
-
+        LOGGER.info("Couverture calculée: {} adultes, {} enfants", adultCount, childCount);
         return new FireStationResponseDTO(personDTOs, adultCount, childCount);
     }
 
     private int calculateAge(String birthdate) {
+
         LocalDate birth = LocalDate.parse(birthdate, FORMATTER);
         return Period.between(birth, LocalDate.now()).getYears();
     }
     public Firestation addFirestationMapping(int station,String address) {
         // Vérifie si l'adresse existe déjà
+        LOGGER.info("Tentative d'ajout d'un mapping Firestation: adresse='{}', station={}", address, station);
+
         Optional<Firestation> existing = repository.getFirestations().stream()
                 .filter(fs -> fs.getAddress().equalsIgnoreCase(address))
                 .findFirst();
 
         if (existing.isPresent()) {
+            LOGGER.error("Échec de l'ajout: l'adresse '{}' existe déjà avec la station {}", address, existing.get().getStation());
             throw new IllegalArgumentException("Cette adresse a déjà un mapping.");
+
         }
 
         Firestation newMapping = new Firestation(address, station);
         repository.getFirestations().add(newMapping);
+        LOGGER.info("Mapping Firestation ajouté avec succès: {}", newMapping);
         return newMapping;
     }
 

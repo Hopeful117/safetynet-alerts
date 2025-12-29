@@ -1,9 +1,13 @@
 package com.safetynet.alerts.model;
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.safetynet.alerts.model.Person;
 public class SafetyNetData {
     private List <Person>persons;
     private List <Firestation>firestations;
+
+    @JsonProperty("medicalrecords")
     private List <MedicalRecord>medicalRecords;
     public SafetyNetData() {
 }
