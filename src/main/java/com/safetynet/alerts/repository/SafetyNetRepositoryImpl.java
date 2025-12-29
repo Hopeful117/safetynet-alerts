@@ -9,7 +9,7 @@ import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.model.Firestation;
 import com.safetynet.alerts.model.MedicalRecord;
 import jakarta.annotation.PostConstruct;
-import tools.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Repository;
 import com.safetynet.alerts.model.SafetyNetData;
 
