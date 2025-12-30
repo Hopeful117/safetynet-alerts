@@ -53,11 +53,11 @@ public class FirestationControllerTest {
     }
     @Test
     public void testAddFirestationSuccess() throws Exception {
-        FirestationRequestDTO request = new FirestationRequestDTO(5,"123 New St");
+        FirestationRequestDTO request = new FirestationRequestDTO("123 New St",5);
         Firestation created = new Firestation("123 New St", 5);
         ObjectMapper objectMapper = new ObjectMapper();
 
-        when(firestationService.addFirestationMapping( 5,"123 New St")).thenReturn(created);
+        when(firestationService.addFirestationMapping( "123 New St",5)).thenReturn(created);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/firestation")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -68,9 +68,9 @@ public class FirestationControllerTest {
     }
     @Test
     public void testAddFirestationAlreadyExists() throws Exception {
-        FirestationRequestDTO request = new FirestationRequestDTO( 5,"123 New St");
+        FirestationRequestDTO request = new FirestationRequestDTO( "123 New St",5);
         ObjectMapper objectMapper = new ObjectMapper();
-        when(firestationService.addFirestationMapping(5,"123 New St"))
+        when(firestationService.addFirestationMapping("123 New St",5))
                 .thenThrow(new IllegalArgumentException("Cette adresse a déjà un mapping."));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/firestation")
@@ -78,5 +78,32 @@ public class FirestationControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
     }
+    @Test
+    void updateFirestation_shouldReturn200_whenSuccess() throws Exception {
+        FirestationRequestDTO request = new FirestationRequestDTO("1509 Culver St",3 );
+        Firestation updated = new Firestation("1509 Culver St", 3);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        when(firestationService.updateFirestationMapping( "1509 Culver St",3)).thenReturn(updated);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/firestation")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.station").value(3));
+    }
+    @Test
+    void updateFirestation_shouldReturn400_whenAddressNotFound() throws Exception {
+        FirestationRequestDTO request = new FirestationRequestDTO("Unknown", 2);
+        ObjectMapper objectMapper = new ObjectMapper();
+        when(firestationService.updateFirestationMapping( "Unknown",2))
+                .thenThrow(new IllegalArgumentException());
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/firestation")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
 
 }

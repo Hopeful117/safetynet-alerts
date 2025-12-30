@@ -65,7 +65,7 @@ public class FirestationServiceImplTest {
         List<Firestation> firestations = new ArrayList<>();
         when(repository.getFirestations()).thenReturn(firestations);
 
-        Firestation result = service.addFirestationMapping(5,"123 New St");
+        Firestation result = service.addFirestationMapping("123 New St", 5);
 
         assertEquals("123 New St", result.getAddress());
         assertEquals(5, result.getStation());
@@ -79,9 +79,29 @@ public class FirestationServiceImplTest {
         when(repository.getFirestations()).thenReturn(firestations);
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            service.addFirestationMapping( 5,"123 New St");
+            service.addFirestationMapping( "123 New St", 5);
         });
 
         assertEquals("Cette adresse a déjà un mapping.", exception.getMessage());
+    }
+    @Test
+    void updateFirestationMapping_shouldUpdateStation_whenAddressExists() {
+        // GIVEN
+        List<Firestation> firestations = new ArrayList<>();
+        firestations.add(new Firestation("1509 Culver St", 2));
+        when(repository.getFirestations()).thenReturn(firestations);
+
+        // WHEN
+        Firestation updated = service.updateFirestationMapping( "1509 Culver St", 3);
+
+        // THEN
+        assertEquals(3, updated.getStation());
+    }
+    @Test
+    void updateFirestationMapping_shouldThrowException_whenAddressNotFound() {
+        // WHEN / THEN
+        assertThrows(IllegalArgumentException.class, () ->
+                service.updateFirestationMapping( "Unknown Address", 2)
+        );
     }
 }

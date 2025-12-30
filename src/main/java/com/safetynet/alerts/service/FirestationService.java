@@ -9,5 +9,6 @@ import java.util.List;
 
 public interface FirestationService {
      FireStationResponseDTO getFirestationCoverage(int stationNumber);
-     Firestation addFirestationMapping(int stationNumber, String address);
+     Firestation addFirestationMapping( String address,int stationNumber);
+     Firestation updateFirestationMapping(String address,int stationNumber);
 }

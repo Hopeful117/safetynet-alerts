@@ -89,7 +89,7 @@ public class FirestationServiceImpl implements FirestationService {
         LocalDate birth = LocalDate.parse(birthdate, FORMATTER);
         return Period.between(birth, LocalDate.now()).getYears();
     }
-    public Firestation addFirestationMapping(int station,String address) {
+    public Firestation addFirestationMapping(String address, int station) {
         // Vérifie si l'adresse existe déjà
         LOGGER.info("Tentative d'ajout d'un mapping Firestation: adresse='{}', station={}", address, station);
 
@@ -108,5 +108,24 @@ public class FirestationServiceImpl implements FirestationService {
         LOGGER.info("Mapping Firestation ajouté avec succès: {}", newMapping);
         return newMapping;
     }
+
+    public Firestation updateFirestationMapping( String address,int station) {
+        LOGGER.info("Tentative de mise à jour Firestation: adresse='{}', nouvelle station={}", address, station);
+
+        Firestation firestation = repository.getFirestations().stream()
+                .filter(fs -> fs.getAddress().equalsIgnoreCase(address))
+                .findFirst()
+                .orElseThrow(() -> {
+                    LOGGER.error("Aucune Firestation trouvée pour l'adresse '{}'", address);
+                    return new IllegalArgumentException("Adresse introuvable");
+                });
+
+        int oldStation = firestation.getStation();
+        firestation.setStation(station);
+
+        LOGGER.info("Firestation mise à jour: adresse='{}', station {} → {}", address, oldStation, station);
+        return firestation;
+    }
+
 
 }

@@ -6,7 +6,7 @@ public class FirestationRequestDTO {
 
     public FirestationRequestDTO() {}
 
-    public FirestationRequestDTO(int station,String address) {
+    public FirestationRequestDTO(String address,int station) {
         this.address = address;
         this.station = station;
     }
