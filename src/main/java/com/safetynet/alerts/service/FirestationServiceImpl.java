@@ -126,6 +126,20 @@ public class FirestationServiceImpl implements FirestationService {
         LOGGER.info("Firestation mise à jour: adresse='{}', station {} → {}", address, oldStation, station);
         return firestation;
     }
+    public void deleteFirestationMapping(String address) {
+        LOGGER.info("Tentative de suppression Firestation pour l'adresse '{}'", address);
+
+        boolean removed = repository.getFirestations().removeIf(
+                fs -> fs.getAddress().equalsIgnoreCase(address)
+        );
+
+        if (!removed) {
+            LOGGER.error("Suppression impossible: aucune Firestation trouvée pour '{}'", address);
+            throw new IllegalArgumentException("Adresse introuvable");
+        }
+
+        LOGGER.info("Firestation supprimée avec succès pour l'adresse '{}'", address);
+    }
 
 
 }

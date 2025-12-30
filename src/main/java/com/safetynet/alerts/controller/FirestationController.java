@@ -31,7 +31,7 @@ public class FirestationController {
     public ResponseEntity<Firestation> addFirestation(@RequestBody FirestationRequestDTO request) {
         LOGGER.info("Requête POST /firestation reçue: adresse='{}', station={}", request.getAddress(), request.getStation());
         try {
-            Firestation created = firestationService.addFirestationMapping(request.getAddress(),request.getStation() );
+            Firestation created = firestationService.addFirestationMapping(request.getAddress(), request.getStation());
             LOGGER.info("Mapping Firestation créé avec succès: {}", created);
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
         } catch (IllegalArgumentException e) {
@@ -40,6 +40,7 @@ public class FirestationController {
         }
 
     }
+
     @PutMapping("/firestation")
     public ResponseEntity<Firestation> updateFirestation(@RequestBody FirestationRequestDTO request) {
         try {
@@ -49,6 +50,16 @@ public class FirestationController {
                     request.getStation()
             );
             return ResponseEntity.ok(updated);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    @DeleteMapping("/firestation")
+    public ResponseEntity<Void> deleteFirestation(@RequestParam String address) {
+        try {
+            firestationService.deleteFirestationMapping(address);
+            return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }

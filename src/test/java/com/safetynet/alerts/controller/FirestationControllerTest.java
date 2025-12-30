@@ -104,6 +104,24 @@ public class FirestationControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
     }
+    @Test
+    void deleteFirestation_shouldReturn200_whenSuccess() throws Exception {
+        doNothing().when(firestationService).deleteFirestationMapping("1509 Culver St");
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/firestation")
+                        .param("address", "1509 Culver St"))
+                .andExpect(status().isOk());
+    }
+    @Test
+    void deleteFirestation_shouldReturn400_whenAddressNotFound() throws Exception {
+        doThrow(new IllegalArgumentException())
+                .when(firestationService).deleteFirestationMapping("Unknown");
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/firestation")
+                        .param("address", "Unknown"))
+                .andExpect(status().isBadRequest());
+    }
+
 
 
 }

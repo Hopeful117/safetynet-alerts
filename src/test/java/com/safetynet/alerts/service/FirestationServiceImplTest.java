@@ -104,4 +104,25 @@ public class FirestationServiceImplTest {
                 service.updateFirestationMapping( "Unknown Address", 2)
         );
     }
+    @Test
+    void deleteFirestationMapping_shouldRemoveMapping_whenAddressExists() {
+        // GIVEN
+        List<Firestation> firestations = new ArrayList<>();
+        firestations.add(new Firestation("1509 Culver St", 2));
+        when(repository.getFirestations()).thenReturn(firestations);
+
+        // WHEN
+        service.deleteFirestationMapping("1509 Culver St");
+
+        // THEN
+        assertTrue(repository.getFirestations().isEmpty());
+    }
+    @Test
+    void deleteFirestationMapping_shouldThrowException_whenAddressNotFound() {
+        // WHEN / THEN
+        assertThrows(IllegalArgumentException.class, () ->
+                service.deleteFirestationMapping("Unknown Address")
+        );
+    }
+
 }
