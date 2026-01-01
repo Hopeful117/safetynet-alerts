@@ -34,7 +34,7 @@ public class ChildAlertServiceImpl implements ChildAlertService {
                 .filter(p -> p.getAddress().equalsIgnoreCase(address))
                 .toList();
 
-        LOGGER.error("Nombre de résidents trouvés à l'adresse {}: {}", address, residents.size());
+        LOGGER.debug("Nombre de résidents trouvés à l'adresse {}: {}", address, residents.size());
 
         List<ChildDTO> children = new ArrayList<>();
         List<HouseholdMemberDTO> adults = new ArrayList<>();

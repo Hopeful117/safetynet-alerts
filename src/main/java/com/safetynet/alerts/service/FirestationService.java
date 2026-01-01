@@ -13,5 +13,5 @@ public interface FirestationService {
      Firestation addFirestationMapping( String address,int stationNumber);
      Firestation updateFirestationMapping(String address,int stationNumber);
      void deleteFirestationMapping(String address);
-     PhoneAlertResponseDTO getPhoneAlertByStationNumber(int stationNumber);
+
 }

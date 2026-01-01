@@ -22,9 +22,11 @@ public class SafetyNetRepositoryImpl implements SafetyNetRepository {
 
     @PostConstruct
     public void loadData() {
+        LOGGER.info("Loading data from JSON file");
         try {
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream("data.json");
         if (inputStream == null) {
+            LOGGER.error("data.json not found in resources");
             throw new IllegalStateException("data.json not found in resources");
         }
 

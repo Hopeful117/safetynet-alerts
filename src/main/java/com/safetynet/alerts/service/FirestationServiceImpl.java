@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.safetynet.alerts.dto.FirestationRequestDTO;
+
 import com.safetynet.alerts.dto.PhoneAlertResponseDTO;
 import com.safetynet.alerts.model.Firestation;
 import org.apache.logging.log4j.LogManager;
@@ -141,7 +141,7 @@ public class FirestationServiceImpl implements FirestationService {
 
         LOGGER.info("Firestation supprimée avec succès pour l'adresse '{}'", address);
     }
-    public PhoneAlertResponseDTO get
+
 
 
 }

@@ -1,16 +1,17 @@
 package com.safetynet.alerts.dto;
 
 import java.util.List;
+import java.util.Set;
 
 public class PhoneAlertResponseDTO {
 
-    private List<String> phones;
+    private Set<String> phones;
 
-    public PhoneAlertResponseDTO(List<String> phones) {
+    public PhoneAlertResponseDTO(Set<String> phones) {
         this.phones = phones;
     }
 
-    public List<String> getPhones() {
+    public Set<String> getPhones() {
         return phones;
     }
 }

@@ -43,24 +43,31 @@ public class FirestationController {
 
     @PutMapping("/firestation")
     public ResponseEntity<Firestation> updateFirestation(@RequestBody FirestationRequestDTO request) {
+        LOGGER.info("Requête PUT /firestation reçue: adresse='{}', station={}", request.getAddress(), request.getStation());
         try {
             Firestation updated = firestationService.updateFirestationMapping(
 
                     request.getAddress(),
                     request.getStation()
             );
+            LOGGER.info("Mapping Firestation mis à jour avec succès: {}", updated);
             return ResponseEntity.ok(updated);
+
         } catch (IllegalArgumentException e) {
+            LOGGER.error("Échec mise à jour mapping Firestation: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
     @DeleteMapping("/firestation")
     public ResponseEntity<Void> deleteFirestation(@RequestParam String address) {
+        LOGGER.info("Requête DELETE /firestation reçue: adresse='{}'", address);
         try {
             firestationService.deleteFirestationMapping(address);
+            LOGGER.info("Mapping Firestation supprimé avec succès pour l'adresse '{}'", address);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
+            LOGGER.error("Échec suppression mapping Firestation: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
