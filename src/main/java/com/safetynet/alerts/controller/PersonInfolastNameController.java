@@ -7,6 +7,7 @@ import com.safetynet.alerts.service.PersonInfolastNameService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class PersonInfolastNameController {
         this.personInfolastNameService = personInfolastNameService;
     }
     @GetMapping("/personInfolastName/lastName")
-    public PersonInfolastNameDTO getPersonInfolastName(String lastName) {
+    public PersonInfolastNameDTO getPersonInfolastName(@RequestParam String lastName) {
         LOGGER.info("Requête GET /personInfolastName/lastName reçue");
         PersonInfolastNameDTO response= personInfolastNameService.getPersonInfoByLastName(lastName);
         LOGGER.info("Réponse GET /personInfolastName/lastName traitée");
