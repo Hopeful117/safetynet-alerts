@@ -8,7 +8,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+/**
+ * Controller pour gérer les requêtes liées aux dossiers médicaux.
+ */
 @RestController
 public class MedicalRecordController {
     private static final Logger LOGGER = LogManager.getLogger(MedicalRecordController.class);
@@ -18,6 +20,11 @@ public class MedicalRecordController {
         this.service = service;
     }
 
+    /**
+     * Gère les requêtes POST pour ajouter un nouveau dossier médical.
+     * @param medicalRecordDTO
+     * @return
+     */
     @PostMapping("/medicalRecord")
     public ResponseEntity<MedicalRecord> addMedicalRecord(@RequestBody MedicalRecordDTO medicalRecordDTO) {
         try {
@@ -30,7 +37,11 @@ public class MedicalRecordController {
             return ResponseEntity.badRequest().body(null);
         }
     }
-
+/**
+     * Gère les requêtes PUT pour mettre à jour un dossier médical existant.
+     * @param medicalRecordDTO
+     * @return
+     */
     @PutMapping("/medicalRecord")
     public ResponseEntity<MedicalRecord> updateMedicalRecord(@RequestBody MedicalRecordDTO medicalRecordDTO) {
         try {
@@ -46,7 +57,12 @@ public class MedicalRecordController {
             return ResponseEntity.badRequest().body(null);
         }
     }
-
+/**
+     * Gère les requêtes DELETE pour supprimer un dossier médical existant.
+     * @param firstName
+     * @param lastName
+     * @return
+     */
     @DeleteMapping("/medicalRecord")
     public ResponseEntity<MedicalRecord> deleteMedicalRecord(@RequestParam String firstName, @RequestParam String lastName) {
         try {

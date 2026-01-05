@@ -1,10 +1,13 @@
 package com.safetynet.alerts.dto;
 
+/**
+ * DTO for Firestation requests.
+ *
+ */
 public class FirestationRequestDTO {
     private String address;
     private int station;
 
-    public FirestationRequestDTO() {}
 
     public FirestationRequestDTO(String address,int station) {
         this.address = address;

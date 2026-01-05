@@ -1,5 +1,10 @@
 package com.safetynet.alerts.dto;
 import java.util.List;
+
+/**
+ * DTO representing the response for a fire station query,
+ * including a list of persons covered by the station
+ */
 public class FireStationResponseDTO {
     private List <FireStationPersonDTO> persons;
     private int adultCount;

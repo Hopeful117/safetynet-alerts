@@ -8,7 +8,7 @@ import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.SafetyNetRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -16,7 +16,9 @@ import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Service implementation for retrieving child alert information by address.
+ */
 @Service
 public class ChildAlertServiceImpl implements ChildAlertService {
     private static final Logger LOGGER = LogManager.getLogger(ChildAlertServiceImpl.class);
@@ -25,6 +27,12 @@ public class ChildAlertServiceImpl implements ChildAlertService {
     public ChildAlertServiceImpl(SafetyNetRepository repository) {
         this.repository = repository;
     }
+    /**
+     * Retrieves child alert information for a given address.
+     *
+     * @param address The address to search for children and adults.
+     * @return A ChildAlertResponseDTO containing lists of children and adults.
+     */
     @Override
     public ChildAlertResponseDTO getChildAlertByAddress(String address) {
         LOGGER.info("Recherche des enfants à l'adresse : {}", address);

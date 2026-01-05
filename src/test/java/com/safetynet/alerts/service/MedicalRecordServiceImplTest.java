@@ -5,8 +5,7 @@ import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.repository.SafetyNetRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +13,10 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-public class MedicalRecordServiceImplTest {
+/**
+ * Test class for MedicalRecordServiceImpl.
+ */
+class MedicalRecordServiceImplTest {
 
 
     private SafetyNetRepository repository;
@@ -27,6 +28,9 @@ public class MedicalRecordServiceImplTest {
        repository=mock(SafetyNetRepository.class);
        service=new MedicalRecordServiceImpl(repository);
     }
+    /**
+     * Test for addMedicalRecord method.
+     */
     @Test
     void addMedicalRecord_shouldAddAndReturnMedicalRecord() {
         List<MedicalRecord> medicalRecords = new ArrayList<>();
@@ -46,6 +50,9 @@ public class MedicalRecordServiceImplTest {
         assertEquals("John", medicalRecords.get(0).getFirstName());
         assertEquals("Doe", medicalRecords.get(0).getLastName());
     }
+    /**
+     * Test for updateMedicalRecord method.
+     */
     @Test
     void updateMedicalRecord_shouldUpdateAndReturnMedicalRecord() {
         List<MedicalRecord> medicalRecords = new ArrayList<>();
@@ -74,6 +81,9 @@ public class MedicalRecordServiceImplTest {
         assertEquals(List.of("newMed"), updated.getMedications());
         assertEquals(List.of("peanut"), updated.getAllergies());
     }
+    /**
+     * Test for updateMedicalRecord method when record not found.
+     */
     @Test
     void updateMedicalRecord_shouldReturnNull_whenNotFound() {
         MedicalRecordDTO dto = new MedicalRecordDTO(
@@ -88,6 +98,9 @@ public class MedicalRecordServiceImplTest {
 
         assertNull(result);
     }
+    /**
+     * Test for deleteMedicalRecord method.
+     */
     @Test
     void deleteMedicalRecord_shouldReturnTrue_whenDeleted() {
         List<MedicalRecord> medicalRecords = new ArrayList<>();
@@ -106,6 +119,9 @@ public class MedicalRecordServiceImplTest {
         assertTrue(deleted);
         assertTrue(medicalRecords.isEmpty());
     }
+    /**
+     * Test for deleteMedicalRecord method when record not found.
+     */
     @Test
     void deleteMedicalRecord_shouldReturnFalse_whenNotFound() {
         boolean deleted = service.deleteMedicalRecord("Jane", "Doe");

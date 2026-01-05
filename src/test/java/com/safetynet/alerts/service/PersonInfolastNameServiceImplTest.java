@@ -12,7 +12,9 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
+/**
+ * Test class for PersonInfolastNameServiceImpl.
+ */
 class PersonInfolastNameServiceImplTest {
 
     private SafetyNetRepository repository;
@@ -23,7 +25,9 @@ class PersonInfolastNameServiceImplTest {
         repository = mock(SafetyNetRepository.class);
         service = new PersonInfolastNameServiceImpl(repository);
     }
-
+    /**
+     * Test for getPersonInfoByLastName method.
+     */
     @Test
     void getPersonInfoByLastName_shouldReturnResidents_whenLastNameExists() {
         // GIVEN
@@ -59,7 +63,9 @@ class PersonInfolastNameServiceImplTest {
         assertThat(result.getResidents().get(0).getLastName()).isEqualTo("Boyd");
         assertThat(result.getResidents().get(1).getLastName()).isEqualTo("Boyd");
     }
-
+    /**
+     * Test for getPersonInfoByLastName method when no persons match the last name.
+     */
     @Test
     void getPersonInfoByLastName_shouldReturnEmptyList_whenNoMatch() {
         // GIVEN

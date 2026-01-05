@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-
+/**
+ * Service implementation for retrieving person information by last name.
+ */
 @Service
 public class PersonInfolastNameServiceImpl implements PersonInfolastNameService {
     private final SafetyNetRepository repository;
@@ -19,6 +21,13 @@ public class PersonInfolastNameServiceImpl implements PersonInfolastNameService 
     public PersonInfolastNameServiceImpl(SafetyNetRepository repository) {
         this.repository = repository;
     }
+    /**
+     * Retrieves person information for all residents with the specified last name.
+     *
+     * @param lastName The last name to search for.
+     * @return A PersonInfolastNameDTO containing a list of residents with that last name.
+     */
+    @Override
     public PersonInfolastNameDTO getPersonInfoByLastName(String lastName) {
         List<ResidentsDTO> residentDTOs = repository.getPersons().stream()
                 .filter(p -> p.getLastName().equalsIgnoreCase(lastName))

@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
-import com.safetynet.alerts.dto.PhoneAlertResponseDTO;
+
 import com.safetynet.alerts.model.Firestation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +20,9 @@ import com.safetynet.alerts.dto.FireStationResponseDTO;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.SafetyNetRepository;
-
+/**
+ * Service implementation for firestation-related operations.
+ */
 @Service
 public class FirestationServiceImpl implements FirestationService {
 
@@ -32,7 +34,13 @@ public class FirestationServiceImpl implements FirestationService {
     public FirestationServiceImpl(SafetyNetRepository repository) {
         this.repository = repository;
     }
-
+/**
+     * Retrieves coverage information for a specific fire station number.
+     *
+     * @param stationNumber The fire station number.
+     * @return A FireStationResponseDTO containing the list of persons covered
+     *         by the station, along with counts of adults and children.
+     */
     @Override
     public FireStationResponseDTO getFirestationCoverage(int stationNumber) {
         LOGGER.info("Calcul couverture pour la station numéro {}", stationNumber);
@@ -85,11 +93,27 @@ public class FirestationServiceImpl implements FirestationService {
         return new FireStationResponseDTO(personDTOs, adultCount, childCount);
     }
 
+    /**
+     * Calculates age based on birthdate string.
+     *
+     * @param birthdate The birthdate in "MM/dd/yyyy" format.
+     * @return The calculated age in years.
+     */
     private int calculateAge(String birthdate) {
 
         LocalDate birth = LocalDate.parse(birthdate, FORMATTER);
         return Period.between(birth, LocalDate.now()).getYears();
     }
+
+    /**
+     * Adds a new firestation mapping.
+     *
+     * @param address The address to map.
+     * @param station The fire station number.
+     * @return The newly created Firestation mapping.
+     * @throws IllegalArgumentException if the address already has a mapping.
+     */
+    @Override
     public Firestation addFirestationMapping(String address, int station) {
         // Vérifie si l'adresse existe déjà
         LOGGER.info("Tentative d'ajout d'un mapping Firestation: adresse='{}', station={}", address, station);
@@ -109,7 +133,15 @@ public class FirestationServiceImpl implements FirestationService {
         LOGGER.info("Mapping Firestation ajouté avec succès: {}", newMapping);
         return newMapping;
     }
-
+    /**
+     * Updates an existing firestation mapping.
+     *
+     * @param address The address to update.
+     * @param station The new fire station number.
+     * @return The updated Firestation mapping.
+     * @throws IllegalArgumentException if the address does not exist.
+     */
+    @Override
     public Firestation updateFirestationMapping( String address,int station) {
         LOGGER.info("Tentative de mise à jour Firestation: adresse='{}', nouvelle station={}", address, station);
 
@@ -127,6 +159,14 @@ public class FirestationServiceImpl implements FirestationService {
         LOGGER.info("Firestation mise à jour: adresse='{}', station {} → {}", address, oldStation, station);
         return firestation;
     }
+
+    /**
+     * Deletes a firestation mapping by address.
+     *
+     * @param address The address of the mapping to delete.
+     * @throws IllegalArgumentException if the address does not exist.
+     */
+    @Override
     public void deleteFirestationMapping(String address) {
         LOGGER.info("Tentative de suppression Firestation pour l'adresse '{}'", address);
 

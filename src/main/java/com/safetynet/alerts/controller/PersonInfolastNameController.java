@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-
+/**
+ * Controller pour gérer les requêtes liées aux informations des personnes par nom de famille.
+ */
 @RestController
 public class PersonInfolastNameController {
     private static final Logger LOGGER = LogManager.getLogger(PersonInfolastNameController.class);
@@ -19,6 +21,12 @@ public class PersonInfolastNameController {
     public PersonInfolastNameController(PersonInfolastNameService personInfolastNameService) {
         this.personInfolastNameService = personInfolastNameService;
     }
+    /**
+     * Gère les requêtes GET pour obtenir les informations des personnes basées sur le nom de famille.
+     *
+     * @param lastName Le nom de famille des personnes recherchées.
+     * @return Un objet PersonInfolastNameDTO contenant les informations des personnes.
+     */
     @GetMapping("/personInfolastName/lastName")
     public PersonInfolastNameDTO getPersonInfolastName(@RequestParam String lastName) {
         LOGGER.info("Requête GET /personInfolastName/lastName reçue");

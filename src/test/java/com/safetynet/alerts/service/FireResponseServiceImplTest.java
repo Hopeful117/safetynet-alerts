@@ -13,7 +13,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
+/**
+ * Test class for FireResponseServiceImpl.
+ */
 class FireResponseServiceImplTest {
 
     private SafetyNetRepository repository;
@@ -24,7 +26,9 @@ class FireResponseServiceImplTest {
         repository = mock(SafetyNetRepository.class);
         service = new FireResponseServiceImpl(repository);
     }
-
+/**
+     * Test for getFireResponseByAddress method.
+     */
     @Test
     void getFireResponseByAddress_shouldReturnResidentsAndStationNumber() {
         // GIVEN

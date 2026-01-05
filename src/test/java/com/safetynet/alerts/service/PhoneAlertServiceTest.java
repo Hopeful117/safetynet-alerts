@@ -13,16 +13,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-public class PhoneAlertServiceTest {
+/**
+ * Test class for PhoneAlertServiceImpl.
+ */
+class PhoneAlertServiceTest {
     private SafetyNetRepository repository;
     private PhoneAlertServiceImpl service;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         repository = mock(SafetyNetRepository.class);
         service = new PhoneAlertServiceImpl(repository);
     }
+    /**
+     * Test for getPhoneAlertByStationNumber method.
+     */
     @Test
     void getPhoneAlertByStation_shouldReturnDistinctPhones() {
 

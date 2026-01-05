@@ -1,5 +1,8 @@
 package com.safetynet.alerts.model;
 import java.util.List;
+/**
+ * Model representing a medical record.
+ */
 public class MedicalRecord {
     private String firstName;
     private String lastName;

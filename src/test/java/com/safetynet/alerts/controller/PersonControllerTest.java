@@ -14,7 +14,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+/**
+ * Test class for PersonController.
+ */
 @WebMvcTest(PersonController.class)
 class PersonControllerTest {
 
@@ -26,7 +28,10 @@ class PersonControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-
+/**
+     * Test for addPerson endpoint.
+     * @throws Exception
+     */
     @Test
     void addPerson_shouldReturnCreated() throws Exception {
         PersonRequestDTO dto = new PersonRequestDTO(
@@ -46,7 +51,10 @@ class PersonControllerTest {
 
         verify(personService).addPerson(any(PersonRequestDTO.class));
     }
-
+/**
+     * Test for addPerson endpoint when an exception is thrown.
+     * @throws Exception
+     */
     @Test
     void addPerson_shouldReturnBadRequest_whenExceptionThrown() throws Exception {
         PersonRequestDTO dto = new PersonRequestDTO(
@@ -67,7 +75,10 @@ class PersonControllerTest {
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isBadRequest());
     }
-
+/**
+     * Test for updatePerson endpoint.
+     * @throws Exception
+     */
     @Test
     void updatePerson_shouldReturnOk() throws Exception {
         PersonRequestDTO dto = new PersonRequestDTO(
@@ -93,7 +104,10 @@ class PersonControllerTest {
 
         verify(personService).updatePerson(any(PersonRequestDTO.class));;
     }
-
+/**
+     * Test for updatePerson endpoint when an exception is thrown.
+     * @throws Exception
+     */
     @Test
     void updatePerson_shouldReturnBadRequest_whenExceptionThrown() throws Exception {
         PersonRequestDTO dto = new PersonRequestDTO(
@@ -116,7 +130,10 @@ class PersonControllerTest {
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isBadRequest());
     }
-
+/**
+     * Test for deletePerson endpoint.
+     * @throws Exception
+     */
     @Test
     void deletePerson_shouldReturnNoContent() throws Exception {
         when(personService.deletePerson("John", "Doe")).thenReturn(true);
@@ -128,7 +145,10 @@ class PersonControllerTest {
 
         verify(personService).deletePerson("John", "Doe");
     }
-
+/**
+     * Test for deletePerson endpoint when person does not exist.
+     * @throws Exception
+     */
     @Test
     void deletePerson_shouldReturnNotFound_whenPersonDoesNotExist() throws Exception {
         when(personService.deletePerson("John", "Doe")).thenReturn(false);
@@ -140,7 +160,10 @@ class PersonControllerTest {
 
         verify(personService).deletePerson("John", "Doe");
     }
-
+/**
+     * Test for deletePerson endpoint when an exception is thrown.
+     * @throws Exception
+     */
     @Test
     void deletePerson_shouldReturnBadRequest_whenExceptionThrown() throws Exception {
         when(personService.deletePerson(anyString(), anyString()))

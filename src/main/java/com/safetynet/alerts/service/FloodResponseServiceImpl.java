@@ -12,7 +12,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
+/**
+ * Service implementation for handling flood response information.
+ */
 @Service
 public class FloodResponseServiceImpl implements FloodResponseService {
     private final SafetyNetRepository repository;
@@ -23,7 +25,12 @@ public class FloodResponseServiceImpl implements FloodResponseService {
     public FloodResponseServiceImpl(SafetyNetRepository repository) {
         this.repository = repository;
     }
-
+/**
+     * Retrieves flood response information based on a list of fire station numbers.
+     *
+     * @param stationNumbers List of fire station numbers
+     * @return FloodResponseDTO containing households mapped by address with residents' details
+     */
     @Override
     public FloodResponseDTO getFloodResponseByStationNumbers(List<Integer> stationNumbers) {
         Set<String> locations = repository.getFirestations().stream()
@@ -39,7 +46,7 @@ public class FloodResponseServiceImpl implements FloodResponseService {
                                     .filter(p -> p.getAddress().equals(address))
                                     .toList();
                             LOGGER.info("{} résidents trouvés à l'adresse {}", residents.size(), address);
-                            List<ResidentsDTO> residentDTOs = residents.stream()
+                            return residents.stream()
                                     .map(p -> {
                                         var mrOpt = repository.getMedicalRecords().stream()
                                                 .filter(record -> record.getFirstName().equals(p.getFirstName())
@@ -65,7 +72,6 @@ public class FloodResponseServiceImpl implements FloodResponseService {
                                                 allergies
                                         );
                                     }).toList();
-                            return residentDTOs;
                         }
                 )));
 

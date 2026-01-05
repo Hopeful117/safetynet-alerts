@@ -1,5 +1,8 @@
 package com.safetynet.alerts.model;
-
+/**
+ * Model class representing a Firestation entity
+ * with address and station number.
+ */
 public class Firestation {
     private String address;
     private int station;

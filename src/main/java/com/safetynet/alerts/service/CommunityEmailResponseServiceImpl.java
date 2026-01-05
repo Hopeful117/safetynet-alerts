@@ -5,7 +5,9 @@ import com.safetynet.alerts.repository.SafetyNetRepository;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
-
+/**
+ * Service implementation for retrieving community email responses.
+ */
 @Service
 public class CommunityEmailResponseServiceImpl implements CommunityEmailResponseService {
     private static final Logger LOGGER = LogManager.getLogger(CommunityEmailResponseServiceImpl.class);
@@ -14,7 +16,12 @@ public class CommunityEmailResponseServiceImpl implements CommunityEmailResponse
     public CommunityEmailResponseServiceImpl(SafetyNetRepository repository) {
         this.repository = repository;
     }
-
+/**
+     * Retrieves a list of unique email addresses for all residents in the specified city.
+     *
+     * @param city The name of the city.
+     * @return A CommunityEmailResponseDTO containing the list of email addresses.
+     */
     @Override
     public CommunityEmailResponseDTO getCommunityEmailResponse(String city) {
         LOGGER.info("Recherche des emails pour la ville : {}", city);

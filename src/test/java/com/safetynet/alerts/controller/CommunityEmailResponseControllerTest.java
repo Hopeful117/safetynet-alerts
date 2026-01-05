@@ -13,7 +13,9 @@ import java.util.List;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+/**
+ * Test class for CommunityEmailResponseController.
+ */
 @WebMvcTest(CommunityEmailResponseController.class)
 class CommunityEmailResponseControllerTest {
 
@@ -22,7 +24,10 @@ class CommunityEmailResponseControllerTest {
 
     @MockBean
     private CommunityEmailResponseService service;
-
+/**
+     * Test for getCommunityEmailResponse endpoint.
+     * @throws Exception if an error occurs during the request
+     */
     @Test
     void getCommunityEmailResponse_shouldReturnEmailsForCity() throws Exception {
         // GIVEN

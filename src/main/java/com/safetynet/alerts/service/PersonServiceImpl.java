@@ -8,7 +8,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
-
+/**
+ * Service implementation for managing persons.
+ */
 @Service
 public class PersonServiceImpl implements PersonService{
     private final SafetyNetRepository repository;
@@ -19,6 +21,11 @@ public class PersonServiceImpl implements PersonService{
         this.repository = repository;
     }
 
+    /**
+     * Adds a new person to the repository.
+     * @param personRequestDTO
+     * @return
+     */
     @Override
     public Person addPerson(PersonRequestDTO personRequestDTO) {
         LOGGER.info("Ajout d'une nouvelle personne : {} {}", personRequestDTO.getFirstName(), personRequestDTO.getLastName());
@@ -35,6 +42,11 @@ public class PersonServiceImpl implements PersonService{
         LOGGER.debug("Personne ajoutée avec succès : {} {}", person.getFirstName(), person.getLastName());
         return person;
     }
+    /**
+     * Updates an existing person's information.
+     * @param personRequestDTO
+     * @return
+     */
     @Override
     public Person updatePerson(PersonRequestDTO personRequestDTO) {
         LOGGER.info("Mise à jour de la personne : {} {}", personRequestDTO.getFirstName(), personRequestDTO.getLastName());
@@ -56,6 +68,12 @@ public class PersonServiceImpl implements PersonService{
             return null;
         }
     }
+    /**
+     * Deletes a person from the repository.
+     * @param firstName
+     * @param lastName
+     * @return
+     */
     @Override
     public boolean deletePerson(String firstName, String lastName) {
         LOGGER.info("Suppression de la personne : {} {}", firstName, lastName);

@@ -2,6 +2,11 @@ package com.safetynet.alerts.dto;
 
 import java.util.List;
 import java.util.Map;
+
+/**
+ * DTO representing the response for flood information,
+ * containing households mapped by address with their residents' details.
+ */
 public class FloodResponseDTO {
 
     private Map<String , List<ResidentsDTO>> households;

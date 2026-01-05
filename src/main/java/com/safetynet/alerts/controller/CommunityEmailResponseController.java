@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Contrôleur pour gérer les requêtes liées aux emails communautaires.
+
+ */
 @RestController
 public class CommunityEmailResponseController {
     private final static Logger LOGGER= LogManager.getLogger(CommunityEmailResponseController.class);
@@ -16,6 +20,12 @@ public class CommunityEmailResponseController {
     public CommunityEmailResponseController(CommunityEmailResponseService service) {
         this.service = service;
     }
+    /**
+     * Gère la requête GET pour obtenir les emails des habitants d'une ville spécifique.
+     *
+     * @param city La ville pour laquelle les emails sont demandés.
+     * @return Un objet CommunityEmailResponseDTO contenant la liste des emails.
+     */
     @GetMapping("/communityEmail")
     public CommunityEmailResponseDTO getCommunityEmailResponse(@RequestParam String city) {
         LOGGER.info("Requête GET /communityEmail?city={} reçue", city);

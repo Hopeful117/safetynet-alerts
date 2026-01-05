@@ -11,7 +11,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
+/**
+ * Test class for CommunityEmailResponseServiceImpl.
+ */
 class CommunityEmailResponseServiceImplTest {
 
     private SafetyNetRepository repository;
@@ -23,6 +25,9 @@ class CommunityEmailResponseServiceImplTest {
         service = new CommunityEmailResponseServiceImpl(repository);
     }
 
+    /**
+     * Test for getCommunityEmailResponse method to ensure distinct emails are returned for a given city.
+     */
     @Test
     void getCommunityEmailResponse_shouldReturnDistinctEmails_forGivenCity() {
         // GIVEN
@@ -42,7 +47,9 @@ class CommunityEmailResponseServiceImplTest {
         assertTrue(response.getEmails().contains("john@email.com"));
         assertTrue(response.getEmails().contains("tenley@email.com"));
     }
-
+    /**
+     * Test for getCommunityEmailResponse method when no persons match the given city.
+     */
     @Test
     void getCommunityEmailResponse_shouldReturnEmptyList_whenNoCityMatch() {
         // GIVEN
@@ -58,7 +65,9 @@ class CommunityEmailResponseServiceImplTest {
         assertNotNull(response);
         assertTrue(response.getEmails().isEmpty());
     }
-
+    /**
+     * Test for getCommunityEmailResponse method to ensure city matching is case insensitive.
+     */
     @Test
     void getCommunityEmailResponse_shouldBeCaseInsensitive() {
         // GIVEN

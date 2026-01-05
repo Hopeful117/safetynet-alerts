@@ -14,7 +14,9 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+/**
+ * Test class for ChildAlertController.
+ */
 @WebMvcTest(ChildAlertController.class)
 public class ChildAlertControllerTest {
     @Autowired
@@ -23,6 +25,10 @@ public class ChildAlertControllerTest {
     @MockBean
     private ChildAlertService service;
 
+    /**
+     * Test for getChildAlert endpoint.
+     * @throws Exception if an error occurs during the request
+     */
     @Test
     void getChildAlert_shouldReturn200() throws Exception {
         when(service.getChildAlertByAddress(any()))

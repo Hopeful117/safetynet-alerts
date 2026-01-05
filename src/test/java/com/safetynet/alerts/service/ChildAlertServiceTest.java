@@ -13,15 +13,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-public class ChildAlertServiceTest {
+/**
+ * Test class for ChildAlertService.
+ */
+class ChildAlertServiceTest {
     private SafetyNetRepository repository;
     private ChildAlertService service;
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         repository = mock(SafetyNetRepository.class);
         service = new ChildAlertServiceImpl(repository);
     }
+    /**
+     * Test for getChildAlertByAddress method.
+     */
     @Test
     void getChildAlertByAddress_shouldReturnChildrenAndAdults() {
         // GIVEN
@@ -42,6 +47,9 @@ public class ChildAlertServiceTest {
         assertEquals(1, response.getChildren().size());
         assertEquals(2, response.getAdults().size());
     }
+    /**
+     * Test for getChildAlertByAddress method when no child is present.
+     */
     @Test
     void getChildAlertByAddress_shouldReturnEmptyChildren_whenNoChild() {
         ChildAlertResponseDTO response =

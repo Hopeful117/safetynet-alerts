@@ -1,8 +1,11 @@
 package com.safetynet.alerts.model;
 import java.util.List;
-
+/**
+ * Class representing the data structure for SafetyNet,
+ * containing lists of persons, firestations, and medical records.
+ */
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.safetynet.alerts.model.Person;
+
 public class SafetyNetData {
     private List <Person>persons;
     private List <Firestation>firestations;

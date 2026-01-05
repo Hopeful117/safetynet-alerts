@@ -1,5 +1,8 @@
 package com.safetynet.alerts.dto;
-
+/**
+ * DTO representing a person request with personal details.
+ * Used for transferring person data in requests.
+ */
 public class PersonRequestDTO {
     private String firstName;
     private String lastName;

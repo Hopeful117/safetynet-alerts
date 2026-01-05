@@ -8,7 +8,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+/**
+ * Controller pour gérer les requêtes liées aux alertes téléphoniques.
+ */
 @RestController
 public class PhoneAlertController {
     private final PhoneAlertService phoneAlertService;
@@ -16,6 +18,12 @@ public class PhoneAlertController {
     public PhoneAlertController(PhoneAlertService phoneAlertService) {
         this.phoneAlertService= phoneAlertService;
     }
+    /**
+     * Gère les requêtes GET pour obtenir les numéros de téléphone des personnes couvertes par une station de pompiers spécifique.
+     *
+     * @param firestation Le numéro de la station de pompiers.
+     * @return Un objet PhoneAlertResponseDTO contenant les numéros de téléphone.
+     */
     @GetMapping("/phoneAlert")
     public PhoneAlertResponseDTO getPhoneAlert(@RequestParam int firestation) {
         LOGGER.info("Requête GET /phoneAlert?firestation={} reçue", firestation);

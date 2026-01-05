@@ -1,9 +1,12 @@
 package com.safetynet.alerts.dto;
 
-import com.safetynet.alerts.model.MedicalRecord;
+
 
 import java.util.List;
-
+/**
+ * DTO representing a resident's information,
+ * including personal details and medical records.
+ */
 public class ResidentsDTO {
     private String firstName;
     private String  lastName;

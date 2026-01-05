@@ -2,6 +2,9 @@ package com.safetynet.alerts.dto;
 
 import java.util.List;
 
+/**
+ * DTO for MedicalRecord data transfer
+ */
 public class MedicalRecordDTO {
     private String firstName;
     private String lastName;

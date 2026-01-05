@@ -11,7 +11,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
+/**
+ * Test class for PersonServiceImpl.
+ */
 class PersonServiceImplTest {
 
     private SafetyNetRepository repository;
@@ -22,7 +24,9 @@ class PersonServiceImplTest {
         repository = mock(SafetyNetRepository.class);
         service = new PersonServiceImpl(repository);
     }
-
+    /**
+     * Test for addPerson method.
+     */
     @Test
     void addPerson_shouldAddPersonToRepository() {
         // GIVEN
@@ -48,7 +52,9 @@ class PersonServiceImplTest {
         assertEquals("Doe", result.getLastName());
         assertEquals("123 Main St", result.getAddress());
     }
-
+    /**
+     * Test for updatePerson method.
+     */
     @Test
     void updatePerson_shouldUpdateExistingPerson() {
         // GIVEN
@@ -77,7 +83,9 @@ class PersonServiceImplTest {
         assertEquals("NewCity", updated.getCity());
         assertEquals("999", updated.getPhone());
     }
-
+    /**
+     * Test for updatePerson method when person does not exist.
+     */
     @Test
     void updatePerson_shouldReturnNull_whenPersonNotFound() {
         // GIVEN
@@ -99,7 +107,9 @@ class PersonServiceImplTest {
         // THEN
         assertNull(result);
     }
-
+    /**
+     * Test for deletePerson method.
+     */
     @Test
     void deletePerson_shouldRemovePerson_whenExists() {
         // GIVEN
@@ -116,7 +126,9 @@ class PersonServiceImplTest {
         assertTrue(deleted);
         assertTrue(persons.isEmpty());
     }
-
+    /**
+     * Test for deletePerson method when person does not exist.
+     */
     @Test
     void deletePerson_shouldReturnFalse_whenPersonNotFound() {
         // GIVEN

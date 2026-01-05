@@ -1,5 +1,9 @@
 package com.safetynet.alerts.dto;
 
+/**
+ * DTO representing a child with first name, last name, and age.
+ * Used for transferring child data in responses.
+ */
 public class ChildDTO {
 
     private String firstName;

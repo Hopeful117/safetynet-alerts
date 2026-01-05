@@ -22,7 +22,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Arrays;
 import java.util.List;
-
+/**
+ * Test class for FirestationController.
+ */
 @WebMvcTest(FirestationController.class)
 public class FirestationControllerTest {
 
@@ -34,8 +36,13 @@ public class FirestationControllerTest {
 
     @BeforeEach
     void setUp() {
+        /** Setup before each test if necessary */
     }
 
+    /**
+     * Test for getFirestationCoverage endpoint.
+     * @throws Exception
+     */
     @Test
     public void testGetFirestationCoverage() throws Exception {
 
@@ -51,6 +58,10 @@ public class FirestationControllerTest {
                 .andExpect(jsonPath("$.childCount").value(0))
                 .andExpect(jsonPath("$.persons[0].firstName").value("John"));
     }
+    /**
+     * Test for addFirestation endpoint.
+     * @throws Exception
+     */
     @Test
     public void testAddFirestationSuccess() throws Exception {
         FirestationRequestDTO request = new FirestationRequestDTO("123 New St",5);
@@ -66,6 +77,10 @@ public class FirestationControllerTest {
                 .andExpect(jsonPath("$.address").value("123 New St"))
                 .andExpect(jsonPath("$.station").value(5));
     }
+    /**
+     * Test for addFirestation endpoint when the firestation already exists.
+     * @throws Exception
+     */
     @Test
     public void testAddFirestationAlreadyExists() throws Exception {
         FirestationRequestDTO request = new FirestationRequestDTO( "123 New St",5);
@@ -78,6 +93,10 @@ public class FirestationControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
     }
+    /**
+     * Test for updateFirestation endpoint.
+     * @throws Exception
+     */
     @Test
     void updateFirestation_shouldReturn200_whenSuccess() throws Exception {
         FirestationRequestDTO request = new FirestationRequestDTO("1509 Culver St",3 );
@@ -92,6 +111,10 @@ public class FirestationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.station").value(3));
     }
+    /**
+     * Test for updateFirestation endpoint when the address is not found.
+     * @throws Exception
+     */
     @Test
     void updateFirestation_shouldReturn400_whenAddressNotFound() throws Exception {
         FirestationRequestDTO request = new FirestationRequestDTO("Unknown", 2);
@@ -104,6 +127,10 @@ public class FirestationControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
     }
+    /**
+     * Test for deleteFirestation endpoint.
+     * @throws Exception
+     */
     @Test
     void deleteFirestation_shouldReturn200_whenSuccess() throws Exception {
         doNothing().when(firestationService).deleteFirestationMapping("1509 Culver St");
@@ -112,6 +139,10 @@ public class FirestationControllerTest {
                         .param("address", "1509 Culver St"))
                 .andExpect(status().isOk());
     }
+    /**
+     * Test for deleteFirestation endpoint when the address is not found.
+     * @throws Exception
+     */
     @Test
     void deleteFirestation_shouldReturn400_whenAddressNotFound() throws Exception {
         doThrow(new IllegalArgumentException())

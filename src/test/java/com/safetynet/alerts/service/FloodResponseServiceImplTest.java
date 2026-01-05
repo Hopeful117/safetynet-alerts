@@ -14,7 +14,9 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
+/**
+ * Test class for FloodResponseServiceImpl.
+ */
 class FloodResponseServiceImplTest {
 
     private SafetyNetRepository repository;
@@ -26,6 +28,9 @@ class FloodResponseServiceImplTest {
         service = new FloodResponseServiceImpl(repository);
     }
 
+    /**
+     * Test for getFloodResponseByStationNumbers method.
+     */
     @Test
     void getFloodResponseByStationNumbers_shouldReturnHouseholdsGroupedByAddress() {
         // GIVEN

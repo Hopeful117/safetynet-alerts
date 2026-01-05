@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+/**
+ * Service implementation for retrieving phone alerts by fire station number.
+ */
 @Service
 public class PhoneAlertServiceImpl implements PhoneAlertService {
     private final SafetyNetRepository repository;
@@ -18,6 +21,13 @@ public class PhoneAlertServiceImpl implements PhoneAlertService {
     public PhoneAlertServiceImpl(SafetyNetRepository repository) {
         this.repository = repository;
     }
+    /**
+     * Retrieves a list of unique phone numbers for all residents covered by the specified fire station number.
+     *
+     * @param stationNumber The fire station number.
+     * @return A PhoneAlertResponseDTO containing the list of phone numbers.
+     */
+    @Override
     public PhoneAlertResponseDTO getPhoneAlertByStationNumber(int stationNumber) {
         LOGGER.info("Recherche des numéros de téléphone pour la station numéro {}", stationNumber);
 

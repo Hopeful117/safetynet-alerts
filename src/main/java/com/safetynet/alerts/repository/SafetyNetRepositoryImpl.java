@@ -12,7 +12,9 @@ import jakarta.annotation.PostConstruct;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Repository;
 import com.safetynet.alerts.model.SafetyNetData;
-
+/**
+ * Implementation of SafetyNetRepository that loads data from a JSON file.
+ */
 @Repository
 public class SafetyNetRepositoryImpl implements SafetyNetRepository {
     private List<Person> persons;

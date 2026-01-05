@@ -1,5 +1,8 @@
 package com.safetynet.alerts.dto;
 
+/**
+ * DTO representing a household member with first and last name.
+ */
 public class HouseholdMemberDTO {
 
     private String firstName;

@@ -9,7 +9,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+/**
+ * Controller pour gérer les requêtes liées aux personnes.
+ */
 @RestController
 public class PersonController {
     private final PersonService personService;
@@ -17,6 +19,11 @@ public class PersonController {
     public PersonController(PersonService personService) {
         this.personService = personService;
     }
+    /**
+     * Gère les requêtes POST pour ajouter une nouvelle personne.
+     * @param person
+     * @return
+     */
     @PostMapping("/person")
     public ResponseEntity<Person> addPerson(@RequestBody PersonRequestDTO person) {
       try {
@@ -29,6 +36,11 @@ public class PersonController {
           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
       }
     }
+    /**
+     * Gère les requêtes PUT pour mettre à jour une personne existante.
+     * @param person
+     * @return
+     */
     @PutMapping("/person")
     public ResponseEntity<Person> updatePerson(@RequestBody PersonRequestDTO person) {
       try{
@@ -41,7 +53,12 @@ public class PersonController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
       }
     }
-
+/**
+     * Gère les requêtes DELETE pour supprimer une personne existante.
+     * @param firstName
+     * @param lastName
+     * @return
+     */
     @DeleteMapping("/person")
     public ResponseEntity<Person> deletePerson(@RequestParam String firstName, @RequestParam String lastName) {
       try {

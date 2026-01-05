@@ -13,6 +13,9 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+/**
+ * Service implementation for handling fire response information.
+ */
 @Service
 public class FireResponseServiceImpl implements FireResponseService {
     private static final Logger LOGGER = LogManager.getLogger(FireResponseServiceImpl.class);
@@ -21,6 +24,13 @@ public class FireResponseServiceImpl implements FireResponseService {
     public FireResponseServiceImpl(SafetyNetRepository repository) {
         this.repository = repository;
     }
+    /**
+     * Retrieves fire response information for a given address.
+     *
+     * @param address The address to retrieve fire response information for.
+     * @return A FireResponseDTO containing residents and station number.
+     */
+    @Override
     public FireResponseDTO getFireResponseByAddress(String address) {
         LOGGER.info("Recherche des résidents pour l'adresse {}", address);
         int stationNumber = repository.getFirestations().stream()

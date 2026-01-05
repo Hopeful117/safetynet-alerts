@@ -17,7 +17,9 @@ import java.util.Set;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+/**
+ * Test class for PhoneAlertController.
+ */
 @WebMvcTest(PhoneAlertController.class)
 public class PhoneAlertControllerTest {
     @Autowired
@@ -28,7 +30,12 @@ public class PhoneAlertControllerTest {
 
     @BeforeEach
     void setUp() {
+        /** Setup before each test if necessary */
     }
+    /**
+     * Test for phoneAlert endpoint.
+     * @throws Exception
+     */
     @Test
     void phoneAlert_shouldReturnDistinctPhones() throws Exception {
         // GIVEN

@@ -8,7 +8,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
-
+/**
+ * Service implementation for managing medical records.
+ */
 @Service
 public class MedicalRecordServiceImpl implements MedicalRecordService{
     private final SafetyNetRepository repository;
@@ -18,6 +20,12 @@ public class MedicalRecordServiceImpl implements MedicalRecordService{
     public MedicalRecordServiceImpl(SafetyNetRepository repository) {
         this.repository = repository;
     }
+    /**
+     * Adds a new medical record.
+     *
+     * @param medicalRecordDTO The DTO containing medical record information.
+     * @return The added MedicalRecord.
+     */
     @Override
     public MedicalRecord addMedicalRecord(MedicalRecordDTO medicalRecordDTO) {
         LOGGER.info("Ajout d'un nouveau dossier médical pour : {} {}", medicalRecordDTO.getFirstName(), medicalRecordDTO.getLastName());
@@ -32,6 +40,12 @@ public class MedicalRecordServiceImpl implements MedicalRecordService{
         LOGGER.debug("Dossier médical ajouté avec succès pour : {} {}", medicalRecord.getFirstName(), medicalRecord.getLastName());
         return medicalRecord;
     }
+    /**
+     * Updates an existing medical record.
+     *
+     * @param medicalRecordDTO The DTO containing updated medical record information.
+     * @return The updated MedicalRecord, or null if not found.
+     */
     @Override
     public MedicalRecord updateMedicalRecord(MedicalRecordDTO medicalRecordDTO) {
         LOGGER.info("Mise à jour du dossier médical pour : {} {}", medicalRecordDTO.getFirstName(), medicalRecordDTO.getLastName());
@@ -51,6 +65,13 @@ public class MedicalRecordServiceImpl implements MedicalRecordService{
             return null;
 }
     }
+    /**
+     * Deletes a medical record.
+     *
+     * @param firstName The first name of the person.
+     * @param lastName  The last name of the person.
+     * @return true if the record was deleted, false if not found.
+     */
     @Override
     public boolean deleteMedicalRecord(String firstName, String lastName) {
         LOGGER.info("Suppression du dossier médical pour : {} {}", firstName, lastName);

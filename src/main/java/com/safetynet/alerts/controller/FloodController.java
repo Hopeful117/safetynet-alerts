@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-
+/**
+ * Controller pour gérer les requêtes liées aux inondations.
+ */
 @RestController
 public class FloodController {
     private static final Logger LOGGER = LogManager.getLogger(FloodController.class);
@@ -18,6 +20,12 @@ public class FloodController {
     public FloodController(FloodResponseService floodResponseService) {
         this.floodResponseService = floodResponseService;
     }
+    /**
+     * Gère les requêtes GET pour obtenir les informations d'inondation basées sur les numéros de station.
+     *
+     * @param stations Liste des numéros de station.
+     * @return Un objet FloodResponseDTO contenant les informations d'inondation.
+     */
     @GetMapping("/flood/stations")
     public FloodResponseDTO getFloodResponse(@RequestParam List<Integer> stations) {
         LOGGER.info("Requête GET /flood/stations reçue");

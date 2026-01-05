@@ -14,7 +14,9 @@ import java.util.List;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+/**
+ * Test class for PersonInfolastNameController.
+ */
 @WebMvcTest(PersonInfolastNameController.class)
 class PersonInfolastNameControllerTest {
 
@@ -23,7 +25,10 @@ class PersonInfolastNameControllerTest {
 
     @MockBean
     private PersonInfolastNameService personInfolastNameService;
-
+/**
+     * Test for getPersonInfolastName endpoint.
+     * @throws Exception if an error occurs during the request
+     */
     @Test
     void getPersonInfolastName_shouldReturnResidents_whenLastNameExists() throws Exception {
         // GIVEN
@@ -67,7 +72,10 @@ class PersonInfolastNameControllerTest {
                 .andExpect(jsonPath("$.residents[1].firstName").value("Tenley"))
                 .andExpect(jsonPath("$.residents[1].age").value(12));
     }
-
+/**
+     * Test for getPersonInfolastName endpoint when no results are found.
+     * @throws Exception if an error occurs during the request
+     */
     @Test
     void getPersonInfolastName_shouldReturnEmptyList_whenNoResult() throws Exception {
         // GIVEN

@@ -1,13 +1,15 @@
 package com.safetynet.alerts.dto;
 
+/**
+ * DTO representing a person associated with a fire station.
+ * Includes personal details such as first name, last name, address, and phone number.
+ */
 public class FireStationPersonDTO {
     private String firstName;
     private String lastName;
     private String address;
     private String phone;
 
-    public FireStationPersonDTO() {
-    }
 
     public FireStationPersonDTO(String firstName, String lastName, String address, String phone) {
         this.firstName = firstName;

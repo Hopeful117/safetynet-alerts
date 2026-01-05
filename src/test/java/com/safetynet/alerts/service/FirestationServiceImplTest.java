@@ -16,20 +16,24 @@ import com.safetynet.alerts.repository.SafetyNetRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-public class FirestationServiceImplTest {
+/**
+ * Test class for FirestationServiceImpl.
+ */
+class FirestationServiceImplTest {
 
     private SafetyNetRepository repository;
     private FirestationServiceImpl service;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         repository = mock(SafetyNetRepository.class);
         service = new FirestationServiceImpl(repository);
     }
-
+/**
+     * Test for getFirestationCoverage method.
+     */
     @Test
-    public void testGetFirestationCoverage() {
+    void testGetFirestationCoverage() {
 
         // 1️⃣ Données mock
         List<Firestation> firestations = List.of(
@@ -60,8 +64,11 @@ public class FirestationServiceImplTest {
         assertEquals(2, response.getChildCount());  // Jacob et Tenley → enfants
         assertEquals(3, response.getPersons().size()); // 3 personnes
     }
+    /**
+     * Test for addFirestationMapping method.
+     */
     @Test
-    public void testAddFirestationMappingSuccess() {
+    void testAddFirestationMappingSuccess() {
         List<Firestation> firestations = new ArrayList<>();
         when(repository.getFirestations()).thenReturn(firestations);
 
@@ -72,8 +79,11 @@ public class FirestationServiceImplTest {
         assertEquals(1, firestations.size());
     }
 
+    /**
+     * Test for addFirestationMapping method when mapping already exists.
+     */
     @Test
-    public void testAddFirestationMappingAlreadyExists() {
+    void testAddFirestationMappingAlreadyExists() {
         List<Firestation> firestations = new ArrayList<>();
         firestations.add(new Firestation("123 New St", 3));
         when(repository.getFirestations()).thenReturn(firestations);
@@ -84,6 +94,9 @@ public class FirestationServiceImplTest {
 
         assertEquals("Cette adresse a déjà un mapping.", exception.getMessage());
     }
+    /**
+     * Test for updateFirestationMapping method.
+     */
     @Test
     void updateFirestationMapping_shouldUpdateStation_whenAddressExists() {
         // GIVEN
@@ -97,6 +110,9 @@ public class FirestationServiceImplTest {
         // THEN
         assertEquals(3, updated.getStation());
     }
+    /**
+     * Test for updateFirestationMapping method when address does not exist.
+     */
     @Test
     void updateFirestationMapping_shouldThrowException_whenAddressNotFound() {
         // WHEN / THEN
@@ -104,6 +120,9 @@ public class FirestationServiceImplTest {
                 service.updateFirestationMapping( "Unknown Address", 2)
         );
     }
+    /**
+     * Test for deleteFirestationMapping method.
+     */
     @Test
     void deleteFirestationMapping_shouldRemoveMapping_whenAddressExists() {
         // GIVEN
@@ -117,6 +136,9 @@ public class FirestationServiceImplTest {
         // THEN
         assertTrue(repository.getFirestations().isEmpty());
     }
+    /**
+     * Test for deleteFirestationMapping method when address does not exist.
+     */
     @Test
     void deleteFirestationMapping_shouldThrowException_whenAddressNotFound() {
         // WHEN / THEN

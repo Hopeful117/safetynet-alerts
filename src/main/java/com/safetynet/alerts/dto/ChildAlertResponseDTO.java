@@ -2,6 +2,10 @@ package com.safetynet.alerts.dto;
 
 import java.util.List;
 
+/**
+ * DTO representing the response for a child alert,
+ * containing lists of children and adults in a household.
+ */
 public class ChildAlertResponseDTO {
 
     private List<ChildDTO> children;
