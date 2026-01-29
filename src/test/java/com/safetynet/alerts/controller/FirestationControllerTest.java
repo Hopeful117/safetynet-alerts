@@ -7,20 +7,20 @@ import com.safetynet.alerts.dto.FirestationRequestDTO;
 import com.safetynet.alerts.model.Firestation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.safetynet.alerts.dto.FireStationPersonDTO;
 import com.safetynet.alerts.dto.FireStationResponseDTO;
 import com.safetynet.alerts.service.FirestationService;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 
-import java.util.Arrays;
 import java.util.List;
 /**
  * Test class for FirestationController.
@@ -31,7 +31,7 @@ public class FirestationControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private FirestationService firestationService;
 
     @BeforeEach

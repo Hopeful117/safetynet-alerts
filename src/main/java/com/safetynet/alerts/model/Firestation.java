@@ -1,31 +1,15 @@
 package com.safetynet.alerts.model;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 /**
  * Model class representing a Firestation entity
  * with address and station number.
  */
+@Data
+@AllArgsConstructor
 public class Firestation {
     private String address;
     private int station;
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public int getStation() {
-        return station;
-    }
-
-    public void setStation(int station) {
-        this.station = station;
-    }
-    public Firestation() {
-    }
-    public Firestation(String address, int station) {
-        this.address = address;
-        this.station = station;
-    }
 }
