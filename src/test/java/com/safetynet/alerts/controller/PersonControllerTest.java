@@ -93,10 +93,8 @@ class PersonControllerTest {
         );
 
         when(personService.updatePerson(dto))
-                .thenReturn(new Person(
-                        "John", "Doe", "456 New St",
-                        "Culver", "97451", "222-222", "john@new.com"
-                ));
+                .thenReturn(true
+                );
 
         mockMvc.perform(put("/person")
                         .contentType(MediaType.APPLICATION_JSON)

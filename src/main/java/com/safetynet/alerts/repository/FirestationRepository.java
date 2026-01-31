@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FirestationRepository {
-    List<Firestation> getall();
+    List<Firestation> getAll();
     List <Firestation> getAllByStationNumber(int stationNumber);
     Optional<Firestation> findByAddress(String address);
 
