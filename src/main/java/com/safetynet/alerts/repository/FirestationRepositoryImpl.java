@@ -30,4 +30,9 @@ public class FirestationRepositoryImpl implements FirestationRepository {
                 .findFirst();
     }
 
+    @Override
+    public void save (Firestation firestation){
+        getAll().add(firestation);
+    }
+
 }

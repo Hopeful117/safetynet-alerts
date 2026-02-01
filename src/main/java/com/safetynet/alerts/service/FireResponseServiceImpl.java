@@ -43,43 +43,41 @@ public class FireResponseServiceImpl implements FireResponseService {
     public FireResponseDTO getFireResponseByAddress(String address) {
         log.info("Recherche des résidents pour l'adresse {}", address);
         Optional<Firestation> station = firestationRepository.findByAddress(address);
-        int stationNumber =station.get().getStation();
+        if (station.isPresent()) {
+            int stationNumber = station.get().getStation();
 
-        // Récupération des personnes à l'adresse donnée
-        List<Person> residents = personRepository.getAllByAddress(address);
-        log.info("{} résidents trouvés à l'adresse {}", residents.size(), address);
-        List<MedicalRecord> medicalRecords= medicalRecordRepository.getAll().stream().filter(mr->residents.stream()
-                .anyMatch(p->p.getFirstName().equals (mr.getFirstName()) && p.getLastName().equals(mr.getLastName()))).toList();
-        // Transformation en DTO
-        List<ResidentsDTO> residentDTOs = residents.stream()
-                .map(p -> {
-                    MedicalRecord mr = medicalRecords.stream()
-                            .filter(record -> record.getFirstName().equals(p.getFirstName())
-                                    && record.getLastName().equals(p.getLastName()))
-                            .findFirst()
-                            .orElse(null);
-                    int age = 0;
-                    List<String> medications = List.of();
-                    List<String> allergies = List.of();
-                    if (mr != null) {
+            // Récupération des personnes à l'adresse donnée
+            List<Person> residents = personRepository.getAllByAddress(address);
+            log.info("{} résidents trouvés à l'adresse {}", residents.size(), address);
 
-                        age = mr.calculateAge();
-                        medications = mr.getMedications();
-                        allergies = mr.getAllergies();
-                    }
-                    return new ResidentsDTO(
-                            p.getFirstName(),
-                            p.getLastName(),
-                            p.getAddress(),
-                            p.getPhone(),
-                            age,
-                            medications,
-                            allergies
-                    );
-                })
-                .toList();
+            // Transformation en DTO
+            List<ResidentsDTO> residentDTOs = residents.stream()
+                    .map(p -> {
+                        Optional<MedicalRecord> mr = medicalRecordRepository.findByFirstAndLastName(p.getFirstName(), p.getLastName());
+                        int age = 0;
+                        List<String> medications = List.of();
+                        List<String> allergies = List.of();
+                        if (mr.isPresent()) {
 
-       return new FireResponseDTO(residentDTOs, stationNumber);
+                            age = mr.get().calculateAge();
+                            medications = mr.get().getMedications();
+                            allergies = mr.get().getAllergies();
+                        }
+                        return new ResidentsDTO(
+                                p.getFirstName(),
+                                p.getLastName(),
+                                p.getAddress(),
+                                p.getPhone(),
+                                age,
+                                medications,
+                                allergies
+                        );
+                    })
+                    .toList();
+
+            return new FireResponseDTO(residentDTOs, stationNumber);
+        }
+
+        return null;
     }
-
 }

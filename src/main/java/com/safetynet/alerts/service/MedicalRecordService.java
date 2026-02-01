@@ -7,8 +7,8 @@ import com.safetynet.alerts.model.MedicalRecord;
  */
 public interface MedicalRecordService {
     public boolean deleteMedicalRecord(String firstName, String lastName);
-    public MedicalRecord addMedicalRecord(MedicalRecordDTO medicalRecordDTO);
-    public MedicalRecord updateMedicalRecord(MedicalRecordDTO medicalRecordDTO);
+    public boolean addMedicalRecord(MedicalRecordDTO medicalRecordDTO);
+    public boolean updateMedicalRecord(MedicalRecordDTO medicalRecordDTO);
 
 
 }

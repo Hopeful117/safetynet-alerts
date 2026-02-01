@@ -15,6 +15,6 @@ public interface PersonRepository {
 
     void save(Person person);
 
-    void delete(Optional<Person> person);
+    void delete(Person person);
 
 }

@@ -43,7 +43,7 @@ public class PersonRepositoryImpl implements PersonRepository {
     }
 
     @Override
-    public void delete(Optional<Person> person){
+    public void delete(Person person){
         getAll().remove(person);
     }
 }

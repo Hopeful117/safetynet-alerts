@@ -2,29 +2,39 @@ package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.dto.FloodResponseDTO;
 import com.safetynet.alerts.dto.ResidentsDTO;
+import com.safetynet.alerts.model.Firestation;
+import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
+import com.safetynet.alerts.repository.FirestationRepository;
+import com.safetynet.alerts.repository.MedicalRecordRepository;
+import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.repository.SafetyNetRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 /**
  * Service implementation for handling flood response information.
  */
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class FloodResponseServiceImpl implements FloodResponseService {
-    private final SafetyNetRepository repository;
-    private static final DateTimeFormatter FORMATTER =
-            DateTimeFormatter.ofPattern("MM/dd/yyyy");
-    private static final Logger LOGGER = LogManager.getLogger(FloodResponseServiceImpl.class);
+    private final FirestationRepository firestationRepository;
+    private final PersonRepository personRepository;
+    private final MedicalRecordRepository medicalRecordRepository;
 
-    public FloodResponseServiceImpl(SafetyNetRepository repository) {
-        this.repository = repository;
-    }
+
+
 /**
      * Retrieves flood response information based on a list of fire station numbers.
      *
@@ -33,34 +43,28 @@ public class FloodResponseServiceImpl implements FloodResponseService {
      */
     @Override
     public FloodResponseDTO getFloodResponseByStationNumbers(List<Integer> stationNumbers) {
-        Set<String> locations = repository.getFirestations().stream()
+        Set<String> locations = firestationRepository.getAll().stream()
                 .filter(fs -> stationNumbers.contains(fs.getStation()))
-                .map(fs -> fs.getAddress())
+                .map(Firestation::getAddress)
                 .collect(Collectors.toSet());
-        LOGGER.info("Adresses couvertes par les stations {}: {}", stationNumbers, locations);
+        log.info("Adresses couvertes par les stations {}: {}", stationNumbers, locations);
         return new FloodResponseDTO(locations.stream().collect(
-                java.util.stream.Collectors.toMap(
+                Collectors.toMap(
                         address -> address,
                         address -> {
-                            List<Person> residents = repository.getPersons().stream()
-                                    .filter(p -> p.getAddress().equals(address))
-                                    .toList();
-                            LOGGER.info("{} résidents trouvés à l'adresse {}", residents.size(), address);
+                            List<Person> residents = personRepository.getAllByAddress(address);
+                            log.info("{} résidents trouvés à l'adresse {}", residents.size(), address);
                             return residents.stream()
                                     .map(p -> {
-                                        var mrOpt = repository.getMedicalRecords().stream()
-                                                .filter(record -> record.getFirstName().equals(p.getFirstName())
-                                                        && record.getLastName().equals(p.getLastName()))
-                                                .findFirst();
+                                        Optional<MedicalRecord> mr = medicalRecordRepository.findByFirstAndLastName(p.getFirstName(),p.getLastName());
                                         int age = 0;
                                         List<String> medications = List.of();
                                         List<String> allergies = List.of();
-                                        if (mrOpt.isPresent()) {
-                                            var mr = mrOpt.get();
-                                            var birthDate = java.time.LocalDate.parse(mr.getBirthdate(), FORMATTER);
-                                            age = java.time.Period.between(birthDate, java.time.LocalDate.now()).getYears();
-                                            medications = mr.getMedications();
-                                            allergies = mr.getAllergies();
+                                        if (mr.isPresent()) {
+
+                                            age = mr.get().calculateAge();
+                                            medications = mr.get().getMedications();
+                                            allergies = mr.get().getAllergies();
                                         }
                                         return new ResidentsDTO(
                                                 p.getFirstName(),

@@ -98,7 +98,7 @@ public class PersonServiceImpl implements PersonService{
         log.info("Suppression de la personne : {} {}", firstName, lastName);
         Optional<Person> personToDelete = personRepository.findByFirstnameAndLastname(firstName,lastName);
         if (personToDelete.isPresent()){
-            personRepository.delete(personToDelete);
+            personRepository.delete(personToDelete.get());
             log.debug("Personne supprimée avec succès : {} {}", firstName, lastName);
             return true;
 

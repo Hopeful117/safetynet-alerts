@@ -2,24 +2,29 @@ package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.dto.MedicalRecordDTO;
 import com.safetynet.alerts.model.MedicalRecord;
+import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.SafetyNetRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
+
 /**
  * Service implementation for managing medical records.
  */
+@Slf4j
+@RequiredArgsConstructor
 @Service
+
 public class MedicalRecordServiceImpl implements MedicalRecordService{
-    private final SafetyNetRepository repository;
-    private static final DateTimeFormatter FORMATTER =
-            DateTimeFormatter.ofPattern("MM/dd/yyyy");
-    private static final Logger LOGGER = LogManager.getLogger(MedicalRecordServiceImpl.class);
-    public MedicalRecordServiceImpl(SafetyNetRepository repository) {
-        this.repository = repository;
-    }
+    private final MedicalRecordRepository medicalRecordRepository;
+
+
+
     /**
      * Adds a new medical record.
      *
@@ -27,8 +32,13 @@ public class MedicalRecordServiceImpl implements MedicalRecordService{
      * @return The added MedicalRecord.
      */
     @Override
-    public MedicalRecord addMedicalRecord(MedicalRecordDTO medicalRecordDTO) {
-        LOGGER.info("Ajout d'un nouveau dossier médical pour : {} {}", medicalRecordDTO.getFirstName(), medicalRecordDTO.getLastName());
+    public boolean addMedicalRecord(MedicalRecordDTO medicalRecordDTO) {
+        log.info("Ajout d'un nouveau dossier médical pour : {} {}", medicalRecordDTO.getFirstName(), medicalRecordDTO.getLastName());
+        Optional<MedicalRecord> exists=medicalRecordRepository.findByFirstAndLastName(medicalRecordDTO.getFirstName(),medicalRecordDTO.getLastName());
+        if(exists.isPresent()){
+            log.error("Dossier médical déjà présent");
+            return false;
+        }
         MedicalRecord medicalRecord = new MedicalRecord(
                 medicalRecordDTO.getFirstName(),
                 medicalRecordDTO.getLastName(),
@@ -36,9 +46,9 @@ public class MedicalRecordServiceImpl implements MedicalRecordService{
                 medicalRecordDTO.getMedications(),
                 medicalRecordDTO.getAllergies()
         );
-        repository.getMedicalRecords().add(medicalRecord);
-        LOGGER.debug("Dossier médical ajouté avec succès pour : {} {}", medicalRecord.getFirstName(), medicalRecord.getLastName());
-        return medicalRecord;
+        medicalRecordRepository.save(medicalRecord);
+        log.info("Dossier médical ajouté avec succès pour : {} {}", medicalRecord.getFirstName(), medicalRecord.getLastName());
+        return true;
     }
     /**
      * Updates an existing medical record.
@@ -47,22 +57,18 @@ public class MedicalRecordServiceImpl implements MedicalRecordService{
      * @return The updated MedicalRecord, or null if not found.
      */
     @Override
-    public MedicalRecord updateMedicalRecord(MedicalRecordDTO medicalRecordDTO) {
-        LOGGER.info("Mise à jour du dossier médical pour : {} {}", medicalRecordDTO.getFirstName(), medicalRecordDTO.getLastName());
-        MedicalRecord existingRecord = repository.getMedicalRecords().stream()
-                .filter(mr -> mr.getFirstName().equalsIgnoreCase(medicalRecordDTO.getFirstName())
-                        && mr.getLastName().equalsIgnoreCase(medicalRecordDTO.getLastName()))
-                .findFirst()
-                .orElse(null);
-        if (existingRecord != null) {
-            existingRecord.setBirthdate(medicalRecordDTO.getBirthdate());
-            existingRecord.setMedications(medicalRecordDTO.getMedications());
-            existingRecord.setAllergies(medicalRecordDTO.getAllergies());
-            LOGGER.debug("Dossier médical mis à jour avec succès pour : {} {}", existingRecord.getFirstName(), existingRecord.getLastName());
-            return existingRecord;
+    public boolean updateMedicalRecord(MedicalRecordDTO medicalRecordDTO) {
+        log.info("Mise à jour du dossier médical pour : {} {}", medicalRecordDTO.getFirstName(), medicalRecordDTO.getLastName());
+        Optional<MedicalRecord> existingRecord = medicalRecordRepository.findByFirstAndLastName(medicalRecordDTO.getFirstName(), medicalRecordDTO.getLastName());
+        if (existingRecord.isPresent()) {
+            existingRecord.get().setBirthdate(medicalRecordDTO.getBirthdate());
+            existingRecord.get().setMedications(medicalRecordDTO.getMedications());
+            existingRecord.get().setAllergies(medicalRecordDTO.getAllergies());
+            log.debug("Dossier médical mis à jour avec succès pour : {} {}", existingRecord.get().getFirstName(), existingRecord.get().getLastName());
+            return true;
         } else {
-            LOGGER.warn("Dossier médical non trouvé pour la mise à jour : {} {}", medicalRecordDTO.getFirstName(), medicalRecordDTO.getLastName());
-            return null;
+            log.warn("Dossier médical non trouvé pour la mise à jour : {} {}", medicalRecordDTO.getFirstName(), medicalRecordDTO.getLastName());
+            return false;
 }
     }
     /**
@@ -74,18 +80,14 @@ public class MedicalRecordServiceImpl implements MedicalRecordService{
      */
     @Override
     public boolean deleteMedicalRecord(String firstName, String lastName) {
-        LOGGER.info("Suppression du dossier médical pour : {} {}", firstName, lastName);
-        MedicalRecord existingRecord = repository.getMedicalRecords().stream()
-                .filter(mr -> mr.getFirstName().equalsIgnoreCase(firstName)
-                        && mr.getLastName().equalsIgnoreCase(lastName))
-                .findFirst()
-                .orElse(null);
-        if (existingRecord != null) {
-            repository.getMedicalRecords().remove(existingRecord);
-            LOGGER.debug("Dossier médical supprimé avec succès pour : {} {}", firstName, lastName);
+        log.info("Suppression du dossier médical pour : {} {}", firstName, lastName);
+        Optional<MedicalRecord> existingRecord = medicalRecordRepository.findByFirstAndLastName(firstName,lastName);
+        if (existingRecord.isPresent()) {
+            medicalRecordRepository.delete(existingRecord.get());
+            log.info("Dossier médical supprimé avec succès pour : {} {}", firstName, lastName);
             return true;
         } else {
-            LOGGER.warn("Dossier médical non trouvé pour la suppression : {} {}", firstName, lastName);
+            log.warn("Dossier médical non trouvé pour la suppression : {} {}", firstName, lastName);
             return false;
         }
     }

@@ -9,5 +9,7 @@ public interface FirestationRepository {
     List<Firestation> getAll();
     List <Firestation> getAllByStationNumber(int stationNumber);
     Optional<Firestation> findByAddress(String address);
+    void  save(Firestation firestation);
+    void delete(Firestation firestation);
 
 }
