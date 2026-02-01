@@ -63,7 +63,7 @@ public class FirestationServiceImpl implements FirestationService {
         int adultCount = 0;
         int childCount = 0;
 
-        for (Person person : coveredPersons) {
+            for (Person person : coveredPersons) {
             MedicalRecord record = medicalRecordRepository.getAll().stream()
                     .filter(mr -> mr.getFirstName().equals(person.getFirstName())
                             && mr.getLastName().equals(person.getLastName()))

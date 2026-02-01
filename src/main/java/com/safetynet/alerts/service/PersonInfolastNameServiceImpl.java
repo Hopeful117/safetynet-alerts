@@ -2,25 +2,30 @@ package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.dto.PersonInfolastNameDTO;
 import com.safetynet.alerts.dto.ResidentsDTO;
+import com.safetynet.alerts.model.MedicalRecord;
+import com.safetynet.alerts.repository.MedicalRecordRepository;
+import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.repository.SafetyNetRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
+
 /**
  * Service implementation for retrieving person information by last name.
  */
+@Slf4j
+@RequiredArgsConstructor
 @Service
+
 public class PersonInfolastNameServiceImpl implements PersonInfolastNameService {
-    private final SafetyNetRepository repository;
-    private static final DateTimeFormatter FORMATTER =
-            DateTimeFormatter.ofPattern("MM/dd/yyyy");
-    private static final Logger LOGGER = LogManager.getLogger(PersonInfolastNameServiceImpl.class);
-    public PersonInfolastNameServiceImpl(SafetyNetRepository repository) {
-        this.repository = repository;
-    }
+   private final PersonRepository personRepository;
+   private final MedicalRecordRepository medicalRecordRepository;
     /**
      * Retrieves person information for all residents with the specified last name.
      *
@@ -29,20 +34,16 @@ public class PersonInfolastNameServiceImpl implements PersonInfolastNameService 
      */
     @Override
     public PersonInfolastNameDTO getPersonInfoByLastName(String lastName) {
-        List<ResidentsDTO> residentDTOs = repository.getPersons().stream()
+        List<ResidentsDTO> residentDTOs = personRepository.getAll().stream()
                 .filter(p -> p.getLastName().equalsIgnoreCase(lastName))
                 .map(p -> {
-                    var mrOpt = repository.getMedicalRecords().stream()
-                            .filter(record -> record.getFirstName().equals(p.getFirstName())
-                                    && record.getLastName().equals(p.getLastName()))
-                            .findFirst();
+                   Optional<MedicalRecord> medicalRecord= medicalRecordRepository.findByFirstAndLastName(p.getFirstName(), p.getLastName());
                     int age = 0;
                     List<String> medications = List.of();
                     List<String> allergies = List.of();
-                    if (mrOpt.isPresent()) {
-                        var mr = mrOpt.get();
-                        var birthDate = java.time.LocalDate.parse(mr.getBirthdate(), FORMATTER);
-                        age = java.time.Period.between(birthDate, java.time.LocalDate.now()).getYears();
+                    if (medicalRecord.isPresent()) {
+                        var mr = medicalRecord.get();
+                        age = mr.calculateAge();
                         medications = mr.getMedications();
                         allergies = mr.getAllergies();
                     }
@@ -56,7 +57,7 @@ public class PersonInfolastNameServiceImpl implements PersonInfolastNameService 
                             allergies);
                 })
                 .toList();
-        LOGGER.info("{} résidents trouvés avec le nom de famille {}", residentDTOs.size(), lastName);
+        log.info("{} résidents trouvés avec le nom de famille {}", residentDTOs.size(), lastName);
         return new PersonInfolastNameDTO(residentDTOs);
     }
 

@@ -3,7 +3,11 @@ package com.safetynet.alerts.service;
 import com.safetynet.alerts.dto.PhoneAlertResponseDTO;
 import com.safetynet.alerts.model.Firestation;
 import com.safetynet.alerts.model.Person;
+import com.safetynet.alerts.repository.FirestationRepository;
+import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.repository.SafetyNetRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -14,13 +18,12 @@ import java.util.stream.Collectors;
 /**
  * Service implementation for retrieving phone alerts by fire station number.
  */
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class PhoneAlertServiceImpl implements PhoneAlertService {
-    private final SafetyNetRepository repository;
-    private static final Logger LOGGER = LogManager.getLogger(PhoneAlertServiceImpl.class);
-    public PhoneAlertServiceImpl(SafetyNetRepository repository) {
-        this.repository = repository;
-    }
+   private final FirestationRepository firestationRepository;
+   private final PersonRepository personRepository;
     /**
      * Retrieves a list of unique phone numbers for all residents covered by the specified fire station number.
      *
@@ -29,21 +32,23 @@ public class PhoneAlertServiceImpl implements PhoneAlertService {
      */
     @Override
     public PhoneAlertResponseDTO getPhoneAlertByStationNumber(int stationNumber) {
-        LOGGER.info("Recherche des numéros de téléphone pour la station numéro {}", stationNumber);
+        log.info("Recherche des numéros de téléphone pour la station numéro {}", stationNumber);
 
         // 1️⃣ Adresses couvertes par la station
-        List<String> addresses = repository.getFirestations().stream()
-                .filter(fs -> fs.getStation() == stationNumber)
-                .map(Firestation::getAddress)
-                .collect(Collectors.toList());
-        LOGGER.debug("Adresses couvertes par la station {}: {}", stationNumber, addresses);
+        Set<String>addresses = firestationRepository.getAllByStationNumber(stationNumber)
+                        .stream()
+                        .map(Firestation::getAddress)
+                                .collect(Collectors.toSet());
+
+
+        log.debug("Adresses couvertes par la station {}: {}", stationNumber, addresses);
 
         // 2️⃣ Numéros de téléphone des personnes à ces adresses
-        Set<String> phoneNumbers = repository.getPersons().stream()
-                .filter(p -> addresses.contains(p.getAddress()))
-                .map(Person::getPhone)
-                .collect(Collectors.toSet());
-        LOGGER.info("{} numéros de téléphone trouvés pour la station {}", phoneNumbers.size(), stationNumber);
+        Set<String> phoneNumbers = personRepository.getAll().stream()
+                        .filter(person->addresses.contains(person.getAddress()))
+                                .map(Person::getPhone)
+                                        .collect(Collectors.toSet());
+        log.info("{} numéros de téléphone trouvés pour la station {}", phoneNumbers.size(), stationNumber);
 
         return new PhoneAlertResponseDTO(phoneNumbers);
     }
