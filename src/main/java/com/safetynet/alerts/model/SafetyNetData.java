@@ -2,6 +2,7 @@ package com.safetynet.alerts.model;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -9,6 +10,7 @@ import lombok.Data;
  * containing lists of persons, firestations, and medical records.
  */
 @Data
+@AllArgsConstructor
 public class SafetyNetData {
     private List<Person> persons;
     private List<Firestation> firestations;
