@@ -1,5 +1,8 @@
 package com.safetynet.alerts.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import java.util.List;
 
 /**
@@ -7,12 +10,9 @@ import java.util.List;
  * @param emails List of email addresses.
  *
  */
+@Data
+@AllArgsConstructor
 public class CommunityEmailResponseDTO {
     private List<String> emails;
-    public CommunityEmailResponseDTO(List<String> emails) {
-        this.emails = emails;
-    }
-    public List<String> getEmails() {
-        return emails;
-    }
+
 }
