@@ -35,4 +35,9 @@ public class FirestationRepositoryImpl implements FirestationRepository {
         getAll().add(firestation);
     }
 
+    @Override
+    public void delete(Firestation firestation){
+        getAll().remove(firestation);
+    }
+
 }

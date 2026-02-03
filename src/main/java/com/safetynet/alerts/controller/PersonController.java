@@ -55,7 +55,7 @@ public class PersonController {
                 return ResponseEntity.status(HttpStatus.ACCEPTED).body(person);
             }
 
-            log.warn("Personne introuvable : {} {}", person.getFirstName(), person.getLastName());
+            log.error("Personne introuvable : {} {}", person.getFirstName(), person.getLastName());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
 
       }
@@ -71,8 +71,8 @@ public class PersonController {
 
           log.info("Requête DELETE /person reçue pour {} {}", firstName, lastName);
           boolean deleted = personService.deletePerson(firstName, lastName);
-          if (!deleted) {
-              return ResponseEntity.notFound().build();
+          if (deleted) {
+              return ResponseEntity.ok().build();
           }
 
           log.error("Erreur lors de la suppression de la personne: {} {}", firstName, lastName);

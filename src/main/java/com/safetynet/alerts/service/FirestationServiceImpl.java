@@ -64,14 +64,10 @@ public class FirestationServiceImpl implements FirestationService {
         int childCount = 0;
 
             for (Person person : coveredPersons) {
-            MedicalRecord record = medicalRecordRepository.getAll().stream()
-                    .filter(mr -> mr.getFirstName().equals(person.getFirstName())
-                            && mr.getLastName().equals(person.getLastName()))
-                    .findFirst()
-                    .orElse(null);
+            Optional<MedicalRecord> record = medicalRecordRepository.findByFirstAndLastName(person.getFirstName(), person.getLastName());
 
-            if (record != null) {
-                int age = record.calculateAge();
+            if (record.isPresent()) {
+                int age = record.get().calculateAge();
                 if (age < 18) {
                     childCount++;
                     log.debug("Enfant trouvé: {} {} ({} ans)", person.getFirstName(), person.getLastName(), age);

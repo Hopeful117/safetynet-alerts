@@ -2,6 +2,8 @@ package com.safetynet.alerts.controller;
 
 import com.safetynet.alerts.dto.ChildAlertResponseDTO;
 import com.safetynet.alerts.service.ChildAlertService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,14 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Controller pour gérer les requêtes liées aux alertes pour enfants.
  */
+@Slf4j
+@RequiredArgsConstructor
 @RestController
 public class ChildAlertController {
-    private final static Logger LOGGER= LogManager.getLogger(ChildAlertController.class);
+
     private final ChildAlertService service;
 
-    public ChildAlertController(ChildAlertService service) {
-        this.service = service;
-    }
+
 /**
      * Gère les requêtes GET pour obtenir les informations des enfants vivant à une adresse donnée.
      *
@@ -26,9 +28,9 @@ public class ChildAlertController {
      */
     @GetMapping("/childAlert")
     public ChildAlertResponseDTO getChildAlert(@RequestParam String address) {
-        LOGGER.info("Requête GET /childAlert?address={} reçue", address);
+        log.info("Requête GET /childAlert?address={} reçue", address);
         ChildAlertResponseDTO response = service.getChildAlertByAddress(address);
-        LOGGER.info("Réponse GET /childAlert pour l'adresse {}: {} enfants trouvés",
+        log.info("Réponse GET /childAlert pour l'adresse {}: {} enfants trouvés",
                 address, response.getChildren().size());
         return response;
     }

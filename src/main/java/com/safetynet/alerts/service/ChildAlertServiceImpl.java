@@ -52,11 +52,7 @@ public class ChildAlertServiceImpl implements ChildAlertService {
 
         personRepository.getAllByAddress(address)
                 .forEach( person -> {
-                            final Optional<MedicalRecord> medicalRecord = medicalRecordRepository.getAll()
-                                    .stream()
-                                    .filter(mr -> mr.getFirstName().equals(person.getFirstName()))
-                                    .filter(mr -> mr.getLastName().equals(person.getLastName()))
-                                    .findFirst();
+                            final Optional<MedicalRecord> medicalRecord = medicalRecordRepository.findByFirstAndLastName(person.getFirstName(), person.getLastName());
 
                             medicalRecord.ifPresent(mr->{
                                 int age = mr.calculateAge();

@@ -4,6 +4,8 @@ import com.safetynet.alerts.dto.FireStationResponseDTO;
 import com.safetynet.alerts.dto.FirestationRequestDTO;
 import com.safetynet.alerts.model.Firestation;
 import com.safetynet.alerts.service.FirestationService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
@@ -13,14 +15,14 @@ import org.springframework.web.bind.annotation.*;
 /**
  * Contrôleur REST pour gérer les opérations liées aux Firestations.
  */
+@Slf4j
+@RequiredArgsConstructor
 @RestController
 public class FirestationController {
     private final FirestationService firestationService;
-    private static final Logger LOGGER = LogManager.getLogger(FirestationController.class);
 
-    public FirestationController(FirestationService firestationService) {
-        this.firestationService = firestationService;
-    }
+
+
 /**
      * Récupère la couverture d'une station de pompiers donnée.
      *
@@ -29,9 +31,9 @@ public class FirestationController {
      */
     @GetMapping("/firestation")
     public FireStationResponseDTO getFirestationCoverage(@RequestParam int stationNumber) {
-        LOGGER.info("Requête GET /firestation?stationNumber={} reçue", stationNumber);
+        log.info("Requête GET /firestation?stationNumber={} reçue", stationNumber);
         FireStationResponseDTO response = firestationService.getFirestationCoverage(stationNumber);
-        LOGGER.info("Réponse GET /firestation: {} adultes, {} enfants", response.getAdultCount(), response.getChildCount());
+        log.info("Réponse GET /firestation: {} adultes, {} enfants", response.getAdultCount(), response.getChildCount());
         return response;
     }
 /**
@@ -42,17 +44,20 @@ public class FirestationController {
      */
     @PostMapping("/firestation")
     public ResponseEntity<Firestation> addFirestation(@RequestBody FirestationRequestDTO request) {
-        LOGGER.info("Requête POST /firestation reçue: adresse='{}', station={}", request.getAddress(), request.getStation());
-        try {
-            Firestation created = firestationService.addFirestationMapping(request.getAddress(), request.getStation());
-            LOGGER.info("Mapping Firestation créé avec succès: {}", created);
-            return ResponseEntity.status(HttpStatus.CREATED).body(created);
-        } catch (IllegalArgumentException e) {
-            LOGGER.error("Échec création mapping Firestation: {}", e.getMessage());
+        log.info("Requête POST /firestation reçue: adresse='{}', station={}", request.getAddress(), request.getStation());
+
+            boolean created = firestationService.addFirestationMapping(request.getAddress(), request.getStation());
+            if(created) {
+                Firestation firestation = new Firestation(request.getAddress(), request.getStation());
+                log.info("Mapping Firestation créé avec succès: {}", firestation);
+                return ResponseEntity.status(HttpStatus.CREATED).body(firestation);
+            }
+
+            log.error("Échec création mapping Firestation: {}{}",request.getAddress(), request.getStation());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
-    }
+
 /**
      * Met à jour un mapping Firestation existant.
      *
@@ -61,20 +66,23 @@ public class FirestationController {
      */
     @PutMapping("/firestation")
     public ResponseEntity<Firestation> updateFirestation(@RequestBody FirestationRequestDTO request) {
-        LOGGER.info("Requête PUT /firestation reçue: adresse='{}', station={}", request.getAddress(), request.getStation());
-        try {
-            Firestation updated = firestationService.updateFirestationMapping(
+        log.info("Requête PUT /firestation reçue: adresse='{}', station={}", request.getAddress(), request.getStation());
+
+            boolean updated = firestationService.updateFirestationMapping(
 
                     request.getAddress(),
                     request.getStation()
             );
-            LOGGER.info("Mapping Firestation mis à jour avec succès: {}", updated);
-            return ResponseEntity.ok(updated);
+            if(updated) {
+                Firestation updatedMapping = new Firestation(request.getAddress(), request.getStation());
+                log.info("Mapping Firestation mis à jour avec succès: {}{}", request.getAddress(), request.getStation());
+                return ResponseEntity.accepted().body(updatedMapping);
+            }
 
-        } catch (IllegalArgumentException e) {
-            LOGGER.error("Échec mise à jour mapping Firestation: {}", e.getMessage());
+
+            log.error("Échec mise à jour mapping Firestation: {}{}",request.getAddress(), request.getStation());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+
     }
 /**
      * Supprime un mapping Firestation existant.
@@ -84,14 +92,16 @@ public class FirestationController {
      */
     @DeleteMapping("/firestation")
     public ResponseEntity<Void> deleteFirestation(@RequestParam String address) {
-        LOGGER.info("Requête DELETE /firestation reçue: adresse='{}'", address);
-        try {
-            firestationService.deleteFirestationMapping(address);
-            LOGGER.info("Mapping Firestation supprimé avec succès pour l'adresse '{}'", address);
-            return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
-            LOGGER.error("Échec suppression mapping Firestation: {}", e.getMessage());
+        log.info("Requête DELETE /firestation reçue: adresse='{}'", address);
+
+           boolean deleted=firestationService.deleteFirestationMapping(address);
+            if(deleted) {
+                log.info("Mapping Firestation supprimé avec succès pour l'adresse '{}'", address);
+                return ResponseEntity.ok().build();
+            }
+
+            log.error("Échec suppression mapping Firestation: {}", address);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+
         }
     }
-}
