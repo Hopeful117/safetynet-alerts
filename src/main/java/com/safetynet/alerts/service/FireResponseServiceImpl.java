@@ -9,6 +9,7 @@ import com.safetynet.alerts.repository.FirestationRepository;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.repository.SafetyNetRepository;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.LogManager;
@@ -25,7 +26,7 @@ import java.util.Optional;
  * Service implementation for handling fire response information.
  */
 @Slf4j
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Service
 public class FireResponseServiceImpl implements FireResponseService {
     private final FirestationRepository firestationRepository;

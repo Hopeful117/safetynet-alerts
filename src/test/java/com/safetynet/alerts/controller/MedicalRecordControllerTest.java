@@ -60,7 +60,7 @@ class MedicalRecordControllerTest {
     @Test
     void addMedicalRecord_shouldReturnCreated() throws Exception {
         when(medicalRecordService.addMedicalRecord(any(MedicalRecordDTO.class)))
-                .thenReturn(medicalRecord);
+                .thenReturn(true);
 
         mockMvc.perform(post("/medicalRecord")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -85,7 +85,7 @@ class MedicalRecordControllerTest {
     @Test
     void addMedicalRecord_shouldReturnBadRequest_whenExceptionThrown() throws Exception {
         when(medicalRecordService.addMedicalRecord(any()))
-                .thenThrow(new IllegalArgumentException("Invalid data"));
+                .thenReturn(false);
 
         mockMvc.perform(post("/medicalRecord")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -99,7 +99,7 @@ class MedicalRecordControllerTest {
     @Test
     void updateMedicalRecord_shouldReturnOk() throws Exception {
         when(medicalRecordService.updateMedicalRecord(any(MedicalRecordDTO.class)))
-                .thenReturn(medicalRecord);
+                .thenReturn(true);
 
         mockMvc.perform(put("/medicalRecord")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -123,7 +123,7 @@ class MedicalRecordControllerTest {
     @Test
     void updateMedicalRecord_shouldReturnBadRequest_whenExceptionThrown() throws Exception {
         when(medicalRecordService.updateMedicalRecord(any()))
-                .thenThrow(new IllegalArgumentException("Invalid update"));
+                .thenReturn(false);
 
         mockMvc.perform(put("/medicalRecord")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -167,7 +167,7 @@ class MedicalRecordControllerTest {
     @Test
     void deleteMedicalRecord_shouldReturnBadRequest_whenExceptionThrown() throws Exception {
         when(medicalRecordService.deleteMedicalRecord(any(), any()))
-                .thenThrow(new IllegalArgumentException("Error"));
+                .thenReturn(false);
 
         mockMvc.perform(delete("/medicalRecord")
                         .param("firstName", "John")

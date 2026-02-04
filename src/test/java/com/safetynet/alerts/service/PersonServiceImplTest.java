@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -113,7 +114,7 @@ class PersonServiceImplTest {
                 "John", "Doe", "Street", "City", "00000", "000", "mail@mail.com"
         );
         List<Person> persons = new ArrayList<>(List.of(person));
-        when(personRepository.findByFirstnameAndLastname(person.getFirstName(),person.getLastName())).thenReturn(persons);
+        when(personRepository.findByFirstnameAndLastname(person.getFirstName(),person.getLastName())).thenReturn(Optional.of(person));
 
         // WHEN
         boolean deleted = service.deletePerson("John", "Doe");

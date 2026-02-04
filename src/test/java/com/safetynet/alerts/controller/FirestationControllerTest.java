@@ -65,10 +65,9 @@ public class FirestationControllerTest {
     @Test
     public void testAddFirestationSuccess() throws Exception {
         FirestationRequestDTO request = new FirestationRequestDTO("123 New St",5);
-        Firestation created = new Firestation("123 New St", 5);
         ObjectMapper objectMapper = new ObjectMapper();
 
-        when(firestationService.addFirestationMapping( "123 New St",5)).thenReturn(created);
+        when(firestationService.addFirestationMapping( "123 New St",5)).thenReturn(true);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/firestation")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -86,7 +85,7 @@ public class FirestationControllerTest {
         FirestationRequestDTO request = new FirestationRequestDTO( "123 New St",5);
         ObjectMapper objectMapper = new ObjectMapper();
         when(firestationService.addFirestationMapping("123 New St",5))
-                .thenThrow(new IllegalArgumentException("Cette adresse a déjà un mapping."));
+                .thenReturn(false);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/firestation")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -100,10 +99,9 @@ public class FirestationControllerTest {
     @Test
     void updateFirestation_shouldReturn200_whenSuccess() throws Exception {
         FirestationRequestDTO request = new FirestationRequestDTO("1509 Culver St",3 );
-        Firestation updated = new Firestation("1509 Culver St", 3);
         ObjectMapper objectMapper = new ObjectMapper();
 
-        when(firestationService.updateFirestationMapping( "1509 Culver St",3)).thenReturn(updated);
+        when(firestationService.updateFirestationMapping( "1509 Culver St",3)).thenReturn(true);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/firestation")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -133,7 +131,7 @@ public class FirestationControllerTest {
      */
     @Test
     void deleteFirestation_shouldReturn200_whenSuccess() throws Exception {
-        doNothing().when(firestationService).deleteFirestationMapping("1509 Culver St");
+        when(firestationService.deleteFirestationMapping("1509 Culver St")).thenReturn(true);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/firestation")
                         .param("address", "1509 Culver St"))
@@ -145,8 +143,8 @@ public class FirestationControllerTest {
      */
     @Test
     void deleteFirestation_shouldReturn400_whenAddressNotFound() throws Exception {
-        doThrow(new IllegalArgumentException())
-                .when(firestationService).deleteFirestationMapping("Unknown");
+
+                when(firestationService.deleteFirestationMapping("Unknown")).thenReturn(false);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/firestation")
                         .param("address", "Unknown"))
