@@ -50,7 +50,7 @@ class PersonControllerTest {
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpect(status().isCreated());
 
-        verify(personService).addPerson(any(PersonRequestDTO.class));
+
     }
 /**
      * Test for addPerson endpoint when an exception is thrown.

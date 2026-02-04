@@ -16,7 +16,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PersonServiceImpl implements PersonService{
+public class PersonServiceImpl implements PersonService {
     private final PersonRepository personRepository;
 
 
@@ -29,9 +29,9 @@ public class PersonServiceImpl implements PersonService{
     @Override
     public boolean addPerson(PersonRequestDTO personRequestDTO) {
         log.info("Ajout d'une nouvelle personne : {} {}", personRequestDTO.getFirstName(), personRequestDTO.getLastName());
-        Optional<Person> exists = personRepository.findByFirstnameAndLastname(personRequestDTO.getFirstName(),personRequestDTO.getLastName());
-        if (exists.isPresent()){
-            log.warn("Personne déjà existante : {} {}",personRequestDTO.getFirstName(),personRequestDTO.getLastName());
+        Optional<Person> exists = personRepository.findByFirstnameAndLastname(personRequestDTO.getFirstName(), personRequestDTO.getLastName());
+        if (exists.isPresent()) {
+            log.warn("Personne déjà existante : {} {}", personRequestDTO.getFirstName(), personRequestDTO.getLastName());
             return false;
         }
         Person person = new Person(
@@ -46,10 +46,12 @@ public class PersonServiceImpl implements PersonService{
         personRepository.save(person);
         log.info("Personne ajoutée avec succès : {} {}", person.getFirstName(), person.getLastName());
 
-    return false;
+        return true;
     }
+
     /**
      * Updates an existing person's information.
+     *
      * @param personRequestDTO
      * @return
      */
@@ -58,36 +60,32 @@ public class PersonServiceImpl implements PersonService{
         log.info("Mise à jour de la personne : {} {}", personRequestDTO.getFirstName(), personRequestDTO.getLastName());
         Optional<Person> existingPerson = personRepository.getAll().stream()
                 .filter(p -> p.getFirstName().equalsIgnoreCase(personRequestDTO.getFirstName()))
-                .filter(p->p.getLastName().equalsIgnoreCase(personRequestDTO.getLastName()))
-                        .findFirst();
+                .filter(p -> p.getLastName().equalsIgnoreCase(personRequestDTO.getLastName()))
+                .findFirst();
 
 
-            if (existingPerson.isPresent()){
-                existingPerson.get().setAddress(personRequestDTO.getAddress());
-                existingPerson.get().setCity(personRequestDTO.getCity());
-                existingPerson.get().setZip(personRequestDTO.getZip());
-                existingPerson.get().setPhone(personRequestDTO.getPhone());
-                existingPerson.get().setEmail(personRequestDTO.getEmail());
-                log.info("Personne mise à jour avec succès : {} {}", existingPerson.get().getFirstName(), existingPerson.get().getLastName());
-                personRepository.save(existingPerson.get());
-                return true;
+        if (existingPerson.isPresent()) {
+            existingPerson.get().setAddress(personRequestDTO.getAddress());
+            existingPerson.get().setCity(personRequestDTO.getCity());
+            existingPerson.get().setZip(personRequestDTO.getZip());
+            existingPerson.get().setPhone(personRequestDTO.getPhone());
+            existingPerson.get().setEmail(personRequestDTO.getEmail());
+            log.info("Personne mise à jour avec succès : {} {}", existingPerson.get().getFirstName(), existingPerson.get().getLastName());
+            personRepository.save(existingPerson.get());
+            return true;
 
 
-            };
-            return false;
-
-
-
-
+        }
+        ;
+        return false;
 
 
     }
 
 
-
-
     /**
      * Deletes a person from the repository.
+     *
      * @param firstName
      * @param lastName
      * @return
@@ -96,8 +94,8 @@ public class PersonServiceImpl implements PersonService{
     public boolean deletePerson(String firstName, String lastName) {
 
         log.info("Suppression de la personne : {} {}", firstName, lastName);
-        Optional<Person> personToDelete = personRepository.findByFirstnameAndLastname(firstName,lastName);
-        if (personToDelete.isPresent()){
+        Optional<Person> personToDelete = personRepository.findByFirstnameAndLastname(firstName, lastName);
+        if (personToDelete.isPresent()) {
             personRepository.delete(personToDelete.get());
             log.debug("Personne supprimée avec succès : {} {}", firstName, lastName);
             return true;
@@ -107,8 +105,7 @@ public class PersonServiceImpl implements PersonService{
         return false;
 
 
-
-}
+    }
 
 
 }

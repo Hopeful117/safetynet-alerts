@@ -83,11 +83,11 @@ public class MedicalRecordController {
             log.info("Requête DELETE /medicalRecord reçue pour : {} {}", firstName, lastName);
             boolean deleted = service.deleteMedicalRecord(firstName, lastName);
             if (deleted) {
-                return ResponseEntity.ok().build();
+                return ResponseEntity.noContent().build();
             }
 
 
             log.error("Erreur lors de la suppression du dossier médical: {} {}", firstName, lastName);
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.notFound().build();
         }
     }

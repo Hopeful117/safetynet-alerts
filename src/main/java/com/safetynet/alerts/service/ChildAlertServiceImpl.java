@@ -1,10 +1,7 @@
 package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.dto.ChildAlertResponseDTO;
-import com.safetynet.alerts.dto.ChildDTO;
-import com.safetynet.alerts.dto.HouseholdMemberDTO;
 import com.safetynet.alerts.model.MedicalRecord;
-import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
 
@@ -14,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +26,6 @@ public class ChildAlertServiceImpl implements ChildAlertService {
     private final MedicalRecordRepository medicalRecordRepository;
 
 
-
     /**
      * Retrieves child alert information for a given address.
      *
@@ -39,37 +34,23 @@ public class ChildAlertServiceImpl implements ChildAlertService {
      */
     @Override
     public ChildAlertResponseDTO getChildAlertByAddress(final String address) {
-        log.info("Recherche des enfants à l'adresse : {}", address);
-
-        // Récupérer les personnes vivant à l'adresse donnée
-        List<Person> residents = personRepository.getAllByAddress(address);
+        log.debug("Recherche des enfants à l'adresse : {}", address);
 
 
-        log.debug("Nombre de résidents trouvés à l'adresse {}: {}", address, residents.size());
+        final List<MedicalRecord> medicalRecords = personRepository.getAllByAddress(address)
+                .stream()
+                .map(person ->medicalRecordRepository.findByFirstAndLastName(person.getFirstName(), person.getLastName()) )
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .toList();
 
-        List<ChildDTO> children = new ArrayList<>();
-        List<HouseholdMemberDTO> adults = new ArrayList<>();
-
-        personRepository.getAllByAddress(address)
-                .forEach( person -> {
-                            final Optional<MedicalRecord> medicalRecord = medicalRecordRepository.findByFirstAndLastName(person.getFirstName(), person.getLastName());
-
-                            medicalRecord.ifPresent(mr->{
-                                int age = mr.calculateAge();
-
-                                if (age < 18) {
-                                    children.add(new ChildDTO(person.getFirstName(), person.getLastName(), age));
-                                } else {
-                                    adults.add(new HouseholdMemberDTO(person.getFirstName(), person.getLastName()));
-                                }});
-
-                            });
-                        log.info("Enfants trouvés: {}, Adultes trouvés: {}", children.size(), adults.size());
-                        return new ChildAlertResponseDTO(children, adults);
-                            }
+//
+//
+        return new ChildAlertResponseDTO(medicalRecords);
+    }
 
 
-                        }
+}
 
 
 

@@ -4,10 +4,8 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.safetynet.alerts.dto.FirestationRequestDTO;
-import com.safetynet.alerts.model.Firestation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -16,7 +14,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.safetynet.alerts.dto.FireStationPersonDTO;
 import com.safetynet.alerts.dto.FireStationResponseDTO;
 import com.safetynet.alerts.service.FirestationService;
 import tools.jackson.databind.ObjectMapper;
@@ -46,7 +43,7 @@ public class FirestationControllerTest {
     @Test
     public void testGetFirestationCoverage() throws Exception {
 
-        FireStationPersonDTO p1 = new FireStationPersonDTO("John", "Boyd", "1509 Culver St", "841-874-6512");
+        FireStationResponseDTO.FireStationPersonDTO p1 = new FireStationResponseDTO.FireStationPersonDTO("John", "Boyd", "1509 Culver St", "841-874-6512");
         FireStationResponseDTO responseDTO = new FireStationResponseDTO(List.of(p1), 1, 0);
 
         when(firestationService.getFirestationCoverage(3)).thenReturn(responseDTO);
@@ -97,7 +94,7 @@ public class FirestationControllerTest {
      * @throws Exception
      */
     @Test
-    void updateFirestation_shouldReturn200_whenSuccess() throws Exception {
+    void updateFirestation_shouldReturn202_whenSuccess() throws Exception {
         FirestationRequestDTO request = new FirestationRequestDTO("1509 Culver St",3 );
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -106,7 +103,7 @@ public class FirestationControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.put("/firestation")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk())
+                .andExpect(status().isAccepted())
                 .andExpect(jsonPath("$.station").value(3));
     }
     /**

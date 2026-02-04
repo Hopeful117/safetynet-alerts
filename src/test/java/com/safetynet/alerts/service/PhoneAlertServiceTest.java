@@ -1,15 +1,14 @@
 package com.safetynet.alerts.service;
 
-import com.safetynet.alerts.dto.PhoneAlertResponseDTO;
 import com.safetynet.alerts.model.Firestation;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.FirestationRepository;
 import com.safetynet.alerts.repository.PersonRepository;
-import com.safetynet.alerts.repository.SafetyNetRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -47,12 +46,12 @@ class PhoneAlertServiceTest {
                 new Person("Tenley", "Boyd", "29 15th St", "Culver", "97451", "222", "c")
         ));
 
-        PhoneAlertResponseDTO response =
+       Set<String> response =
                 service.getPhoneAlertByStationNumber(3);
 
-        assertEquals(2, response.getPhones().size());
-        assertTrue(response.getPhones().contains("111"));
-        assertTrue(response.getPhones().contains("222"));
+        assertEquals(2, response.size());
+        assertTrue(response.contains("111"));
+        assertTrue(response.contains("222"));
     }
 
 }

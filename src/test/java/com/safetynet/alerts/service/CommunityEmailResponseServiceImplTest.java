@@ -1,13 +1,12 @@
 package com.safetynet.alerts.service;
 
-import com.safetynet.alerts.dto.CommunityEmailResponseDTO;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.PersonRepository;
-import com.safetynet.alerts.repository.SafetyNetRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -40,13 +39,13 @@ class CommunityEmailResponseServiceImplTest {
         ));
 
         // WHEN
-        CommunityEmailResponseDTO response =
+        Set<String> response =
                 service.getCommunityEmailResponse("Culver");
 
         // THEN
-        assertEquals(2, response.getEmails().size());
-        assertTrue(response.getEmails().contains("john@email.com"));
-        assertTrue(response.getEmails().contains("tenley@email.com"));
+        assertEquals(2, response.size());
+        assertTrue(response.contains("john@email.com"));
+        assertTrue(response.contains("tenley@email.com"));
     }
     /**
      * Test for getCommunityEmailResponse method when no persons match the given city.
@@ -59,12 +58,12 @@ class CommunityEmailResponseServiceImplTest {
         ));
 
         // WHEN
-        CommunityEmailResponseDTO response =
+       Set<String> response =
                 service.getCommunityEmailResponse("Culver");
 
         // THEN
         assertNotNull(response);
-        assertTrue(response.getEmails().isEmpty());
+        assertTrue(response.isEmpty());
     }
     /**
      * Test for getCommunityEmailResponse method to ensure city matching is case insensitive.
@@ -77,11 +76,11 @@ class CommunityEmailResponseServiceImplTest {
         ));
 
         // WHEN
-        CommunityEmailResponseDTO response =
+        Set <String>response =
                 service.getCommunityEmailResponse("culver");
 
         // THEN
-        assertEquals(1, response.getEmails().size());
-        assertEquals("john@email.com", response.getEmails().get(0));
+        assertEquals(1, response.size());
+        assertTrue(response.contains("john@email.com"));
     }
 }

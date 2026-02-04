@@ -1,15 +1,13 @@
 package com.safetynet.alerts.controller;
 
-import com.safetynet.alerts.dto.CommunityEmailResponseDTO;
-import com.safetynet.alerts.service.ChildAlertService;
 import com.safetynet.alerts.service.CommunityEmailResponseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Set;
 
 /**
  * Contrôleur pour gérer les requêtes liées aux emails communautaires.
@@ -29,11 +27,11 @@ public class CommunityEmailResponseController {
      * @return Un objet CommunityEmailResponseDTO contenant la liste des emails.
      */
     @GetMapping("/communityEmail")
-    public CommunityEmailResponseDTO getCommunityEmailResponse(@RequestParam String city) {
-        log.info("Requête GET /communityEmail?city={} reçue", city);
-        CommunityEmailResponseDTO response = service.getCommunityEmailResponse(city);
-        log.info("Réponse GET /communityEmail pour la ville {}: {} emails trouvés",
-                city, response.getEmails().size());
+    public Set<String> getCommunityEmailResponse(@RequestParam String city) {
+        log.debug("Requête GET /communityEmail?city={} reçue", city);
+        Set<String> response = service.getCommunityEmailResponse(city);
+        log.debug("Réponse GET /communityEmail pour la ville {}: {} emails trouvés",
+                city, response.size());
         return response;
     }
 }

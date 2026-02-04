@@ -37,11 +37,12 @@ class FireControllerTest {
         String address = "1509 Culver St";
 
         FireResponseDTO responseDTO = new FireResponseDTO(
+
                 List.of(
                         new ResidentsDTO(
                                 "John",
                                 "Boyd",
-                                address,
+                                "address",
                                 "111-111",
                                 40,
                                 List.of("med1"),

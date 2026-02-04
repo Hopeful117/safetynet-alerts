@@ -1,15 +1,14 @@
 package com.safetynet.alerts.controller;
 
-import com.safetynet.alerts.dto.PhoneAlertResponseDTO;
-import com.safetynet.alerts.service.FirestationService;
 import com.safetynet.alerts.service.PhoneAlertService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Set;
+
 /**
  * Controller pour gérer les requêtes liées aux alertes téléphoniques.
  */
@@ -26,10 +25,10 @@ public class PhoneAlertController {
      * @return Un objet PhoneAlertResponseDTO contenant les numéros de téléphone.
      */
     @GetMapping("/phoneAlert")
-    public PhoneAlertResponseDTO getPhoneAlert(@RequestParam int firestation) {
-        log.info("Requête GET /phoneAlert?firestation={} reçue", firestation);
-       PhoneAlertResponseDTO response = phoneAlertService.getPhoneAlertByStationNumber(firestation);
-        log.info("Réponse GET /phoneAlert: {} numéros de téléphone trouvés", response.getPhones().size());
+    public Set<String> getPhoneAlert(@RequestParam int firestation) {
+        log.debug("Requête GET /phoneAlert?firestation={} reçue", firestation);
+       Set<String> response = phoneAlertService.getPhoneAlertByStationNumber(firestation);
+        log.info("Réponse GET /phoneAlert: {} numéros de téléphone trouvés", response.size());
         return response;
     }
 

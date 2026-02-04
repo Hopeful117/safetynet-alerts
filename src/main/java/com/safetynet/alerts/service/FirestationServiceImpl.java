@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import com.safetynet.alerts.dto.FireStationPersonDTO;
 import com.safetynet.alerts.dto.FireStationResponseDTO;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
@@ -42,24 +41,24 @@ public class FirestationServiceImpl implements FirestationService {
      */
     @Override
     public FireStationResponseDTO getFirestationCoverage(int stationNumber) {
-        log.info("Calcul couverture pour la station numéro {}", stationNumber);
+        log.debug("Calcul couverture pour la station numéro {}", stationNumber);
 
-        // 1️⃣ Adresses couvertes par la station
+
 
         List<String> addresses = firestationRepository.getAllByStationNumber(stationNumber)
                         .stream().map(Firestation::getAddress).toList();
 
 
 
-        log.info("Adresses couvertes par la station {}: {}", stationNumber, addresses);
+        log.debug("Adresses couvertes par la station {}: {}", stationNumber, addresses);
 
-        // 2️⃣ Personnes habitant à ces adresses
+
         List<Person> coveredPersons = personRepository.getAll().stream()
                 .filter(p -> addresses.contains(p.getAddress()))
                 .toList();
         log.info("{} personnes trouvées pour la station {}", coveredPersons.size(), stationNumber);
 
-        // 3️⃣ Calcul adultes / enfants
+
         int adultCount = 0;
         int childCount = 0;
 
@@ -67,20 +66,20 @@ public class FirestationServiceImpl implements FirestationService {
             Optional<MedicalRecord> record = medicalRecordRepository.findByFirstAndLastName(person.getFirstName(), person.getLastName());
 
             if (record.isPresent()) {
-                int age = record.get().calculateAge();
-                if (age < 18) {
+
+                if (record.get().isMinor()) {
                     childCount++;
-                    log.debug("Enfant trouvé: {} {} ({} ans)", person.getFirstName(), person.getLastName(), age);
+                    log.debug("Enfant trouvé: {} {} ({} ans)", person.getFirstName(), person.getLastName(), record.get().getAge());
                 } else {
                     adultCount++;
-                    log.debug("Adulte trouvé: {} {} ({} ans)", person.getFirstName(), person.getLastName(), age);
+                    log.debug("Adulte trouvé: {} {} ({} ans)", person.getFirstName(), person.getLastName(), record.get().getAge());
                 }
             }
         }
 
-        // 4️⃣ Construction de la liste DTO personnes
-        List<FireStationPersonDTO> personDTOs = coveredPersons.stream()
-                .map(p -> new FireStationPersonDTO(
+
+        List<FireStationResponseDTO.FireStationPersonDTO> personDTOs = coveredPersons.stream()
+                .map(p -> new FireStationResponseDTO.FireStationPersonDTO(
                         p.getFirstName(),
                         p.getLastName(),
                         p.getAddress(),

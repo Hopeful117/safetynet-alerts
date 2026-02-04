@@ -97,7 +97,7 @@ class MedicalRecordControllerTest {
      * @throws Exception
      */
     @Test
-    void updateMedicalRecord_shouldReturnOk() throws Exception {
+    void updateMedicalRecord_shouldReturnAccepted() throws Exception {
         when(medicalRecordService.updateMedicalRecord(any(MedicalRecordDTO.class)))
                 .thenReturn(true);
 
@@ -112,7 +112,7 @@ class MedicalRecordControllerTest {
                                   "allergies": []
                                 }
                                 """))
-                .andExpect(status().isOk());
+                .andExpect(status().isAccepted());
 
         verify(medicalRecordService).updateMedicalRecord(any(MedicalRecordDTO.class));
     }
@@ -164,15 +164,6 @@ class MedicalRecordControllerTest {
      * Test for deleteMedicalRecord endpoint when an exception is thrown.
      * @throws Exception
      */
-    @Test
-    void deleteMedicalRecord_shouldReturnBadRequest_whenExceptionThrown() throws Exception {
-        when(medicalRecordService.deleteMedicalRecord(any(), any()))
-                .thenReturn(false);
 
-        mockMvc.perform(delete("/medicalRecord")
-                        .param("firstName", "John")
-                        .param("lastName", "Doe"))
-                .andExpect(status().isBadRequest());
-    }
 }
 

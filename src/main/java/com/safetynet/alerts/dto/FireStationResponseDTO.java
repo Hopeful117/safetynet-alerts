@@ -16,4 +16,17 @@ public class FireStationResponseDTO {
     private int adultCount;
     private int childCount;
 
+    @Data
+    @AllArgsConstructor
+    public static class FireStationPersonDTO {
+        private String firstName;
+        private String lastName;
+        private String address;
+        private String phone;
+
+
+
+    }
+
+
 }

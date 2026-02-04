@@ -19,10 +19,18 @@ public class MedicalRecord {
     private List<String> allergies;
 
 
-    public int calculateAge(){
+    public int getAge(){
         DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
         LocalDate birthDate = LocalDate.parse(birthdate, FORMATTER);
         return Period.between(birthDate, LocalDate.now()).getYears();
+    }
 
+
+    public boolean isMinor() {
+        return getAge() < 18;
+    }
+
+    public boolean isMajor(){
+        return !isMinor() ;
     }
 }

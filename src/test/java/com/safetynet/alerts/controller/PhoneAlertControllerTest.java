@@ -1,7 +1,5 @@
 package com.safetynet.alerts.controller;
 
-import com.safetynet.alerts.dto.PhoneAlertResponseDTO;
-import com.safetynet.alerts.service.FirestationService;
 import com.safetynet.alerts.service.PhoneAlertService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,11 +37,11 @@ public class PhoneAlertControllerTest {
     @Test
     void phoneAlert_shouldReturnDistinctPhones() throws Exception {
         // GIVEN
-        PhoneAlertResponseDTO responseDTO =
-                new PhoneAlertResponseDTO(Set.of("111", "222"));
+       Set <String> response= Set.of("111", "222");
+
 
         when(phoneAlertService.getPhoneAlertByStationNumber(3))
-                .thenReturn(responseDTO);
+                .thenReturn(response);
 
         // WHEN / THEN
         mockMvc.perform(MockMvcRequestBuilders.get("/phoneAlert")

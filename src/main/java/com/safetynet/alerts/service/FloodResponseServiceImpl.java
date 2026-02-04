@@ -8,16 +8,10 @@ import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.FirestationRepository;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
-import com.safetynet.alerts.repository.SafetyNetRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -57,24 +51,7 @@ public class FloodResponseServiceImpl implements FloodResponseService {
                             return residents.stream()
                                     .map(p -> {
                                         Optional<MedicalRecord> mr = medicalRecordRepository.findByFirstAndLastName(p.getFirstName(),p.getLastName());
-                                        int age = 0;
-                                        List<String> medications = List.of();
-                                        List<String> allergies = List.of();
-                                        if (mr.isPresent()) {
-
-                                            age = mr.get().calculateAge();
-                                            medications = mr.get().getMedications();
-                                            allergies = mr.get().getAllergies();
-                                        }
-                                        return new ResidentsDTO(
-                                                p.getFirstName(),
-                                                p.getLastName(),
-                                                p.getAddress(),
-                                                p.getPhone(),
-                                                age,
-                                                medications,
-                                                allergies
-                                        );
+                                        return new ResidentsDTO(p, mr);
                                     }).toList();
                         }
                 )));
