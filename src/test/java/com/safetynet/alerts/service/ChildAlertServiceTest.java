@@ -26,6 +26,7 @@ class ChildAlertServiceTest {
     @BeforeEach
     void setUp() {
         personRepository = mock(PersonRepository.class);
+        medicalRecordRepository = mock(MedicalRecordRepository.class);
         service = new ChildAlertServiceImpl(personRepository,medicalRecordRepository);
     }
     /**

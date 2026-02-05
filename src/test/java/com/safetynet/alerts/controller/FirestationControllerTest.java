@@ -114,8 +114,7 @@ public class FirestationControllerTest {
     void updateFirestation_shouldReturn400_whenAddressNotFound() throws Exception {
         FirestationRequestDTO request = new FirestationRequestDTO("Unknown", 2);
         ObjectMapper objectMapper = new ObjectMapper();
-        when(firestationService.updateFirestationMapping( "Unknown",2))
-                .thenThrow(new IllegalArgumentException());
+        when(firestationService.updateFirestationMapping("Unknown", 2)).thenReturn(false);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/firestation")
                         .contentType(MediaType.APPLICATION_JSON)
