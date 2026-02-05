@@ -70,13 +70,7 @@ public class FirestationServiceImpl implements FirestationService {
             }
 
 
-
-
-
-
-
-
-    /**
+            /**
      * Adds a new firestation mapping.
      *
      * @param address The address to map.
@@ -84,6 +78,8 @@ public class FirestationServiceImpl implements FirestationService {
      * @return The newly created Firestation mapping.
      * @throws IllegalArgumentException if the address already has a mapping.
      */
+
+
     @Override
     public boolean addFirestationMapping(String address, int station) {
         // Vérifie si l'adresse existe déjà

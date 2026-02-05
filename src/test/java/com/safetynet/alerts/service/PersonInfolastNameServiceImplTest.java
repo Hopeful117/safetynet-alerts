@@ -1,11 +1,10 @@
 package com.safetynet.alerts.service;
 
-import com.safetynet.alerts.dto.PersonInfolastNameDTO;
+import com.safetynet.alerts.dto.ResidentsDTO;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
-import com.safetynet.alerts.repository.SafetyNetRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -47,21 +46,18 @@ class PersonInfolastNameServiceImplTest {
                 )
         ));
 
-        when(medicalRecordRepository.findByFirstAndLastName("John","Boyd")).thenReturn(
-                Optional.of(new MedicalRecord(
-                        "John", "Boyd", "01/01/1984",
-                        List.of("med1"), List.of("peanut")
-                )));
-        when(medicalRecordRepository.findByFirstAndLastName("Tenley","Boyd")).thenReturn(
-                Optional.of(
+        when(medicalRecordRepository.getAll()).thenReturn(List.of(
                 new MedicalRecord(
-                        "Tenley", "Boyd", "01/01/2012",
-                        List.of(), List.of("dust")
+                        "John", "Boyd", "03/06/1984", List.of("aznol:350mg", "hydrapermazol:100mg"), List.of("nillacilan")
+                ),
+                new MedicalRecord(
+                        "Tenley", "Boyd", "02/18/2012", List.of(), List.of()
                 )
+
         ));
 
         // WHEN
-        PersonInfolastNameDTO result = service.getPersonInfoByLastName("Boyd");
+        ResidentsDTO result = service.getPersonInfoByLastName("Boyd");
 
         // THEN
         assertThat(result).isNotNull();
@@ -80,7 +76,7 @@ class PersonInfolastNameServiceImplTest {
 
 
         // WHEN
-        PersonInfolastNameDTO result = service.getPersonInfoByLastName("Unknown");
+        ResidentsDTO result = service.getPersonInfoByLastName("Unknown");
 
         // THEN
         assertThat(result).isNotNull();

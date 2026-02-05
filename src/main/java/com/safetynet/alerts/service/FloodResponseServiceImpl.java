@@ -13,8 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 /**
  * Service implementation for handling flood response information.
@@ -42,19 +44,28 @@ public class FloodResponseServiceImpl implements FloodResponseService {
                 .map(Firestation::getAddress)
                 .collect(Collectors.toSet());
         log.info("Adresses couvertes par les stations {}: {}", stationNumbers, locations);
-        return new FloodResponseDTO(locations.stream().collect(
-                Collectors.toMap(
-                        address -> address,
-                        address -> {
-                            List<Person> residents = personRepository.getAllByAddress(address);
-                            log.info("{} résidents trouvés à l'adresse {}", residents.size(), address);
-                            return residents.stream()
-                                    .map(p -> {
-                                        Optional<MedicalRecord> mr = medicalRecordRepository.findByFirstAndLastName(p.getFirstName(),p.getLastName());
-                                        return new ResidentsDTO(p, mr);
-                                    }).toList();
-                        }
-                )));
+        return new FloodResponseDTO(
+                locations.stream()
+                        .collect(Collectors.toMap(
+                                Function.identity(),
+                                address -> {
+
+                                    List<Person> residents = personRepository.getAll().stream()
+                                            .filter(p -> p.getAddress().equals(address))
+                                            .toList();
+
+                                    List<MedicalRecord> medicalRecords = medicalRecordRepository.getAll().stream()
+                                            .filter(m -> residents.stream()
+                                                    .anyMatch(p ->
+                                                            p.getFirstName().equals(m.getFirstName()) &&
+                                                                    p.getLastName().equals(m.getLastName())))
+                                            .toList();
+
+                                    return List.of(new ResidentsDTO(residents, medicalRecords));
+                                }
+                        ))
+                );
+
 
     }
 }

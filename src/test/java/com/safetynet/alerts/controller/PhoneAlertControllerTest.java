@@ -9,12 +9,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Set;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 /**
  * Test class for PhoneAlertController.
  */
@@ -25,6 +26,9 @@ public class PhoneAlertControllerTest {
 
     @MockitoBean
     private PhoneAlertService phoneAlertService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
@@ -48,9 +52,7 @@ public class PhoneAlertControllerTest {
                         .param("firestation", "3")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.phones").isArray())
-                .andExpect(jsonPath("$.phones.length()").value(2))
-                .andExpect(jsonPath("$.phones").value(org.hamcrest.Matchers.containsInAnyOrder("111", "222")));
+                .andExpect(content().json(objectMapper.writeValueAsString(response)));
     }
 }
 

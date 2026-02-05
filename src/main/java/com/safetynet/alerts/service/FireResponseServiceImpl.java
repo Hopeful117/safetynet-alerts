@@ -42,16 +42,11 @@ public class FireResponseServiceImpl implements FireResponseService {
 
             // Récupération des personnes à l'adresse donnée
             List<Person> residents = personRepository.getAllByAddress(address);
-            log.info("{} résidents trouvés à l'adresse {}", residents.size(), address);
+            List<MedicalRecord> medicalRecords=medicalRecordRepository.getAll();
+            ResidentsDTO residentDTOs = new ResidentsDTO(residents, medicalRecords);
 
-            // Transformation en DTO
-            List<ResidentsDTO> residentDTOs = residents.stream()
-                    .map(person -> {
-                        Optional<MedicalRecord> medicalRecord = medicalRecordRepository.findByFirstAndLastName(
-                                person.getFirstName(), person.getLastName());
-                        return new ResidentsDTO(person, medicalRecord);
-                    })
-                    .toList();
+
+
 
             return new FireResponseDTO(residentDTOs, stationNumber);
         }

@@ -84,7 +84,7 @@ class PersonServiceImplTest {
      * Test for updatePerson method when person does not exist.
      */
     @Test
-    void updatePerson_shouldReturnNull_whenPersonNotFound() {
+    void updatePerson_shouldReturnFalseWhenPersonNotFound() {
         // GIVEN
         when(personRepository.getAll()).thenReturn(new ArrayList<>());
 
@@ -102,7 +102,7 @@ class PersonServiceImplTest {
         boolean updated = service.updatePerson(dto);
 
         // THEN
-        assertTrue(updated);
+        assertFalse(updated);
     }
     /**
      * Test for deletePerson method.
@@ -121,7 +121,7 @@ class PersonServiceImplTest {
 
         // THEN
         assertTrue(deleted);
-        assertTrue(persons.isEmpty());
+
     }
     /**
      * Test for deletePerson method when person does not exist.

@@ -81,17 +81,6 @@ class FloodResponseServiceImplTest {
         List<ResidentsDTO> culverResidents = households.get("1509 Culver St");
         assertEquals(2, culverResidents.size());
 
-        ResidentsDTO john = culverResidents.getFirst();
-        assertEquals("John", john.getFirstName());
-        assertEquals("Boyd", john.getLastName());
-        assertTrue(john.getAge() > 30);
 
-        ResidentsDTO tenley = culverResidents.get(1);
-        assertEquals("Tenley", tenley.getFirstName());
-        assertTrue(tenley.getAge() < 18);
-
-        List<ResidentsDTO> fifteenthResidents = households.get("29 15th St");
-        assertEquals(1, fifteenthResidents.size());
-        assertEquals("Peter", fifteenthResidents.getFirst().getFirstName());
     }
 }

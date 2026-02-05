@@ -39,35 +39,37 @@ class FloodControllerTest {
 
         FloodResponseDTO responseDTO = new FloodResponseDTO(
                 Map.of(
-                        "1509 Culver St", List.of(
+                        "1509 Culver St",
+                        List.of(
                                 new ResidentsDTO(
-                                        "John",
-                                        "Boyd",
-                                        "1509 Culver St",
-                                        "111-111",
-                                        40,
-                                        List.of("med1"),
-                                        List.of("allergy1")
-                                ),
-                                new ResidentsDTO(
-                                        "Tenley",
-                                        "Boyd",
-                                        "1509 Culver St",
-                                        "222-222",
-                                        12,
-                                        List.of(),
-                                        List.of("peanut")
+                                        List.of(
+                                                new ResidentsDTO.Resident(
+                                                        "John", "Boyd", "1509 Culver St",
+                                                        "841-874-6512", 40,
+                                                        List.of("med1:100mg"),
+                                                        List.of("allergy1")
+                                                ),
+                                                new ResidentsDTO.Resident(
+                                                        "Jane", "Doe", "1509 Culver St",
+                                                        "841-874-6513", 35,
+                                                        List.of("med2:200mg"),
+                                                        List.of("allergy2")
+                                                )
+                                        )
                                 )
                         ),
-                        "29 15th St", List.of(
+
+                        "29 15th St",
+                        List.of(
                                 new ResidentsDTO(
-                                        "Peter",
-                                        "Duncan",
-                                        "29 15th St",
-                                        "333-333",
-                                        34,
-                                        List.of("med2"),
-                                        List.of()
+                                        List.of(
+                                                new ResidentsDTO.Resident(
+                                                        "Peter", "Smith", "29 15th St",
+                                                        "841-874-6514", 25,
+                                                        List.of("med3:300mg"),
+                                                        List.of("allergy3")
+                                                )
+                                        )
                                 )
                         )
                 )

@@ -19,24 +19,39 @@ import java.util.Optional;
 @Data
 @AllArgsConstructor
 public class ResidentsDTO {
-    private String firstName;
-    private String  lastName;
-    private String address;
-    private String phone;
-    private int age;
-    private List<String> medications;
-    private List <String> allergies;
-    public ResidentsDTO(Person p, Optional<MedicalRecord> record){
-        this.firstName = p.getFirstName();
-        this.lastName = p.getLastName();
-        this.address = p.getAddress();
-        this.phone = p.getPhone();
-        if (record.isPresent()) {
-            this.age = record.get().getAge();
-            this.medications = record.get().getMedications();
-            this.allergies = record.get().getAllergies();
-        }
+    private List<Resident> residents;
+
+    public ResidentsDTO(List<Person> persons, List<MedicalRecord> medicalRecords) {
+        this.residents = persons.stream()
+                .map(p -> new Resident(p, medicalRecords.stream()
+                        .filter(m -> m.getFirstName().equals(p.getFirstName()) && m.getLastName().equals(p.getLastName()))
+                        .findFirst()))
+                .toList();
     }
 
+    @Data
+    @AllArgsConstructor
+    public static class Resident {
+        private String firstName;
+        private String lastName;
+        private String address;
+        private String phone;
+        private int age;
+        private List<String> medications;
+        private List<String> allergies;
 
+        public Resident(Person p, Optional<MedicalRecord> record) {
+            this.firstName = p.getFirstName();
+            this.lastName = p.getLastName();
+            this.address = p.getAddress();
+            this.phone = p.getPhone();
+            if (record.isPresent()) {
+                this.age = record.get().getAge();
+                this.medications = record.get().getMedications();
+                this.allergies = record.get().getAllergies();
+            }
+        }
+
+
+    }
 }

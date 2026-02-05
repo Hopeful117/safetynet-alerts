@@ -1,18 +1,13 @@
 package com.safetynet.alerts.controller;
 
-import com.safetynet.alerts.dto.PersonInfolastNameDTO;
 import com.safetynet.alerts.dto.ResidentsDTO;
-import com.safetynet.alerts.service.FloodResponseService;
 import com.safetynet.alerts.service.PersonInfolastNameService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 /**
  * Controller pour gérer les requêtes liées aux informations des personnes par nom de famille.
  */
@@ -30,9 +25,9 @@ public class PersonInfolastNameController {
      * @return Un objet PersonInfolastNameDTO contenant les informations des personnes.
      */
     @GetMapping("/personInfolastName/lastName")
-    public PersonInfolastNameDTO getPersonInfolastName(@RequestParam String lastName) {
+    public ResidentsDTO getPersonInfolastName(@RequestParam String lastName) {
         log.info("Requête GET /personInfolastName/lastName reçue");
-        PersonInfolastNameDTO response= personInfolastNameService.getPersonInfoByLastName(lastName);
+        ResidentsDTO response= personInfolastNameService.getPersonInfoByLastName(lastName);
         log.info("Réponse GET /personInfolastName/lastName traitée");
         return response;
 

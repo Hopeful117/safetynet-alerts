@@ -1,6 +1,5 @@
 package com.safetynet.alerts.controller;
 
-import com.safetynet.alerts.dto.PersonInfolastNameDTO;
 import com.safetynet.alerts.dto.ResidentsDTO;
 import com.safetynet.alerts.service.PersonInfolastNameService;
 import org.junit.jupiter.api.Test;
@@ -34,28 +33,25 @@ class PersonInfolastNameControllerTest {
         // GIVEN
         String lastName = "Boyd";
 
-        PersonInfolastNameDTO responseDTO = new PersonInfolastNameDTO(
+        ResidentsDTO responseDTO = new ResidentsDTO(
                 List.of(
-                        new ResidentsDTO(
-                                "John",
-                                "Boyd",
-                                "1509 Culver St",
-                                "111-111",
-                                40,
-                                List.of("med1"),
-                                List.of("peanut")
+                        new ResidentsDTO.Resident(
+                                "John", "Boyd", "1509 Culver St",
+                                "841-874-6512", 40,
+                                List.of("med1:100mg"),
+                                List.of("allergy1")
                         ),
-                        new ResidentsDTO(
-                                "Tenley",
-                                "Boyd",
-                                "1509 Culver St",
-                                "222-222",
-                                12,
-                                List.of(),
-                                List.of("dust")
+                        new ResidentsDTO.Resident(
+                                "Jane", "Doe", "1509 Culver St",
+                                "841-874-6513", 35,
+                                List.of("med2:200mg"),
+                                List.of("allergy2")
                         )
                 )
         );
+
+
+
 
         when(personInfolastNameService.getPersonInfoByLastName(lastName))
                 .thenReturn(responseDTO);
@@ -82,7 +78,7 @@ class PersonInfolastNameControllerTest {
         String lastName = "Unknown";
 
         when(personInfolastNameService.getPersonInfoByLastName(lastName))
-                .thenReturn(new PersonInfolastNameDTO(List.of()));
+                .thenReturn(new ResidentsDTO(List.of()));
 
         // WHEN / THEN
         mockMvc.perform(get("/personInfolastName/lastName")

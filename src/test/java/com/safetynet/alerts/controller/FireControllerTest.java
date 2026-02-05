@@ -38,8 +38,19 @@ class FireControllerTest {
 
         FireResponseDTO responseDTO = new FireResponseDTO(
 
-                List.of(
+
                         new ResidentsDTO(
+                                List.of
+                                        (new ResidentsDTO.Resident(
+                                                "Tenley",
+                                                "Boyd",
+                                                "address",
+                                                "111-111",
+                                                12,
+                                                List.of("med2"),
+                                                List.of("allergy2")
+                                        ),
+                                new ResidentsDTO.Resident(
                                 "John",
                                 "Boyd",
                                 "address",
@@ -47,19 +58,11 @@ class FireControllerTest {
                                 40,
                                 List.of("med1"),
                                 List.of("allergy1")
-                        ),
-                        new ResidentsDTO(
-                                "Tenley",
-                                "Boyd",
-                                address,
-                                "222-222",
-                                12,
-                                List.of(),
-                                List.of("peanut")
-                        )
-                ),
-                3
-        );
+                                )
+                        )),3);
+
+
+
 
         when(fireResponseService.getFireResponseByAddress(address))
                 .thenReturn(responseDTO);
