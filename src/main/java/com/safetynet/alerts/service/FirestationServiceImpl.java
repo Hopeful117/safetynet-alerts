@@ -2,7 +2,7 @@ package com.safetynet.alerts.service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 
 
@@ -56,38 +56,23 @@ public class FirestationServiceImpl implements FirestationService {
         List<Person> coveredPersons = personRepository.getAll().stream()
                 .filter(p -> addresses.contains(p.getAddress()))
                 .toList();
-        log.info("{} personnes trouvées pour la station {}", coveredPersons.size(), stationNumber);
+        log.debug("{} personnes trouvées pour la station {}", coveredPersons.size(), stationNumber);
 
 
-        int adultCount = 0;
-        int childCount = 0;
+        List<MedicalRecord> medicalRecords = coveredPersons.stream()
+                .map(p -> medicalRecordRepository.findByFirstAndLastName(p.getFirstName(), p.getLastName()))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .toList();
 
-            for (Person person : coveredPersons) {
-            Optional<MedicalRecord> record = medicalRecordRepository.findByFirstAndLastName(person.getFirstName(), person.getLastName());
 
-            if (record.isPresent()) {
-
-                if (record.get().isMinor()) {
-                    childCount++;
-                    log.debug("Enfant trouvé: {} {} ({} ans)", person.getFirstName(), person.getLastName(), record.get().getAge());
-                } else {
-                    adultCount++;
-                    log.debug("Adulte trouvé: {} {} ({} ans)", person.getFirstName(), person.getLastName(), record.get().getAge());
-                }
+        return new FireStationResponseDTO(coveredPersons, medicalRecords);
             }
-        }
 
 
-        List<FireStationResponseDTO.FireStationPersonDTO> personDTOs = coveredPersons.stream()
-                .map(p -> new FireStationResponseDTO.FireStationPersonDTO(
-                        p.getFirstName(),
-                        p.getLastName(),
-                        p.getAddress(),
-                        p.getPhone()))
-                .collect(Collectors.toList());
-        log.info("Couverture calculée: {} adultes, {} enfants", adultCount, childCount);
-        return new FireStationResponseDTO(personDTOs, adultCount, childCount);
-    }
+
+
+
 
 
 
