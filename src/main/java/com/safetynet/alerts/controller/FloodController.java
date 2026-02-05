@@ -25,13 +25,13 @@ public class FloodController {
     /**
      * Gère les requêtes GET pour obtenir les informations d'inondation basées sur les numéros de station.
      *
-     * @param stations Liste des numéros de station.
+     * @param station Liste des numéros de station.
      * @return Un objet FloodResponseDTO contenant les informations d'inondation.
      */
     @GetMapping("/flood/stations")
-    public FloodResponseDTO getFloodResponse(@RequestParam List<Integer> stations) {
+    public FloodResponseDTO getFloodResponse(@RequestParam int station) {
         log.info("Requête GET /flood/stations reçue");
-        FloodResponseDTO response= floodResponseService.getFloodResponseByStationNumbers(stations);
+        FloodResponseDTO response= floodResponseService.getFloodResponseByStationNumbers(station);
         log.info("Réponse GET /flood/stations traitée");
         return response;
 

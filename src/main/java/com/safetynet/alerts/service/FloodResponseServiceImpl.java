@@ -34,16 +34,16 @@ public class FloodResponseServiceImpl implements FloodResponseService {
 /**
      * Retrieves flood response information based on a list of fire station numbers.
      *
-     * @param stationNumbers List of fire station numbers
+     * @param stationNumber List of fire station numbers
      * @return FloodResponseDTO containing households mapped by address with residents' details
      */
     @Override
-    public FloodResponseDTO getFloodResponseByStationNumbers(List<Integer> stationNumbers) {
+    public FloodResponseDTO getFloodResponseByStationNumbers(int stationNumber) {
         Set<String> locations = firestationRepository.getAll().stream()
-                .filter(fs -> stationNumbers.contains(fs.getStation()))
+                .filter(fs -> stationNumber==(fs.getStation()))
                 .map(Firestation::getAddress)
                 .collect(Collectors.toSet());
-        log.info("Adresses couvertes par les stations {}: {}", stationNumbers, locations);
+        log.info("Adresses couvertes par les stations {}: {}", stationNumber, locations);
         return new FloodResponseDTO(
                 locations.stream()
                         .collect(Collectors.toMap(

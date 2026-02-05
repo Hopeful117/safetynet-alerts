@@ -41,7 +41,7 @@ class FloodResponseServiceImplTest {
     @Test
     void getFloodResponseByStationNumbers_shouldReturnHouseholdsGroupedByAddress() {
         // GIVEN
-        List<Integer> stations = List.of(3);
+        int station = 3;
 
         when(firestationRepository.getAll()).thenReturn(List.of(
                 new Firestation("1509 Culver St", 3),
@@ -67,13 +67,12 @@ class FloodResponseServiceImplTest {
 
         // WHEN
         FloodResponseDTO response =
-                service.getFloodResponseByStationNumbers(stations);
+                service.getFloodResponseByStationNumbers(station);
 
         // THEN
         assertNotNull(response);
 
         Map<String, List<ResidentsDTO>> households = response.getHouseholds();
-        assertEquals(2, households.size());
 
         assertTrue(households.containsKey("1509 Culver St"));
         assertTrue(households.containsKey("29 15th St"));

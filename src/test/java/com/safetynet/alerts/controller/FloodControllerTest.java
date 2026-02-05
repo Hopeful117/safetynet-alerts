@@ -35,7 +35,7 @@ class FloodControllerTest {
     @Test
     void flood_shouldReturnHouseholdsGroupedByAddress() throws Exception {
         // GIVEN
-        List<Integer> stations = List.of(3);
+        int stations = 3;
 
         FloodResponseDTO responseDTO = new FloodResponseDTO(
                 Map.of(

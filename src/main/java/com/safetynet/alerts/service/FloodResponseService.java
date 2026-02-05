@@ -8,5 +8,5 @@ import java.util.List;
  * based on fire station numbers.
  */
 public interface FloodResponseService {
-    FloodResponseDTO getFloodResponseByStationNumbers(List<Integer> stationNumbers);
+    FloodResponseDTO getFloodResponseByStationNumbers(int stationNumbers);
 }
