@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class FireResponseDTO {
-    private ResidentsDTO residents;
+    private List<ResidentsDTO.Resident> residents;
     private int stationNumber;
 
 

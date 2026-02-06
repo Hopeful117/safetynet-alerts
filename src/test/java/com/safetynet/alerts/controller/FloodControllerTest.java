@@ -40,8 +40,8 @@ class FloodControllerTest {
         FloodResponseDTO responseDTO = new FloodResponseDTO(
                 Map.of(
                         "1509 Culver St",
-                        List.of(
-                                new ResidentsDTO(
+
+                               (
                                         List.of(
                                                 new ResidentsDTO.Resident(
                                                         "John", "Boyd", "1509 Culver St",
@@ -57,11 +57,11 @@ class FloodControllerTest {
                                                 )
                                         )
                                 )
-                        ),
+                        ,
 
                         "29 15th St",
-                        List.of(
-                                new ResidentsDTO(
+
+                                (
                                         List.of(
                                                 new ResidentsDTO.Resident(
                                                         "Peter", "Smith", "29 15th St",
@@ -71,7 +71,7 @@ class FloodControllerTest {
                                                 )
                                         )
                                 )
-                        )
+
                 )
         );
 

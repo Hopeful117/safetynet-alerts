@@ -24,7 +24,7 @@ public class PersonRepositoryImpl implements PersonRepository {
     @Override
     public List<Person> getAllByAddress(String address) {
         return getAll().stream()
-                .filter(p -> p.getAddress().equalsIgnoreCase(address))
+                .filter(p -> p.getAddress().trim().equalsIgnoreCase(address.trim()))
                 .toList();
     }
 

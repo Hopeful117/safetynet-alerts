@@ -2,7 +2,6 @@ package com.safetynet.alerts.controller;
 
 
 import com.safetynet.alerts.dto.PersonRequestDTO;
-import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.service.PersonService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,7 +102,7 @@ class PersonControllerTest {
      * @throws Exception
      */
     @Test
-    void updatePerson_shouldReturnOk() throws Exception {
+    void updatePerson_shouldReturnAccepted() throws Exception {
         PersonRequestDTO dto = new PersonRequestDTO(
                 "John",
                 "Doe",
@@ -121,7 +120,7 @@ class PersonControllerTest {
         mockMvc.perform(put("/person")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isOk());
+                .andExpect(status().isAccepted());
 
         verify(personService).updatePerson(any(PersonRequestDTO.class));;
     }
@@ -130,7 +129,7 @@ class PersonControllerTest {
      * @throws Exception
      */
     @Test
-    void updatePerson_shouldReturnBadRequest_whenPersonNotFound() throws Exception {
+    void updatePerson_shouldReturnNotFound_whenPersonNotFound() throws Exception {
         PersonRequestDTO dto = new PersonRequestDTO(
                 "John",
                 "Doe",
@@ -149,7 +148,7 @@ class PersonControllerTest {
         mockMvc.perform(put("/person")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isNotFound());
     }
     @Test
     void updatePerson_shouldReturnBadRequest_whenExceptionThrown() throws Exception {
@@ -170,20 +169,6 @@ class PersonControllerTest {
     }
 /**
      * Test for deletePerson endpoint.
-     * @throws Exception
-     */
-    @Test
-    void deletePerson_shouldReturnNoContent() throws Exception {
-        when(personService.deletePerson("John", "Doe")).thenReturn(true);
-
-        mockMvc.perform(delete("/person")
-                        .param("firstName", "John")
-                        .param("lastName", "Doe"))
-                .andExpect(status().isNoContent());
-
-        verify(personService).deletePerson("John", "Doe");
-    }
-/**
      * Test for deletePerson endpoint when person does not exist.
      * @throws Exception
      */

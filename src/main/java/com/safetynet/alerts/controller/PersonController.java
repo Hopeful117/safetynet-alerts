@@ -42,7 +42,7 @@ public class PersonController {
         }
         catch (Exception e) {
             log.error("Erreur lors de l'ajout de la personne: {} {}", person.getFirstName(), person.getLastName(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
     }
@@ -62,11 +62,11 @@ public class PersonController {
             }
 
             log.error("Personne introuvable : {} {}", person.getFirstName(), person.getLastName());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         catch (Exception e) {
             log.error("Erreur lors de la mise à jour de la personne: {} {}", person.getFirstName(), person.getLastName(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
       }
@@ -86,12 +86,12 @@ public class PersonController {
                 return ResponseEntity.ok().build();
             }
 
-            log.error("Erreur lors de la suppression de la personne: {} {}", firstName, lastName);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            log.error("Personne non trouvée: {} {}", firstName, lastName);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         catch (Exception e) {
             log.error("Erreur lors de la suppression de la personne: {} {}", firstName, lastName, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
     }

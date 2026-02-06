@@ -50,23 +50,9 @@ class FireResponseServiceImplTest {
                 new Person("Tenley", "Boyd", address, "Culver", "97451", "222-222", "tenley@email.com")
         ));
 
-        when(medicalRecordRepository.findByFirstAndLastName("John","Boyd")).thenReturn(
-                Optional.of(new MedicalRecord(
-                        "John",
-                        "Boyd",
-                        "03/06/1984",
-                        List.of("med1"),
-                        List.of("allergy1")
-                )));
-        when(medicalRecordRepository.findByFirstAndLastName("Tenley","Boyd")).thenReturn(
-                Optional.of(
-                new MedicalRecord(
-                        "Tenley",
-                        "Boyd",
-                        "02/18/2012",
-                        List.of(),
-                        List.of("peanut")
-                )
+        when(medicalRecordRepository.getAll()).thenReturn(List.of(
+                new MedicalRecord("John", "Boyd", "03/06/1984", List.of("med1"), List.of("allergy1")),
+                new MedicalRecord("Tenley", "Boyd", "02/08/2012", List.of("med2"), List.of("allergy2"))
         ));
 
         // WHEN

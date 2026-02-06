@@ -49,19 +49,12 @@ public class FloodResponseServiceImpl implements FloodResponseService {
                         .collect(Collectors.toMap(
                                 Function.identity(),
                                 address -> {
-
-                                    List<Person> residents = personRepository.getAll().stream()
-                                            .filter(p -> p.getAddress().equals(address))
-                                            .toList();
-
+                                    List<Person> residents = personRepository.getAllByAddress(address);
                                     List<MedicalRecord> medicalRecords = medicalRecordRepository.getAll().stream()
-                                            .filter(m -> residents.stream()
-                                                    .anyMatch(p ->
-                                                            p.getFirstName().equals(m.getFirstName()) &&
-                                                                    p.getLastName().equals(m.getLastName())))
+                                            .filter(mr -> residents.stream()
+                                                    .anyMatch(p -> p.getFirstName().equals(mr.getFirstName()) && p.getLastName().equals(mr.getLastName())))
                                             .toList();
-
-                                    return List.of(new ResidentsDTO(residents, medicalRecords));
+                                    return new ResidentsDTO(residents, medicalRecords).getResidents();
                                 }
                         ))
                 );

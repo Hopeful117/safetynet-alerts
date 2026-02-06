@@ -39,7 +39,7 @@ class FireControllerTest {
         FireResponseDTO responseDTO = new FireResponseDTO(
 
 
-                        new ResidentsDTO(
+                        (
                                 List.of
                                         (new ResidentsDTO.Resident(
                                                 "Tenley",

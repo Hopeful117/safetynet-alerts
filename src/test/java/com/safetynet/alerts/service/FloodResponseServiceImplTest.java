@@ -48,22 +48,21 @@ class FloodResponseServiceImplTest {
                 new Firestation("29 15th St", 3)
         ));
 
-        when(personRepository.getAllByAddress(anyString())).thenReturn(List.of(
+        when(personRepository.getAllByAddress("1509 Culver St")).thenReturn(List.of(
                 new Person("John", "Boyd", "1509 Culver St", "Culver", "97451", "111", "a"),
-                new Person("Tenley", "Boyd", "1509 Culver St", "Culver", "97451", "222", "b"),
+                new Person("Tenley", "Boyd", "1509 Culver St", "Culver", "97451", "222", "b")
+
+        ));
+        when(personRepository.getAllByAddress("29 15th St")).thenReturn(List.of(
                 new Person("Peter", "Duncan", "29 15th St", "Culver", "97451", "333", "c")
         ));
 
-        when(medicalRecordRepository.findByFirstAndLastName("John","Boyd")).thenReturn(Optional.of((
-                new MedicalRecord("John", "Boyd", "03/06/1984",
-                        List.of("med1"), List.of("allergy1")))));
-        when(medicalRecordRepository.findByFirstAndLastName("Tenley","Boyd")).thenReturn(Optional.of((
-                new MedicalRecord("Tenley", "Boyd", "02/18/2012",
-                        List.of(), List.of("peanut")))));
-        when(medicalRecordRepository.findByFirstAndLastName("Peter","Duncan")).thenReturn(Optional.of((
-                new MedicalRecord("Peter", "Duncan", "01/01/1990",
-                        List.of("med2"), List.of())
-        )));
+        when (medicalRecordRepository.getAll()).thenReturn(List.of(
+                new MedicalRecord("John", "Boyd", "03/06/1984", List.of("med1"), List.of("allergy1")),
+                new MedicalRecord("Tenley", "Boyd", "02/08/2012", List.of("med2"), List.of("allergy2")),
+                new MedicalRecord("Peter", "Duncan", "09/09/1990", List.of("med3"), List.of("allergy3"))
+        ));
+
 
         // WHEN
         FloodResponseDTO response =
@@ -72,12 +71,13 @@ class FloodResponseServiceImplTest {
         // THEN
         assertNotNull(response);
 
-        Map<String, List<ResidentsDTO>> households = response.getHouseholds();
+        Map<String, List<ResidentsDTO.Resident>> households = response.getHouseholds();
+
 
         assertTrue(households.containsKey("1509 Culver St"));
         assertTrue(households.containsKey("29 15th St"));
 
-        List<ResidentsDTO> culverResidents = households.get("1509 Culver St");
+        List<ResidentsDTO.Resident> culverResidents = households.get("1509 Culver St").stream().toList();
         assertEquals(2, culverResidents.size());
 
 

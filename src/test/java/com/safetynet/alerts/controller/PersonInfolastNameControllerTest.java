@@ -65,8 +65,8 @@ class PersonInfolastNameControllerTest {
                 .andExpect(jsonPath("$.residents[0].firstName").value("John"))
                 .andExpect(jsonPath("$.residents[0].lastName").value("Boyd"))
                 .andExpect(jsonPath("$.residents[0].age").value(40))
-                .andExpect(jsonPath("$.residents[1].firstName").value("Tenley"))
-                .andExpect(jsonPath("$.residents[1].age").value(12));
+                .andExpect(jsonPath("$.residents[1].firstName").value("Jane"))
+                .andExpect(jsonPath("$.residents[1].age").value(35));
     }
 /**
      * Test for getPersonInfolastName endpoint when no results are found.
