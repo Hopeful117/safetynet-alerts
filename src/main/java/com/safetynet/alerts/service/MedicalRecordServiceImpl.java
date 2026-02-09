@@ -81,6 +81,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService{
     @Override
     public boolean deleteMedicalRecord(String firstName, String lastName) {
         log.info("Suppression du dossier médical pour : {} {}", firstName, lastName);
+
         Optional<MedicalRecord> existingRecord = medicalRecordRepository.findByFirstAndLastName(firstName,lastName);
         if (existingRecord.isPresent()) {
             medicalRecordRepository.delete(existingRecord.get());

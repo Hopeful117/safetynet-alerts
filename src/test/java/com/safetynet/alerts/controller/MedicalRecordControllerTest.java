@@ -83,9 +83,19 @@ class MedicalRecordControllerTest {
      * @throws Exception
      */
     @Test
-    void addMedicalRecord_shouldReturnBadRequest_whenExceptionThrown() throws Exception {
+    void addMedicalRecord_shouldReturnConflictWhenRecordExist() throws Exception {
         when(medicalRecordService.addMedicalRecord(any()))
                 .thenReturn(false);
+
+        mockMvc.perform(post("/medicalRecord")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isConflict());
+    }
+    @Test
+    void addMedicalRecord_shouldReturnBadRequest_whenExceptionThrown() throws Exception {
+        when(medicalRecordService.addMedicalRecord(any()))
+                .thenThrow(new RuntimeException("Test exception"));
 
         mockMvc.perform(post("/medicalRecord")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -121,9 +131,19 @@ class MedicalRecordControllerTest {
      * @throws Exception
      */
     @Test
-    void updateMedicalRecord_shouldReturnBadRequest_whenExceptionThrown() throws Exception {
+    void updateMedicalRecord_shouldReturnNotFoundWhenRecordDoesntExist() throws Exception {
         when(medicalRecordService.updateMedicalRecord(any()))
                 .thenReturn(false);
+
+        mockMvc.perform(put("/medicalRecord")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isNotFound());
+    }
+    @Test
+    void updateMedicalRecord_shouldReturnBadRequest_whenExceptionThrown() throws Exception {
+        when(medicalRecordService.updateMedicalRecord(any()))
+                .thenThrow(new RuntimeException("Test exception"));
 
         mockMvc.perform(put("/medicalRecord")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -165,5 +185,15 @@ class MedicalRecordControllerTest {
      * @throws Exception
      */
 
+    @Test
+    void deleteMedicalRecord_shouldReturnBadRequest_whenExceptionThrown() throws Exception {
+        when(medicalRecordService.deleteMedicalRecord("John", "Doe"))
+                .thenThrow(new RuntimeException("Test exception"));
+        mockMvc.perform(delete("/medicalRecord")
+                        .param("firstName", "John")
+                        .param("lastName", "Doe"))
+                .andExpect(status().isBadRequest());
+
+}
 }
 
