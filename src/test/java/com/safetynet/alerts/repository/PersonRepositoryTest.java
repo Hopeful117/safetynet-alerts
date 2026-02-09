@@ -9,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.apache.logging.log4j.ThreadContext.isEmpty;
+
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,6 +29,10 @@ public class PersonRepositoryTest {
 
      void getAll_ShouldReturnAllPersons() {
         List<Person> persons = personRepository.getAll();
+        assert persons.size() == 3;
+     }
+     void geAllByAddress_ShouldReturnPersons() {
+        List<Person> persons = personRepository.getAllByAddress("1509 Culver St");
         assert persons.size() == 3;
      }
 
