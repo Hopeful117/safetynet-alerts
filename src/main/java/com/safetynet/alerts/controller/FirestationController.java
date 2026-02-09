@@ -22,8 +22,7 @@ public class FirestationController {
     private final FirestationService firestationService;
 
 
-
-/**
+    /**
      * Récupère la couverture d'une station de pompiers donnée.
      *
      * @param stationNumber Le numéro de la station de pompiers.
@@ -36,7 +35,8 @@ public class FirestationController {
         log.info("Réponse GET /firestation: {} adultes, {} enfants", response.getAdultCount(), response.getChildCount());
         return response;
     }
-/**
+
+    /**
      * Ajoute un nouveau mapping Firestation.
      *
      * @param request Le DTO contenant l'adresse et le numéro de la station.
@@ -45,20 +45,26 @@ public class FirestationController {
     @PostMapping("/firestation")
     public ResponseEntity<Firestation> addFirestation(@RequestBody FirestationRequestDTO request) {
         log.info("Requête POST /firestation reçue: adresse='{}', station={}", request.getAddress(), request.getStation());
-
+        try {
             boolean created = firestationService.addFirestationMapping(request.getAddress(), request.getStation());
-            if(created) {
+            if (created) {
                 Firestation firestation = new Firestation(request.getAddress(), request.getStation());
                 log.info("Mapping Firestation créé avec succès: {}", firestation);
                 return ResponseEntity.status(HttpStatus.CREATED).body(firestation);
             }
 
-            log.error("Échec création mapping Firestation: {}{}",request.getAddress(), request.getStation());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            log.error("Échec création mapping Firestation: {}{}", request.getAddress(), request.getStation());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+        } catch (Exception e) {
+            log.error("Erreur lors de la création du mapping Firestation: {}{}", request.getAddress(), request.getStation(), e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
 
-/**
+    }
+
+
+    /**
      * Met à jour un mapping Firestation existant.
      *
      * @param request Le DTO contenant l'adresse et le nouveau numéro de la station.
@@ -67,24 +73,30 @@ public class FirestationController {
     @PutMapping("/firestation")
     public ResponseEntity<Firestation> updateFirestation(@RequestBody FirestationRequestDTO request) {
         log.info("Requête PUT /firestation reçue: adresse='{}', station={}", request.getAddress(), request.getStation());
-
+        try {
             boolean updated = firestationService.updateFirestationMapping(
 
                     request.getAddress(),
                     request.getStation()
             );
-            if(updated) {
+
+            if (updated) {
                 Firestation updatedMapping = new Firestation(request.getAddress(), request.getStation());
                 log.info("Mapping Firestation mis à jour avec succès: {}{}", request.getAddress(), request.getStation());
                 return ResponseEntity.accepted().body(updatedMapping);
             }
 
 
-            log.error("Échec mise à jour mapping Firestation: {}{}",request.getAddress(), request.getStation());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            log.error("Échec mise à jour mapping Firestation: {}{}", request.getAddress(), request.getStation());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
+        } catch (Exception e) {
+            log.error("Erreur lors de la mise à jour du mapping Firestation: {}{}", request.getAddress(), request.getStation(), e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
-/**
+
+    /**
      * Supprime un mapping Firestation existant.
      *
      * @param address L'adresse du mapping à supprimer.
@@ -93,15 +105,19 @@ public class FirestationController {
     @DeleteMapping("/firestation")
     public ResponseEntity<Void> deleteFirestation(@RequestParam String address) {
         log.info("Requête DELETE /firestation reçue: adresse='{}'", address);
-
-           boolean deleted=firestationService.deleteFirestationMapping(address);
-            if(deleted) {
+        try {
+            boolean deleted = firestationService.deleteFirestationMapping(address);
+            if (deleted) {
                 log.info("Mapping Firestation supprimé avec succès pour l'adresse '{}'", address);
                 return ResponseEntity.ok().build();
             }
 
             log.error("Échec suppression mapping Firestation: {}", address);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
+        } catch (Exception e) {
+            log.error("Erreur lors de la suppression du mapping Firestation: {}", address, e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+}

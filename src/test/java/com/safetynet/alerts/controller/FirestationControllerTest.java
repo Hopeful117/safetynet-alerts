@@ -87,12 +87,23 @@ public class FirestationControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/firestation")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isConflict());
     }
     /**
      * Test for updateFirestation endpoint.
      * @throws Exception
      */
+    @Test
+    public void testAddFirestationInvalidInput() throws Exception {
+        FirestationRequestDTO request = new FirestationRequestDTO("", -1);
+        ObjectMapper objectMapper = new ObjectMapper();
+        when(firestationService.addFirestationMapping("", -1)).thenThrow(new IllegalArgumentException());
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/firestation")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
     @Test
     void updateFirestation_shouldReturn202_whenSuccess() throws Exception {
         FirestationRequestDTO request = new FirestationRequestDTO("1509 Culver St",3 );
@@ -111,10 +122,22 @@ public class FirestationControllerTest {
      * @throws Exception
      */
     @Test
-    void updateFirestation_shouldReturn400_whenAddressNotFound() throws Exception {
+    void updateFirestation_shouldReturn404_whenAddressNotFound() throws Exception {
         FirestationRequestDTO request = new FirestationRequestDTO("Unknown", 2);
         ObjectMapper objectMapper = new ObjectMapper();
         when(firestationService.updateFirestationMapping("Unknown", 2)).thenReturn(false);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/firestation")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNotFound());
+    }
+    @Test
+    void updateFirestation_shouldReturn400_whenExceptionThrown() throws Exception {
+        FirestationRequestDTO request = new FirestationRequestDTO("1509 Culver St", 3);
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        when(firestationService.updateFirestationMapping("1509 Culver St", 3)).thenThrow(new RuntimeException());
 
         mockMvc.perform(MockMvcRequestBuilders.put("/firestation")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -138,12 +161,21 @@ public class FirestationControllerTest {
      * @throws Exception
      */
     @Test
-    void deleteFirestation_shouldReturn400_whenAddressNotFound() throws Exception {
+    void deleteFirestation_shouldReturn404_whenAddressNotFound() throws Exception {
 
                 when(firestationService.deleteFirestationMapping("Unknown")).thenReturn(false);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/firestation")
                         .param("address", "Unknown"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteFirestation_shouldReturn400_whenExceptionThrown() throws Exception {
+        when(firestationService.deleteFirestationMapping("1509 Culver St")).thenThrow(new RuntimeException());
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/firestation")
+                        .param("address", "1509 Culver St"))
                 .andExpect(status().isBadRequest());
     }
 
