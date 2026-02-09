@@ -74,9 +74,9 @@ class FireControllerTest {
                 .andExpect(jsonPath("$.stationNumber").value(3))
                 .andExpect(jsonPath("$.residents").isArray())
                 .andExpect(jsonPath("$.residents.length()").value(2))
-                .andExpect(jsonPath("$.residents[0].firstName").value("John"))
-                .andExpect(jsonPath("$.residents[0].age").value(40))
-                .andExpect(jsonPath("$.residents[1].firstName").value("Tenley"))
-                .andExpect(jsonPath("$.residents[1].age").value(12));
+                .andExpect(jsonPath("$.residents[0].firstName").value("Tenley"))
+                .andExpect(jsonPath("$.residents[0].age").value(12))
+                .andExpect(jsonPath("$.residents[1].firstName").value("John"))
+                .andExpect(jsonPath("$.residents[1].age").value(40));
     }
 }

@@ -39,7 +39,10 @@ public class ChildAlertServiceImpl implements ChildAlertService {
 
         final List<MedicalRecord> medicalRecords = personRepository.getAllByAddress(address)
                 .stream()
-                .map(person ->medicalRecordRepository.findByFirstAndLastName(person.getFirstName(), person.getLastName()) )
+                .map(person ->medicalRecordRepository.getAll().stream()
+                        .filter(m -> m.getFirstName().equals(person.getFirstName())
+                                && m.getLastName().equals(person.getLastName()))
+                        .findFirst())
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList();

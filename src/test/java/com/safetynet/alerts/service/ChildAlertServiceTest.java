@@ -35,10 +35,10 @@ class ChildAlertServiceTest {
     @Test
     void getChildAlertByAddress_shouldReturnChildrenAndAdults() {
         // GIVEN
-        when(personRepository.getAll()).thenReturn(List.of(
-                new Person("John", "Boyd", "1509 Culver St", "Culver", "97451", "123", "john@email.com"),
-                new Person("Jacob", "Boyd", "1509 Culver St", "Culver", "97451", "123", "jacob@email.com"),
-                new Person("Tenley", "Boyd", "1509 Culver St", "Culver", "97451", "123", "tenley@email.com")
+       when(personRepository.getAllByAddress("1509 Culver St")).thenReturn(List.of(
+                new Person("John", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6512", "a"),
+                new Person("Jacob", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6513", "b"),
+                new Person("Tenley", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6514", "c")
         ));
 
         when(medicalRecordRepository.getAll()).thenReturn(List.of(

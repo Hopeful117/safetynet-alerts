@@ -80,7 +80,7 @@ class FloodControllerTest {
 
         // WHEN + THEN
         mockMvc.perform(get("/flood/stations")
-                        .param("stations", "3"))
+                        .param("station", "3"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.households").exists())
                 .andExpect(jsonPath("$.households['1509 Culver St']").isArray())
