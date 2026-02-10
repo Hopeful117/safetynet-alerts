@@ -42,8 +42,8 @@ public class MedicalRecordRepositoryImpl implements MedicalRecordRepository{
     @Override
     public Optional<MedicalRecord> findByFirstAndLastName(String firstname,String lastname) {
         return safetyNetRepository.getMedicalRecords().stream()
-                .filter(medicalRecord -> medicalRecord.getFirstName().equals(firstname))
-                .filter(medicalRecord -> medicalRecord.getLastName().equals(lastname))
+                .filter(medicalRecord -> medicalRecord.getFirstName().equalsIgnoreCase(firstname))
+                .filter(medicalRecord -> medicalRecord.getLastName().equalsIgnoreCase(lastname))
                 .findFirst();
 
     }

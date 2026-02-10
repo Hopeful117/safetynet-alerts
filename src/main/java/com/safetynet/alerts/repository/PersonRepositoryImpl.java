@@ -52,8 +52,8 @@ public class PersonRepositoryImpl implements PersonRepository {
     public Optional<Person> findByFirstnameAndLastname(String firstName, String lastName) {
         return getAll()
                 .stream()
-                .filter(p -> p.getFirstName().equals(firstName))
-                .filter(p -> p.getLastName().equals(lastName))
+                .filter(p -> p.getFirstName().trim().equalsIgnoreCase(firstName))
+                .filter(p -> p.getLastName().trim().equalsIgnoreCase(lastName))
                 .findFirst();
     }
 

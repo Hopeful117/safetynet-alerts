@@ -52,7 +52,7 @@ public class FloodResponseServiceImpl implements FloodResponseService {
                                     List<Person> residents = personRepository.getAllByAddress(address);
                                     List<MedicalRecord> medicalRecords = medicalRecordRepository.getAll().stream()
                                             .filter(mr -> residents.stream()
-                                                    .anyMatch(p -> p.getFirstName().equals(mr.getFirstName()) && p.getLastName().equals(mr.getLastName())))
+                                                    .anyMatch(p -> p.getFirstName().trim().equalsIgnoreCase(mr.getFirstName()) && p.getLastName().trim().equalsIgnoreCase(mr.getLastName())))
                                             .toList();
                                     return new ResidentsDTO(residents, medicalRecords).getResidents();
                                 }

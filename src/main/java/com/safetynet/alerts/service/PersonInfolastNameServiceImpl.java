@@ -29,10 +29,10 @@ public class PersonInfolastNameServiceImpl implements PersonInfolastNameService 
      */
     @Override
     public ResidentsDTO getPersonInfoByLastName(String lastName) {
-        List<Person> residents = personRepository.getAll().stream()
+        final List<Person> residents = personRepository.getAll().stream()
                 .filter(p -> p.getLastName().equalsIgnoreCase(lastName))
                 .toList();
-        List<MedicalRecord> records= medicalRecordRepository.getAll();
+        final List<MedicalRecord> records= medicalRecordRepository.getAll();
 
 
 

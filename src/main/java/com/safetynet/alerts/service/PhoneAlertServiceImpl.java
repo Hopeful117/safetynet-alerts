@@ -39,7 +39,7 @@ public class PhoneAlertServiceImpl implements PhoneAlertService {
         log.debug("Adresses couvertes par la station {}: {}", stationNumber, addresses);
 
 
-        Set<String> phoneNumbers = personRepository.getAll().stream()
+        final Set<String> phoneNumbers = personRepository.getAll().stream()
                         .filter(person->addresses.contains(person.getAddress()))
                                 .map(Person::getPhone)
                                         .collect(Collectors.toSet());

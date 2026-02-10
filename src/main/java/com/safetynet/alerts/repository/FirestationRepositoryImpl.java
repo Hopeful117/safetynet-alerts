@@ -53,7 +53,7 @@ public class FirestationRepositoryImpl implements FirestationRepository {
     @Override
     public Optional<Firestation> findByAddress(String address) {
         return safetyNetRepository.getFirestations().stream()
-                .filter(firestation -> address.equals(firestation.getAddress()))
+                .filter(firestation -> address.trim().equalsIgnoreCase(firestation.getAddress()))
                 .findFirst();
     }
     /**

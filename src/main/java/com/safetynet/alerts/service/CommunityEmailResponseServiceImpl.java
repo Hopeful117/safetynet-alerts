@@ -30,7 +30,7 @@ public class CommunityEmailResponseServiceImpl implements CommunityEmailResponse
         log.info("Recherche des emails pour la ville : {}", city);
 
         return personRepository.getAll().stream()
-                .filter(p -> p.getCity().equalsIgnoreCase(city))
+                .filter(p -> p.getCity().trim().equalsIgnoreCase(city))
                 .map(Person::getEmail)
                 .collect(Collectors.toSet());
 
