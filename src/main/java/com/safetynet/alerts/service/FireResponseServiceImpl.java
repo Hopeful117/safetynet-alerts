@@ -31,7 +31,9 @@ public class FireResponseServiceImpl implements FireResponseService {
      * Retrieves fire response information for a given address.
      *
      * @param address The address to retrieve fire response information for.
-     * @return A FireResponseDTO containing residents and station number.
+     * @throws IllegalArgumentException if the address is not found in the firestation repository.
+     * @throws RuntimeException if there is an error during data retrieval or processing.
+     * @return A FireResponseDTO containing the residents and station number for the given address, or null if the address is not found.
      */
     @Override
     public FireResponseDTO getFireResponseByAddress(String address) {

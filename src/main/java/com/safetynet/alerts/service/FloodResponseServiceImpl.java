@@ -35,7 +35,7 @@ public class FloodResponseServiceImpl implements FloodResponseService {
      * Retrieves flood response information based on a list of fire station numbers.
      *
      * @param stationNumber List of fire station numbers
-     * @return FloodResponseDTO containing households mapped by address with residents' details
+     * @return FloodResponseDTO containing the addresses covered by the specified fire stations and the residents at those addresses
      */
     @Override
     public FloodResponseDTO getFloodResponseByStationNumbers(int stationNumber) {

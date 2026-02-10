@@ -15,6 +15,11 @@ import java.util.List;
 
 /**
  * Implementation of SafetyNetRepository that loads data from a JSON file.
+ * The data is loaded once at application startup and stored in memory for fast access.
+ * The JSON file is expected to be located in the resources folder and named "data.json".
+ * The JSON structure should match the SafetyNetData class, which contains lists of persons, firestations, and medical records.
+ * This implementation uses Jackson's ObjectMapper to parse the JSON file and populate the in-memory data structures.
+ * If the JSON file is not found or cannot be parsed, an error is logged and an exception is thrown.
  */
 @Getter
 @Repository

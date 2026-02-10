@@ -26,7 +26,7 @@ public class MedicalRecordController {
      * Gère les requêtes POST pour ajouter un nouveau dossier médical.
      *
      * @param medicalRecordDTO le DTO du dossier médical à ajouter.
-     * @return une réponse HTTP avec le dossier médical créé ou une erreur.
+     * @return une réponse HTTP avec le dossier médical ajouté ou une erreur.
      */
     @PostMapping("/medicalRecord")
     public ResponseEntity<MedicalRecord> addMedicalRecord(@RequestBody MedicalRecordDTO medicalRecordDTO) {
@@ -85,10 +85,9 @@ public class MedicalRecordController {
 
     /**
      * Gère les requêtes DELETE pour supprimer un dossier médical existant.
-     *
-     * @param firstName
-     * @param lastName
-     * @return
+     * @param firstName le prénom de la personne dont le dossier médical doit être supprimé.
+     * @param lastName le nom de famille de la personne dont le dossier médical doit être
+     * @return une réponse HTTP indiquant le résultat de la suppression du dossier médical.
      */
     @DeleteMapping("/medicalRecord")
     public ResponseEntity<MedicalRecord> deleteMedicalRecord(@RequestParam String firstName, @RequestParam String lastName) {

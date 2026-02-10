@@ -2,10 +2,6 @@ package com.safetynet.alerts.service;
 
 import java.util.List;
 import java.util.Optional;
-
-
-
-
 import com.safetynet.alerts.model.Firestation;
 import com.safetynet.alerts.repository.FirestationRepository;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
@@ -13,7 +9,6 @@ import com.safetynet.alerts.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import com.safetynet.alerts.dto.FireStationResponseDTO;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
@@ -75,8 +70,7 @@ public class FirestationServiceImpl implements FirestationService {
      *
      * @param address The address to map.
      * @param station The fire station number.
-     * @return The newly created Firestation mapping.
-     * @throws IllegalArgumentException if the address already has a mapping.
+     * @return true if the mapping was successfully added, false if a mapping for the given address already exists.
      */
 
 
@@ -104,8 +98,7 @@ public class FirestationServiceImpl implements FirestationService {
      *
      * @param address The address to update.
      * @param station The new fire station number.
-     * @return The updated Firestation mapping.
-     * @throws IllegalArgumentException if the address does not exist.
+     * @return true if the mapping was successfully updated, false if no mapping was found for the given address.
      */
     @Override
     public boolean updateFirestationMapping(String address, int station) {
@@ -128,8 +121,8 @@ public class FirestationServiceImpl implements FirestationService {
      * Deletes a firestation mapping by address.
      *
      * @param address The address of the mapping to delete.
-     * @return
-     * @throws IllegalArgumentException if the address does not exist.
+     * @return true if the mapping was successfully deleted, false if no mapping was found for the given address.
+
      */
     @Override
     public boolean deleteFirestationMapping(String address) {

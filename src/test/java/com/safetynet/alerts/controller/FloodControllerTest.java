@@ -30,7 +30,7 @@ class FloodControllerTest {
 
     /**
      * Test for flood endpoint.
-     * @throws Exception
+     * @throws Exception if an error occurs during the test execution.
      */
     @Test
     void flood_shouldReturnHouseholdsGroupedByAddress() throws Exception {

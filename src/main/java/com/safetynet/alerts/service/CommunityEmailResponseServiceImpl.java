@@ -23,7 +23,7 @@ public class CommunityEmailResponseServiceImpl implements CommunityEmailResponse
      * Retrieves a list of unique email addresses for all residents in the specified city.
      *
      * @param city The name of the city.
-     * @return A CommunityEmailResponseDTO containing the list of email addresses.
+     * @return A set of unique email addresses for residents in the specified city.
      */
     @Override
     public Set<String> getCommunityEmailResponse(String city) {

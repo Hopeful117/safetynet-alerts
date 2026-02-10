@@ -12,6 +12,11 @@ import java.util.List;
 /**
  * DTO representing the response for a child alert,
  * containing lists of children and adults in a household.
+ * The constructor initializes the lists based on the provided medical records,
+ * filtering minors as children and others as adults.
+ * The ChildDTO class represents a child with their first name, last name, and age,
+ * while the HouseholdMemberDTO class represents an adult household member with their first and last name.
+
  */
 @Data
 @AllArgsConstructor

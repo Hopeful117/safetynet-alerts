@@ -29,7 +29,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService{
      * Adds a new medical record.
      *
      * @param medicalRecordDTO The DTO containing medical record information.
-     * @return The added MedicalRecord.
+     * @return true if the record was added successfully, false if a record with the same name already exists.
      */
     @Override
     public boolean addMedicalRecord(MedicalRecordDTO medicalRecordDTO) {
@@ -54,7 +54,7 @@ public class MedicalRecordServiceImpl implements MedicalRecordService{
      * Updates an existing medical record.
      *
      * @param medicalRecordDTO The DTO containing updated medical record information.
-     * @return The updated MedicalRecord, or null if not found.
+     * @return true if the record was updated successfully, false if the record was not found.
      */
     @Override
     public boolean updateMedicalRecord(MedicalRecordDTO medicalRecordDTO) {

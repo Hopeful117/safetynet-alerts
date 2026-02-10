@@ -22,9 +22,8 @@ public class PersonServiceImpl implements PersonService {
 
     /**
      * Adds a new person to the repository.
-     *
-     * @param personRequestDTO
-     * @return Person
+     * @param personRequestDTO The DTO containing the person's information.
+     * @return true if the person was added successfully, false if a person with the same name already exists.
      */
     @Override
     public boolean addPerson(PersonRequestDTO personRequestDTO) {
@@ -51,9 +50,8 @@ public class PersonServiceImpl implements PersonService {
 
     /**
      * Updates an existing person's information.
-     *
-     * @param personRequestDTO
-     * @return
+     * @param personRequestDTO The DTO containing the updated person's information.
+     * @return true if the person was updated successfully, false if the person does not exist.
      */
     @Override
     public boolean updatePerson(PersonRequestDTO personRequestDTO) {
@@ -85,10 +83,9 @@ public class PersonServiceImpl implements PersonService {
 
     /**
      * Deletes a person from the repository.
-     *
-     * @param firstName
-     * @param lastName
-     * @return
+     * @param firstName the first name of the person to delete
+     * @param lastName the last name of the person to delete
+     * @return true if the person was deleted successfully, false if the person does not exist.
      */
     @Override
     public boolean deletePerson(String firstName, String lastName) {

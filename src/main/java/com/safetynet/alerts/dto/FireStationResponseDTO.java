@@ -9,6 +9,7 @@ import java.util.List;
 /**
  * DTO representing the response for a fire station query,
  * including a list of persons covered by the station
+ * and counts of adults and children based on their medical records.
  */
 
 @Data

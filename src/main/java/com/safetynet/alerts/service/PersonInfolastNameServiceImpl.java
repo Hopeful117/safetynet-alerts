@@ -25,7 +25,7 @@ public class PersonInfolastNameServiceImpl implements PersonInfolastNameService 
      * Retrieves person information for all residents with the specified last name.
      *
      * @param lastName The last name to search for.
-     * @return A PersonInfolastNameDTO containing a list of residents with that last name.
+     * @return A ResidentsDTO containing the list of residents and their medical records.
      */
     @Override
     public ResidentsDTO getPersonInfoByLastName(String lastName) {

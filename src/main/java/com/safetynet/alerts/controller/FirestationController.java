@@ -40,7 +40,7 @@ public class FirestationController {
      * Ajoute un nouveau mapping Firestation.
      *
      * @param request Le DTO contenant l'adresse et le numéro de la station.
-     * @return Le mapping Firestation créé.
+     * @return Le mapping Firestation créé, ou une réponse d'erreur en cas de conflit ou de données invalides.
      */
     @PostMapping("/firestation")
     public ResponseEntity<Firestation> addFirestation(@RequestBody FirestationRequestDTO request) {
@@ -68,7 +68,7 @@ public class FirestationController {
      * Met à jour un mapping Firestation existant.
      *
      * @param request Le DTO contenant l'adresse et le nouveau numéro de la station.
-     * @return Le mapping Firestation mis à jour.
+     * @return Le mapping Firestation mis à jour, ou une réponse d'erreur en cas de non-trouvabilité ou de données invalides.
      */
     @PutMapping("/firestation")
     public ResponseEntity<Firestation> updateFirestation(@RequestBody FirestationRequestDTO request) {
@@ -100,7 +100,7 @@ public class FirestationController {
      * Supprime un mapping Firestation existant.
      *
      * @param address L'adresse du mapping à supprimer.
-     * @return Une réponse HTTP indiquant le résultat de l'opération.
+     * @return Une réponse indiquant le succès ou l'échec de la suppression, avec un code d'état approprié.
      */
     @DeleteMapping("/firestation")
     public ResponseEntity<Void> deleteFirestation(@RequestParam String address) {

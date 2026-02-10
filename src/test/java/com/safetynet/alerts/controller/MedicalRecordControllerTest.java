@@ -34,6 +34,9 @@ class MedicalRecordControllerTest {
     private MedicalRecordDTO dto;
     private MedicalRecord medicalRecord;
 
+    /**
+     * Set up test data before each test.
+     */
     @BeforeEach
     void setUp() {
         dto = new MedicalRecordDTO(
@@ -55,7 +58,7 @@ class MedicalRecordControllerTest {
 
     /**
      * Test for addMedicalRecord endpoint.
-     * @throws Exception
+     * @throws Exception when an exception occurs during the test execution.
      */
     @Test
     void addMedicalRecord_shouldReturnCreated() throws Exception {

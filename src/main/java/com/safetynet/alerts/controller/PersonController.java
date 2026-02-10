@@ -23,8 +23,8 @@ public class PersonController {
 
     /**
      * Gère les requêtes POST pour ajouter une nouvelle personne.
-     * @param person
-     * @return
+     * @param person contenant les informations de la personne à ajouter
+     * @return ResponseEntity avec le statut de la création et éventuellement le corps de la réponse
      */
     @PostMapping("/person")
     public ResponseEntity<PersonRequestDTO> addPerson(@RequestBody PersonRequestDTO person) {
@@ -48,8 +48,8 @@ public class PersonController {
     }
     /**
      * Gère les requêtes PUT pour mettre à jour une personne existante.
-     * @param person
-     * @return
+     * @param person contenant les informations de la personne à mettre à jour
+     * @return ResponseEntity avec le statut de la mise à jour et éventuellement le corps de la réponse
      */
     @PutMapping("/person")
     public ResponseEntity<PersonRequestDTO> updatePerson(@RequestBody PersonRequestDTO person) {
@@ -73,9 +73,9 @@ public class PersonController {
 
 /**
      * Gère les requêtes DELETE pour supprimer une personne existante.
-     * @param firstName
-     * @param lastName
-     * @return
+     * @param firstName de la personne à supprimer
+     * @param lastName de la personne à supprimer
+     * @return ResponseEntity avec le statut de la suppression et éventuellement le corps de la réponse
      */
     @DeleteMapping("/person")
     public ResponseEntity<Person> deletePerson(@RequestParam String firstName, @RequestParam String lastName) {

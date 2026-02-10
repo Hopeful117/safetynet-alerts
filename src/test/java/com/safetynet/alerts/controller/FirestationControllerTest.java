@@ -38,7 +38,7 @@ public class FirestationControllerTest {
 
     /**
      * Test for getFirestationCoverage endpoint.
-     * @throws Exception
+     * @throws Exception if an error occurs during the test execution.
      */
     @Test
     public void testGetFirestationCoverage() throws Exception {
@@ -57,7 +57,7 @@ public class FirestationControllerTest {
     }
     /**
      * Test for addFirestation endpoint.
-     * @throws Exception
+     * @throws Exception if an error occurs during the test execution.
      */
     @Test
     public void testAddFirestationSuccess() throws Exception {
@@ -75,7 +75,7 @@ public class FirestationControllerTest {
     }
     /**
      * Test for addFirestation endpoint when the firestation already exists.
-     * @throws Exception
+     * @throws Exception if an error occurs during the test execution.
      */
     @Test
     public void testAddFirestationAlreadyExists() throws Exception {
@@ -90,8 +90,8 @@ public class FirestationControllerTest {
                 .andExpect(status().isConflict());
     }
     /**
-     * Test for updateFirestation endpoint.
-     * @throws Exception
+     * Test for addFirestation endpoint when the input is invalid.
+     * @throws Exception if an error occurs during the test execution.
      */
     @Test
     public void testAddFirestationInvalidInput() throws Exception {
@@ -104,6 +104,11 @@ public class FirestationControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
     }
+
+    /**
+     * Test for updateFirestation endpoint.
+     * @throws Exception if an error occurs during the test execution.
+     */
     @Test
     void updateFirestation_shouldReturn202_whenSuccess() throws Exception {
         FirestationRequestDTO request = new FirestationRequestDTO("1509 Culver St",3 );
@@ -119,7 +124,7 @@ public class FirestationControllerTest {
     }
     /**
      * Test for updateFirestation endpoint when the address is not found.
-     * @throws Exception
+     * @throws Exception if an error occurs during the test execution.
      */
     @Test
     void updateFirestation_shouldReturn404_whenAddressNotFound() throws Exception {
@@ -132,6 +137,10 @@ public class FirestationControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isNotFound());
     }
+    /**
+     * Test for updateFirestation endpoint when an exception is thrown.
+     * @throws Exception if an error occurs during the test execution.
+     */
     @Test
     void updateFirestation_shouldReturn400_whenExceptionThrown() throws Exception {
         FirestationRequestDTO request = new FirestationRequestDTO("1509 Culver St", 3);
@@ -146,7 +155,7 @@ public class FirestationControllerTest {
     }
     /**
      * Test for deleteFirestation endpoint.
-     * @throws Exception
+     * @throws Exception if an error occurs during the test execution.
      */
     @Test
     void deleteFirestation_shouldReturn200_whenSuccess() throws Exception {
@@ -169,7 +178,10 @@ public class FirestationControllerTest {
                         .param("address", "Unknown"))
                 .andExpect(status().isNotFound());
     }
-
+    /**
+     * Test for deleteFirestation endpoint when an exception is thrown.
+     * @throws Exception if an error occurs during the test execution.
+     */
     @Test
     void deleteFirestation_shouldReturn400_whenExceptionThrown() throws Exception {
         when(firestationService.deleteFirestationMapping("1509 Culver St")).thenThrow(new RuntimeException());

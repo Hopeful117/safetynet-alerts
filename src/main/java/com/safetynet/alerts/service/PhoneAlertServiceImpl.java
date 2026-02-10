@@ -23,7 +23,7 @@ public class PhoneAlertServiceImpl implements PhoneAlertService {
      * Retrieves a list of unique phone numbers for all residents covered by the specified fire station number.
      *
      * @param stationNumber The fire station number.
-     * @return A PhoneAlertResponseDTO containing the list of phone numbers.
+     * @return A set of unique phone numbers for residents covered by the fire station.
      */
     @Override
     public Set<String> getPhoneAlertByStationNumber(int stationNumber) {
