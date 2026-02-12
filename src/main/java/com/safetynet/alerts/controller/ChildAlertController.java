@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 /**
  * Controller pour gérer les requêtes liées aux alertes pour enfants.
  */
@@ -18,7 +19,7 @@ public class ChildAlertController {
     private final ChildAlertService service;
 
 
-/**
+    /**
      * Gère les requêtes GET pour obtenir les informations des enfants vivant à une adresse donnée.
      *
      * @param address L'adresse pour laquelle obtenir les informations des enfants.

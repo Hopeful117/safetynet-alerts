@@ -2,15 +2,13 @@ package com.safetynet.alerts.controller;
 
 import com.safetynet.alerts.dto.MedicalRecordDTO;
 import com.safetynet.alerts.model.MedicalRecord;
-import com.safetynet.alerts.service.FloodResponseService;
 import com.safetynet.alerts.service.MedicalRecordService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 /**
  * Controller pour gérer les requêtes liées aux dossiers médicaux.
  */
@@ -44,7 +42,7 @@ public class MedicalRecordController {
                 return ResponseEntity.status(HttpStatus.CREATED).body(medicalRecord1);
             }
 
-            log.error("Erreur lors de l'ajout du dossier médical");
+            log.error("Dossier médical déjà existant pour : {} {}", medicalRecordDTO.getFirstName(), medicalRecordDTO.getLastName());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
 
         } catch (Exception e) {
@@ -85,8 +83,9 @@ public class MedicalRecordController {
 
     /**
      * Gère les requêtes DELETE pour supprimer un dossier médical existant.
+     *
      * @param firstName le prénom de la personne dont le dossier médical doit être supprimé.
-     * @param lastName le nom de famille de la personne dont le dossier médical doit être
+     * @param lastName  le nom de famille de la personne dont le dossier médical doit être
      * @return une réponse HTTP indiquant le résultat de la suppression du dossier médical.
      */
     @DeleteMapping("/medicalRecord")
@@ -100,7 +99,7 @@ public class MedicalRecordController {
             }
 
 
-            log.error("Erreur lors de la suppression du dossier médical: {} {}", firstName, lastName);
+            log.error("Dossier médical non trouvé pour suppression: {} {}", firstName, lastName);
             return ResponseEntity.notFound().build();
         } catch (Exception e) {
             log.error("Exception lors de la suppression du dossier médical: {}", e.getMessage());

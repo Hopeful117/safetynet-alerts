@@ -7,8 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,13 +22,14 @@ public class FirestationRepositoryTest {
 
     @BeforeEach
     void setUp() {
-       firestationRepository = new FirestationRepositoryImpl(safetyNetRepository);
-       when(safetyNetRepository.getFirestations()).thenReturn(new ArrayList<>(List.of(
-               new Firestation("1509 Culver St", 3),
-               new Firestation("29 15th St", 1)
-       )));
-     }
-        @Test
+        firestationRepository = new FirestationRepositoryImpl(safetyNetRepository);
+        when(safetyNetRepository.getFirestations()).thenReturn(new ArrayList<>(List.of(
+                new Firestation("1509 Culver St", 3),
+                new Firestation("29 15th St", 1)
+        )));
+    }
+
+    @Test
     void getALl_should_return_all_firestations() {
         // Given
 
@@ -41,7 +40,7 @@ public class FirestationRepositoryTest {
         assert result.size() == 2;
     }
 
-     @Test
+    @Test
     void getAllByStationNumber_should_return_firestations_with_given_station_number() {
         // Given
 
@@ -50,9 +49,9 @@ public class FirestationRepositoryTest {
 
         // Then
         assert result.size() == 1;
-     }
+    }
 
-     @Test
+    @Test
     void getAllByStationNumber_should_return_empty_list_if_no_firestation_with_given_station_number() {
         // Given
 
@@ -61,9 +60,9 @@ public class FirestationRepositoryTest {
 
         // Then
         assert result.isEmpty();
-     }
+    }
 
-     @Test
+    @Test
     void findByAddress_should_return_firestation_with_given_address() {
         // Given
 
@@ -72,8 +71,9 @@ public class FirestationRepositoryTest {
 
         // Then
         assert result.isPresent();
-     }
-     @Test
+    }
+
+    @Test
     void findByAddress_should_return_empty_optional_if_no_firestation_with_given_address() {
         // Given
 
@@ -82,9 +82,9 @@ public class FirestationRepositoryTest {
 
         // Then
         assert result.isEmpty();
-     }
+    }
 
-     @Test
+    @Test
     void save_should_add_firestation_to_repository() {
         // Given
         var firestation = new Firestation("new address", 99);
@@ -94,9 +94,9 @@ public class FirestationRepositoryTest {
 
         // Then
         assert firestationRepository.getAll().contains(firestation);
-     }
+    }
 
-     @Test
+    @Test
     void delete_should_remove_firestation_from_repository() {
         // Given
         var firestation = new Firestation("1509 Culver St", 3);
@@ -106,8 +106,7 @@ public class FirestationRepositoryTest {
 
         // Then
         assert !firestationRepository.getAll().contains(firestation);
-     }
-
+    }
 
 
 }

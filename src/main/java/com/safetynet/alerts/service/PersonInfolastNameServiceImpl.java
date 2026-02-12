@@ -19,8 +19,9 @@ import java.util.List;
 @Service
 
 public class PersonInfolastNameServiceImpl implements PersonInfolastNameService {
-   private final PersonRepository personRepository;
-   private final MedicalRecordRepository medicalRecordRepository;
+    private final PersonRepository personRepository;
+    private final MedicalRecordRepository medicalRecordRepository;
+
     /**
      * Retrieves person information for all residents with the specified last name.
      *
@@ -29,17 +30,14 @@ public class PersonInfolastNameServiceImpl implements PersonInfolastNameService 
      */
     @Override
     public ResidentsDTO getPersonInfoByLastName(String lastName) {
+        log.debug("Retrieving person information for last name: {}", lastName);
         final List<Person> residents = personRepository.getAll().stream()
                 .filter(p -> p.getLastName().equalsIgnoreCase(lastName))
                 .toList();
-        final List<MedicalRecord> records= medicalRecordRepository.getAll();
+        final List<MedicalRecord> records = medicalRecordRepository.getAll();
 
 
-
-
-
-
-        return new ResidentsDTO(residents,records);
+        return new ResidentsDTO(residents, records);
     }
 
 }

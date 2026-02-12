@@ -19,7 +19,7 @@ public class CommunityEmailResponseServiceImpl implements CommunityEmailResponse
     private final PersonRepository personRepository;
 
 
-/**
+    /**
      * Retrieves a list of unique email addresses for all residents in the specified city.
      *
      * @param city The name of the city.
@@ -27,7 +27,7 @@ public class CommunityEmailResponseServiceImpl implements CommunityEmailResponse
      */
     @Override
     public Set<String> getCommunityEmailResponse(String city) {
-        log.info("Recherche des emails pour la ville : {}", city);
+        log.debug("Recherche des emails pour la ville : {}", city);
 
         return personRepository.getAll().stream()
                 .filter(p -> p.getCity().trim().equalsIgnoreCase(city))

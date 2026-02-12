@@ -18,7 +18,7 @@ import java.util.Optional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class MedicalRecordRepositoryImpl implements MedicalRecordRepository{
+public class MedicalRecordRepositoryImpl implements MedicalRecordRepository {
     final SafetyNetRepository safetyNetRepository;
 
 
@@ -40,7 +40,7 @@ public class MedicalRecordRepositoryImpl implements MedicalRecordRepository{
      * @return an Optional containing the found medical record, or empty if not found
      */
     @Override
-    public Optional<MedicalRecord> findByFirstAndLastName(String firstname,String lastname) {
+    public Optional<MedicalRecord> findByFirstAndLastName(String firstname, String lastname) {
         return safetyNetRepository.getMedicalRecords().stream()
                 .filter(medicalRecord -> medicalRecord.getFirstName().equalsIgnoreCase(firstname))
                 .filter(medicalRecord -> medicalRecord.getLastName().equalsIgnoreCase(lastname))
@@ -54,7 +54,7 @@ public class MedicalRecordRepositoryImpl implements MedicalRecordRepository{
      * @param medicalRecord the medical record to be saved
      */
     @Override
-    public void save(MedicalRecord medicalRecord){
+    public void save(MedicalRecord medicalRecord) {
         getAll().add(medicalRecord);
     }
 
@@ -64,7 +64,7 @@ public class MedicalRecordRepositoryImpl implements MedicalRecordRepository{
      * @param medicalRecord the medical record to be deleted
      */
     @Override
-    public void delete(MedicalRecord medicalRecord){
+    public void delete(MedicalRecord medicalRecord) {
         getAll().remove(medicalRecord);
     }
 }

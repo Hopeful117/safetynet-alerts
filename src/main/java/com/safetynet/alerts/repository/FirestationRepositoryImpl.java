@@ -56,6 +56,7 @@ public class FirestationRepositoryImpl implements FirestationRepository {
                 .filter(firestation -> address.trim().equalsIgnoreCase(firestation.getAddress()))
                 .findFirst();
     }
+
     /**
      * Saves a fire station to the repository.
      *
@@ -67,10 +68,10 @@ public class FirestationRepositoryImpl implements FirestationRepository {
     }
 
     /**
-    * Deletes a fire station from the repository.
-    *
-    * @param firestation the fire station to delete
-    */
+     * Deletes a fire station from the repository.
+     *
+     * @param firestation the fire station to delete
+     */
     @Override
     public void delete(Firestation firestation) {
         getAll().remove(firestation);

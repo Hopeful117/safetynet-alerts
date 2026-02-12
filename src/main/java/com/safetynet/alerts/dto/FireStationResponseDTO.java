@@ -1,4 +1,5 @@
 package com.safetynet.alerts.dto;
+
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
 import lombok.AllArgsConstructor;
@@ -15,16 +16,15 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class FireStationResponseDTO {
-    private List <FireStationPersonDTO> persons;
+    private List<FireStationPersonDTO> persons;
     private int adultCount;
     private int childCount;
+
     public FireStationResponseDTO(List<Person> coveredPersons, List<MedicalRecord> medicalRecords) {
         this.persons = coveredPersons.stream().map(FireStationPersonDTO::new).toList();
         this.adultCount = medicalRecords.stream().filter(m -> !m.isMinor()).toList().size();
         this.childCount = medicalRecords.stream().filter(MedicalRecord::isMinor).toList().size();
     }
-
-
 
 
     @Data
@@ -35,16 +35,14 @@ public class FireStationResponseDTO {
         private String address;
         private String phone;
 
-    public FireStationPersonDTO(Person person){
-        this.firstName = person.getFirstName();
-        this.lastName = person.getLastName();
-        this.address = person.getAddress();
-        this.phone = person.getPhone();
+        public FireStationPersonDTO(Person person) {
+            this.firstName = person.getFirstName();
+            this.lastName = person.getLastName();
+            this.address = person.getAddress();
+            this.phone = person.getPhone();
 
 
-
-
-    }
+        }
 
 
     }

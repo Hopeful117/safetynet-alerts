@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 /**
@@ -22,15 +21,16 @@ public class PersonServiceImpl implements PersonService {
 
     /**
      * Adds a new person to the repository.
+     *
      * @param personRequestDTO The DTO containing the person's information.
      * @return true if the person was added successfully, false if a person with the same name already exists.
      */
     @Override
     public boolean addPerson(PersonRequestDTO personRequestDTO) {
-        log.info("Ajout d'une nouvelle personne : {} {}", personRequestDTO.getFirstName(), personRequestDTO.getLastName());
+        log.debug("Ajout d'une nouvelle personne : {} {}", personRequestDTO.getFirstName(), personRequestDTO.getLastName());
         Optional<Person> exists = personRepository.findByFirstnameAndLastname(personRequestDTO.getFirstName(), personRequestDTO.getLastName());
         if (exists.isPresent()) {
-            log.warn("Personne déjà existante : {} {}", personRequestDTO.getFirstName(), personRequestDTO.getLastName());
+            log.error("Personne déjà existante : {} {}", personRequestDTO.getFirstName(), personRequestDTO.getLastName());
             return false;
         }
         Person person = new Person(
@@ -43,19 +43,20 @@ public class PersonServiceImpl implements PersonService {
                 personRequestDTO.getEmail()
         );
         personRepository.save(person);
-        log.info("Personne ajoutée avec succès : {} {}", person.getFirstName(), person.getLastName());
+        log.debug("Personne ajoutée avec succès : {} {}", person.getFirstName(), person.getLastName());
 
         return true;
     }
 
     /**
      * Updates an existing person's information.
+     *
      * @param personRequestDTO The DTO containing the updated person's information.
      * @return true if the person was updated successfully, false if the person does not exist.
      */
     @Override
     public boolean updatePerson(PersonRequestDTO personRequestDTO) {
-        log.info("Mise à jour de la personne : {} {}", personRequestDTO.getFirstName(), personRequestDTO.getLastName());
+        log.debug("Mise à jour de la personne : {} {}", personRequestDTO.getFirstName(), personRequestDTO.getLastName());
         Optional<Person> existingPerson = personRepository.getAll().stream()
                 .filter(p -> p.getFirstName().equalsIgnoreCase(personRequestDTO.getFirstName()))
                 .filter(p -> p.getLastName().equalsIgnoreCase(personRequestDTO.getLastName()))
@@ -68,7 +69,7 @@ public class PersonServiceImpl implements PersonService {
             existingPerson.get().setZip(personRequestDTO.getZip());
             existingPerson.get().setPhone(personRequestDTO.getPhone());
             existingPerson.get().setEmail(personRequestDTO.getEmail());
-            log.info("Personne mise à jour avec succès : {} {}", existingPerson.get().getFirstName(), existingPerson.get().getLastName());
+            log.debug("Personne mise à jour avec succès : {} {}", existingPerson.get().getFirstName(), existingPerson.get().getLastName());
             personRepository.save(existingPerson.get());
             return true;
 
@@ -83,14 +84,15 @@ public class PersonServiceImpl implements PersonService {
 
     /**
      * Deletes a person from the repository.
+     *
      * @param firstName the first name of the person to delete
-     * @param lastName the last name of the person to delete
+     * @param lastName  the last name of the person to delete
      * @return true if the person was deleted successfully, false if the person does not exist.
      */
     @Override
     public boolean deletePerson(String firstName, String lastName) {
 
-        log.info("Suppression de la personne : {} {}", firstName, lastName);
+        log.debug("Suppression de la personne : {} {}", firstName, lastName);
         Optional<Person> personToDelete = personRepository.findByFirstnameAndLastname(firstName, lastName);
         if (personToDelete.isPresent()) {
             personRepository.delete(personToDelete.get());
@@ -98,7 +100,7 @@ public class PersonServiceImpl implements PersonService {
             return true;
 
         }
-        log.debug("Erreur lors de la suppression");
+        log.error("Erreur lors de la suppression");
         return false;
 
 

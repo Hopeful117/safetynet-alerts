@@ -27,7 +27,7 @@ public class PersonInfolastNameController {
     @GetMapping("/personInfolastName/lastName")
     public ResidentsDTO getPersonInfolastName(@RequestParam String lastName) {
         log.info("Requête GET /personInfolastName/lastName reçue");
-        ResidentsDTO response= personInfolastNameService.getPersonInfoByLastName(lastName);
+        ResidentsDTO response = personInfolastNameService.getPersonInfoByLastName(lastName);
         log.info("Réponse GET /personInfolastName/lastName traitée");
         return response;
 

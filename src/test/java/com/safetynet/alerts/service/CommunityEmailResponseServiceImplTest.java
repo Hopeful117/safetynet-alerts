@@ -11,12 +11,13 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 /**
  * Test class for CommunityEmailResponseServiceImpl.
  */
 class CommunityEmailResponseServiceImplTest {
 
-    private PersonRepository  personRepository;
+    private PersonRepository personRepository;
     private CommunityEmailResponseServiceImpl service;
 
     @BeforeEach
@@ -47,6 +48,7 @@ class CommunityEmailResponseServiceImplTest {
         assertTrue(response.contains("john@email.com"));
         assertTrue(response.contains("tenley@email.com"));
     }
+
     /**
      * Test for getCommunityEmailResponse method when no persons match the given city.
      */
@@ -58,13 +60,14 @@ class CommunityEmailResponseServiceImplTest {
         ));
 
         // WHEN
-       Set<String> response =
+        Set<String> response =
                 service.getCommunityEmailResponse("Culver");
 
         // THEN
         assertNotNull(response);
         assertTrue(response.isEmpty());
     }
+
     /**
      * Test for getCommunityEmailResponse method to ensure city matching is case insensitive.
      */
@@ -76,7 +79,7 @@ class CommunityEmailResponseServiceImplTest {
         ));
 
         // WHEN
-        Set <String>response =
+        Set<String> response =
                 service.getCommunityEmailResponse("culver");
 
         // THEN

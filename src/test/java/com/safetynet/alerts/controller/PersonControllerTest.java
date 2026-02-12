@@ -15,6 +15,7 @@ import tools.jackson.databind.ObjectMapper;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 /**
  * Test class for PersonController.
  */
@@ -30,9 +31,9 @@ class PersonControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-@BeforeEach
-void setUp() {
-         PersonRequestDTO dto= new PersonRequestDTO(
+    @BeforeEach
+    void setUp() {
+        PersonRequestDTO dto = new PersonRequestDTO(
                 "John",
                 "Doe",
                 "123 Main St",
@@ -40,10 +41,12 @@ void setUp() {
                 "97451",
                 "111-111",
                 "john@doe.com"
-         );
+        );
     }
-/**
+
+    /**
      * Test for addPerson endpoint.
+     *
      * @throws Exception if an error occurs during the test execution.
      */
     @Test
@@ -70,15 +73,17 @@ void setUp() {
 
 
     }
-/**
+
+    /**
      * Test for addPerson endpoint when an exception is thrown.
+     *
      * @throws Exception if an error occurs during the test execution.
      */
 
     @Test
     void addPerson_shouldReturnConflict_whenPersonAlreadyExists() throws Exception {
 
-        when (personService.addPerson(any(PersonRequestDTO.class)))
+        when(personService.addPerson(any(PersonRequestDTO.class)))
                 .thenReturn(false);
 
         mockMvc.perform(post("/person")
@@ -99,6 +104,7 @@ void setUp() {
 
     /**
      * Test for addPerson endpoint when an exception is thrown.
+     *
      * @throws Exception if an error occurs during the test execution.
      */
     @Test
@@ -123,8 +129,10 @@ void setUp() {
                                 """))
                 .andExpect(status().isBadRequest());
     }
-/**
+
+    /**
      * Test for updatePerson endpoint.
+     *
      * @throws Exception
      */
     @Test
@@ -150,10 +158,13 @@ void setUp() {
                                 """))
                 .andExpect(status().isAccepted());
 
-        verify(personService).updatePerson(any(PersonRequestDTO.class));;
+        verify(personService).updatePerson(any(PersonRequestDTO.class));
+        ;
     }
-/**
+
+    /**
      * Test for updatePerson endpoint when person is not found.
+     *
      * @throws Exception
      */
     @Test
@@ -162,7 +173,6 @@ void setUp() {
 
         when(personService.updatePerson(any(PersonRequestDTO.class)))
                 .thenReturn(false);
-
 
 
         mockMvc.perform(put("/person")
@@ -181,8 +191,9 @@ void setUp() {
                 .andExpect(status().isNotFound());
     }
 
-/**
+    /**
      * Test for updatePerson endpoint when an exception is thrown.
+     *
      * @throws Exception
      */
     @Test
@@ -202,12 +213,14 @@ void setUp() {
                                     "phone": "111-111",
                                     "email": "john@doe.com"
                                     }
-                                    """))
+                                """))
                 .andExpect(status().isBadRequest());
     }
-/**
+
+    /**
      * Test for deletePerson endpoint.
      * Test for deletePerson endpoint when person does not exist.
+     *
      * @throws Exception
      */
     @Test
@@ -221,8 +234,10 @@ void setUp() {
 
         verify(personService).deletePerson("John", "Doe");
     }
-/**
+
+    /**
      * Test for deletePerson endpoint when an exception is thrown.
+     *
      * @throws Exception
      */
     @Test

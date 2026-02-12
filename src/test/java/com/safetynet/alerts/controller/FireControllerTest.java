@@ -3,7 +3,6 @@ package com.safetynet.alerts.controller;
 import com.safetynet.alerts.dto.FireResponseDTO;
 import com.safetynet.alerts.dto.ResidentsDTO;
 import com.safetynet.alerts.service.FireResponseService;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -14,8 +13,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.List;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 /**
  * Test class for FireController.
  */
@@ -27,8 +27,10 @@ class FireControllerTest {
 
     @MockitoBean
     private FireResponseService fireResponseService;
-/**
+
+    /**
      * Test for fire endpoint.
+     *
      * @throws Exception if an error occurs during the request
      */
     @Test
@@ -39,9 +41,9 @@ class FireControllerTest {
         FireResponseDTO responseDTO = new FireResponseDTO(
 
 
-                        (
-                                List.of
-                                        (new ResidentsDTO.Resident(
+                (
+                        List.of
+                                (new ResidentsDTO.Resident(
                                                 "Tenley",
                                                 "Boyd",
                                                 "address",
@@ -50,18 +52,16 @@ class FireControllerTest {
                                                 List.of("med2"),
                                                 List.of("allergy2")
                                         ),
-                                new ResidentsDTO.Resident(
-                                "John",
-                                "Boyd",
-                                "address",
-                                "111-111",
-                                40,
-                                List.of("med1"),
-                                List.of("allergy1")
-                                )
-                        )),3);
-
-
+                                        new ResidentsDTO.Resident(
+                                                "John",
+                                                "Boyd",
+                                                "address",
+                                                "111-111",
+                                                40,
+                                                List.of("med1"),
+                                                List.of("allergy1")
+                                        )
+                                )), 3);
 
 
         when(fireResponseService.getFireResponseByAddress(address))

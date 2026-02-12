@@ -11,11 +11,14 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 /**
  * Test class for FloodController.
  */
@@ -30,47 +33,48 @@ class FloodControllerTest {
 
     /**
      * Test for flood endpoint.
+     *
      * @throws Exception if an error occurs during the test execution.
      */
     @Test
     void flood_shouldReturnHouseholdsGroupedByAddress() throws Exception {
         // GIVEN
-        int stations = 3;
+        Set<Integer> stations = Set.of(3);
 
         FloodResponseDTO responseDTO = new FloodResponseDTO(
                 Map.of(
                         "1509 Culver St",
 
-                               (
-                                        List.of(
-                                                new ResidentsDTO.Resident(
-                                                        "John", "Boyd", "1509 Culver St",
-                                                        "841-874-6512", 40,
-                                                        List.of("med1:100mg"),
-                                                        List.of("allergy1")
-                                                ),
-                                                new ResidentsDTO.Resident(
-                                                        "Jane", "Doe", "1509 Culver St",
-                                                        "841-874-6513", 35,
-                                                        List.of("med2:200mg"),
-                                                        List.of("allergy2")
-                                                )
+                        (
+                                List.of(
+                                        new ResidentsDTO.Resident(
+                                                "John", "Boyd", "1509 Culver St",
+                                                "841-874-6512", 40,
+                                                List.of("med1:100mg"),
+                                                List.of("allergy1")
+                                        ),
+                                        new ResidentsDTO.Resident(
+                                                "Jane", "Doe", "1509 Culver St",
+                                                "841-874-6513", 35,
+                                                List.of("med2:200mg"),
+                                                List.of("allergy2")
                                         )
                                 )
+                        )
                         ,
 
                         "29 15th St",
 
-                                (
-                                        List.of(
-                                                new ResidentsDTO.Resident(
-                                                        "Peter", "Smith", "29 15th St",
-                                                        "841-874-6514", 25,
-                                                        List.of("med3:300mg"),
-                                                        List.of("allergy3")
-                                                )
+                        (
+                                List.of(
+                                        new ResidentsDTO.Resident(
+                                                "Peter", "Smith", "29 15th St",
+                                                "841-874-6514", 25,
+                                                List.of("med3:300mg"),
+                                                List.of("allergy3")
                                         )
                                 )
+                        )
 
                 )
         );

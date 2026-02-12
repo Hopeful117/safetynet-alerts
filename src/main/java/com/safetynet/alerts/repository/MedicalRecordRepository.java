@@ -10,8 +10,11 @@ import java.util.Optional;
  * Provides methods to retrieve, save, and delete medical records.
  */
 public interface MedicalRecordRepository {
-    List<MedicalRecord>getAll();
+    List<MedicalRecord> getAll();
+
     Optional<MedicalRecord> findByFirstAndLastName(String firstname, String lastname);
+
     void save(MedicalRecord medicalRecord);
+
     void delete(MedicalRecord medicalRecord);
 }

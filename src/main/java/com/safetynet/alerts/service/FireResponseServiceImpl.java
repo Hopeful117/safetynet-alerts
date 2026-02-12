@@ -31,35 +31,31 @@ public class FireResponseServiceImpl implements FireResponseService {
      * Retrieves fire response information for a given address.
      *
      * @param address The address to retrieve fire response information for.
-     * @throws IllegalArgumentException if the address is not found in the firestation repository.
-     * @throws RuntimeException if there is an error during data retrieval or processing.
      * @return A FireResponseDTO containing the residents and station number for the given address, or null if the address is not found.
+     * @throws IllegalArgumentException if the address is not found in the firestation repository.
+     * @throws RuntimeException         if there is an error during data retrieval or processing.
      */
     @Override
     public FireResponseDTO getFireResponseByAddress(String address) {
-        log.info("Recherche des résidents pour l'adresse {}", address);
+        log.debug("Recherche des résidents pour l'adresse {}", address);
         Optional<Firestation> station = firestationRepository.findByAddress(address);
         if (station.isPresent()) {
             int stationNumber = station.get().getStation();
 
             // Récupération des personnes à l'adresse donnée
             List<Person> residents = personRepository.getAllByAddress(address);
-            List<MedicalRecord> medicalRecords=medicalRecordRepository.getAll().stream().filter(mr -> residents.stream()
-                    .anyMatch(p -> p.getFirstName().trim().equalsIgnoreCase(mr.getFirstName()) && p.getLastName().trim().equalsIgnoreCase(mr.getLastName())))
-                    .toList();;
+            List<MedicalRecord> medicalRecords = medicalRecordRepository.getAll().stream().filter(mr -> residents.stream()
+                            .anyMatch(p -> p.getFirstName().trim().equalsIgnoreCase(mr.getFirstName()) && p.getLastName().trim().equalsIgnoreCase(mr.getLastName())))
+                    .toList();
+            ;
             ResidentsDTO residentDTOs = new ResidentsDTO(residents, medicalRecords);
 
 
-
-
-            return  new FireResponseDTO(residentDTOs.getResidents(), stationNumber);
+            return new FireResponseDTO(residentDTOs.getResidents(), stationNumber);
         }
 
         return null;
     }
-
-
-
 
 
 }

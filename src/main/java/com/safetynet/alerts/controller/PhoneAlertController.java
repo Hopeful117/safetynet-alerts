@@ -27,7 +27,7 @@ public class PhoneAlertController {
     @GetMapping("/phoneAlert")
     public Set<String> getPhoneAlert(@RequestParam int firestation) {
         log.debug("Requête GET /phoneAlert?firestation={} reçue", firestation);
-       Set<String> response = phoneAlertService.getPhoneAlertByStationNumber(firestation);
+        Set<String> response = phoneAlertService.getPhoneAlertByStationNumber(firestation);
         log.info("Réponse GET /phoneAlert: {} numéros de téléphone trouvés", response.size());
         return response;
     }

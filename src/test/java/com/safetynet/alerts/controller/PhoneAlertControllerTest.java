@@ -14,7 +14,8 @@ import tools.jackson.databind.ObjectMapper;
 import java.util.Set;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * Test class for PhoneAlertController.
@@ -34,14 +35,16 @@ public class PhoneAlertControllerTest {
     void setUp() {
         /** Setup before each test if necessary */
     }
+
     /**
      * Test for phoneAlert endpoint.
+     *
      * @throws Exception
      */
     @Test
     void phoneAlert_shouldReturnDistinctPhones() throws Exception {
         // GIVEN
-       Set <String> response= Set.of("111", "222");
+        Set<String> response = Set.of("111", "222");
 
 
         when(phoneAlertService.getPhoneAlertByStationNumber(3))

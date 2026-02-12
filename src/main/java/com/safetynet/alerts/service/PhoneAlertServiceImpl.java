@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Set;
 import java.util.stream.Collectors;
+
 /**
  * Service implementation for retrieving phone alerts by fire station number.
  */
@@ -17,8 +18,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class PhoneAlertServiceImpl implements PhoneAlertService {
-   private final FirestationRepository firestationRepository;
-   private final PersonRepository personRepository;
+    private final FirestationRepository firestationRepository;
+    private final PersonRepository personRepository;
+
     /**
      * Retrieves a list of unique phone numbers for all residents covered by the specified fire station number.
      *
@@ -30,20 +32,20 @@ public class PhoneAlertServiceImpl implements PhoneAlertService {
         log.debug("Recherche des numéros de téléphone pour la station numéro {}", stationNumber);
 
 
-        Set<String>addresses = firestationRepository.getAllByStationNumber(stationNumber)
-                        .stream()
-                        .map(Firestation::getAddress)
-                                .collect(Collectors.toSet());
+        Set<String> addresses = firestationRepository.getAllByStationNumber(stationNumber)
+                .stream()
+                .map(Firestation::getAddress)
+                .collect(Collectors.toSet());
 
 
         log.debug("Adresses couvertes par la station {}: {}", stationNumber, addresses);
 
 
         final Set<String> phoneNumbers = personRepository.getAll().stream()
-                        .filter(person->addresses.contains(person.getAddress()))
-                                .map(Person::getPhone)
-                                        .collect(Collectors.toSet());
-        log.info("{} numéros de téléphone trouvés pour la station {}", phoneNumbers.size(), stationNumber);
+                .filter(person -> addresses.contains(person.getAddress()))
+                .map(Person::getPhone)
+                .collect(Collectors.toSet());
+        log.debug("{} numéros de téléphone trouvés pour la station {}", phoneNumbers.size(), stationNumber);
 
         return phoneNumbers;
     }

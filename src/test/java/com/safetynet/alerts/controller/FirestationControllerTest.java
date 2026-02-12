@@ -1,24 +1,24 @@
 package com.safetynet.alerts.controller;
 
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+import com.safetynet.alerts.dto.FireStationResponseDTO;
 import com.safetynet.alerts.dto.FirestationRequestDTO;
+import com.safetynet.alerts.service.FirestationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import com.safetynet.alerts.dto.FireStationResponseDTO;
-import com.safetynet.alerts.service.FirestationService;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
+
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 /**
  * Test class for FirestationController.
  */
@@ -38,6 +38,7 @@ public class FirestationControllerTest {
 
     /**
      * Test for getFirestationCoverage endpoint.
+     *
      * @throws Exception if an error occurs during the test execution.
      */
     @Test
@@ -55,16 +56,18 @@ public class FirestationControllerTest {
                 .andExpect(jsonPath("$.childCount").value(0))
                 .andExpect(jsonPath("$.persons[0].firstName").value("John"));
     }
+
     /**
      * Test for addFirestation endpoint.
+     *
      * @throws Exception if an error occurs during the test execution.
      */
     @Test
     public void testAddFirestationSuccess() throws Exception {
-        FirestationRequestDTO request = new FirestationRequestDTO("123 New St",5);
+        FirestationRequestDTO request = new FirestationRequestDTO("123 New St", 5);
         ObjectMapper objectMapper = new ObjectMapper();
 
-        when(firestationService.addFirestationMapping( "123 New St",5)).thenReturn(true);
+        when(firestationService.addFirestationMapping("123 New St", 5)).thenReturn(true);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/firestation")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -73,15 +76,17 @@ public class FirestationControllerTest {
                 .andExpect(jsonPath("$.address").value("123 New St"))
                 .andExpect(jsonPath("$.station").value(5));
     }
+
     /**
      * Test for addFirestation endpoint when the firestation already exists.
+     *
      * @throws Exception if an error occurs during the test execution.
      */
     @Test
     public void testAddFirestationAlreadyExists() throws Exception {
-        FirestationRequestDTO request = new FirestationRequestDTO( "123 New St",5);
+        FirestationRequestDTO request = new FirestationRequestDTO("123 New St", 5);
         ObjectMapper objectMapper = new ObjectMapper();
-        when(firestationService.addFirestationMapping("123 New St",5))
+        when(firestationService.addFirestationMapping("123 New St", 5))
                 .thenReturn(false);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/firestation")
@@ -89,8 +94,10 @@ public class FirestationControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isConflict());
     }
+
     /**
      * Test for addFirestation endpoint when the input is invalid.
+     *
      * @throws Exception if an error occurs during the test execution.
      */
     @Test
@@ -107,14 +114,15 @@ public class FirestationControllerTest {
 
     /**
      * Test for updateFirestation endpoint.
+     *
      * @throws Exception if an error occurs during the test execution.
      */
     @Test
     void updateFirestation_shouldReturn202_whenSuccess() throws Exception {
-        FirestationRequestDTO request = new FirestationRequestDTO("1509 Culver St",3 );
+        FirestationRequestDTO request = new FirestationRequestDTO("1509 Culver St", 3);
         ObjectMapper objectMapper = new ObjectMapper();
 
-        when(firestationService.updateFirestationMapping( "1509 Culver St",3)).thenReturn(true);
+        when(firestationService.updateFirestationMapping("1509 Culver St", 3)).thenReturn(true);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/firestation")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -122,8 +130,10 @@ public class FirestationControllerTest {
                 .andExpect(status().isAccepted())
                 .andExpect(jsonPath("$.station").value(3));
     }
+
     /**
      * Test for updateFirestation endpoint when the address is not found.
+     *
      * @throws Exception if an error occurs during the test execution.
      */
     @Test
@@ -137,8 +147,10 @@ public class FirestationControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isNotFound());
     }
+
     /**
      * Test for updateFirestation endpoint when an exception is thrown.
+     *
      * @throws Exception if an error occurs during the test execution.
      */
     @Test
@@ -153,8 +165,10 @@ public class FirestationControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
     }
+
     /**
      * Test for deleteFirestation endpoint.
+     *
      * @throws Exception if an error occurs during the test execution.
      */
     @Test
@@ -165,21 +179,25 @@ public class FirestationControllerTest {
                         .param("address", "1509 Culver St"))
                 .andExpect(status().isOk());
     }
+
     /**
      * Test for deleteFirestation endpoint when the address is not found.
+     *
      * @throws Exception
      */
     @Test
     void deleteFirestation_shouldReturn404_whenAddressNotFound() throws Exception {
 
-                when(firestationService.deleteFirestationMapping("Unknown")).thenReturn(false);
+        when(firestationService.deleteFirestationMapping("Unknown")).thenReturn(false);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/firestation")
                         .param("address", "Unknown"))
                 .andExpect(status().isNotFound());
     }
+
     /**
      * Test for deleteFirestation endpoint when an exception is thrown.
+     *
      * @throws Exception if an error occurs during the test execution.
      */
     @Test
@@ -190,7 +208,6 @@ public class FirestationControllerTest {
                         .param("address", "1509 Culver St"))
                 .andExpect(status().isBadRequest());
     }
-
 
 
 }

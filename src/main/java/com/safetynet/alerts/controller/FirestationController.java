@@ -6,8 +6,6 @@ import com.safetynet.alerts.model.Firestation;
 import com.safetynet.alerts.service.FirestationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -49,11 +47,11 @@ public class FirestationController {
             boolean created = firestationService.addFirestationMapping(request.getAddress(), request.getStation());
             if (created) {
                 Firestation firestation = new Firestation(request.getAddress(), request.getStation());
-                log.info("Mapping Firestation créé avec succès: {}", firestation);
+                log.debug("Mapping Firestation créé avec succès: {}", firestation);
                 return ResponseEntity.status(HttpStatus.CREATED).body(firestation);
             }
 
-            log.error("Échec création mapping Firestation: {}{}", request.getAddress(), request.getStation());
+            log.error("Échec création mapping Firestation (conflit): {}{}", request.getAddress(), request.getStation());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         } catch (Exception e) {
             log.error("Erreur lors de la création du mapping Firestation: {}{}", request.getAddress(), request.getStation(), e);
@@ -82,12 +80,12 @@ public class FirestationController {
 
             if (updated) {
                 Firestation updatedMapping = new Firestation(request.getAddress(), request.getStation());
-                log.info("Mapping Firestation mis à jour avec succès: {}{}", request.getAddress(), request.getStation());
+                log.debug("Mapping Firestation mis à jour avec succès: {}{}", request.getAddress(), request.getStation());
                 return ResponseEntity.accepted().body(updatedMapping);
             }
 
 
-            log.error("Échec mise à jour mapping Firestation: {}{}", request.getAddress(), request.getStation());
+            log.error("Firestation non trouvé pour mise à jour: {}{}", request.getAddress(), request.getStation());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
         } catch (Exception e) {
@@ -112,7 +110,7 @@ public class FirestationController {
                 return ResponseEntity.ok().build();
             }
 
-            log.error("Échec suppression mapping Firestation: {}", address);
+            log.error("Firestation non trouvé pour suppression: adresse='{}'", address);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
         } catch (Exception e) {

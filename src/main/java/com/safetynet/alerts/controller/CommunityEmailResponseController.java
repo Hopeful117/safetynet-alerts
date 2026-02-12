@@ -11,7 +11,6 @@ import java.util.Set;
 
 /**
  * Contrôleur pour gérer les requêtes liées aux emails communautaires.
-
  */
 @Slf4j
 @RequiredArgsConstructor
@@ -28,9 +27,9 @@ public class CommunityEmailResponseController {
      */
     @GetMapping("/communityEmail")
     public Set<String> getCommunityEmailResponse(@RequestParam String city) {
-        log.debug("Requête GET /communityEmail?city={} reçue", city);
+        log.info("Requête GET /communityEmail?city={} reçue", city);
         Set<String> response = service.getCommunityEmailResponse(city);
-        log.debug("Réponse GET /communityEmail pour la ville {}: {} emails trouvés",
+        log.info("Réponse GET /communityEmail pour la ville {}: {} emails trouvés",
                 city, response.size());
         return response;
     }

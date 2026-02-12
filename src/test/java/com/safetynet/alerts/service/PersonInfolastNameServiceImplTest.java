@@ -9,11 +9,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 /**
  * Test class for PersonInfolastNameServiceImpl.
  */
@@ -25,10 +25,11 @@ class PersonInfolastNameServiceImplTest {
 
     @BeforeEach
     void setUp() {
-       personRepository= mock(PersonRepository.class);
-       medicalRecordRepository= mock(MedicalRecordRepository.class);
-       service = new PersonInfolastNameServiceImpl(personRepository, medicalRecordRepository);
+        personRepository = mock(PersonRepository.class);
+        medicalRecordRepository = mock(MedicalRecordRepository.class);
+        service = new PersonInfolastNameServiceImpl(personRepository, medicalRecordRepository);
     }
+
     /**
      * Test for getPersonInfoByLastName method.
      */
@@ -66,6 +67,7 @@ class PersonInfolastNameServiceImplTest {
         assertThat(result.getResidents().get(0).getLastName()).isEqualTo("Boyd");
         assertThat(result.getResidents().get(1).getLastName()).isEqualTo("Boyd");
     }
+
     /**
      * Test for getPersonInfoByLastName method when no persons match the last name.
      */

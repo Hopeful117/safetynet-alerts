@@ -1,9 +1,9 @@
 package com.safetynet.alerts.model;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * Class representing the data structure for SafetyNet,

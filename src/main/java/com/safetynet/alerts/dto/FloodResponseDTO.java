@@ -14,6 +14,6 @@ import java.util.Map;
 @AllArgsConstructor
 public class FloodResponseDTO {
 
-    private Map<String ,List<ResidentsDTO.Resident>> households;
+    private Map<String, List<ResidentsDTO.Resident>> households;
 
 }

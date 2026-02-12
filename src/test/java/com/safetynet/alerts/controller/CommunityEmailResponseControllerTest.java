@@ -3,7 +3,6 @@ package com.safetynet.alerts.controller;
 import com.safetynet.alerts.service.CommunityEmailResponseService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -13,7 +12,9 @@ import java.util.Set;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 /**
  * Test class for CommunityEmailResponseController.
  */
@@ -28,8 +29,10 @@ class CommunityEmailResponseControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-/**
+
+    /**
      * Test for getCommunityEmailResponse endpoint.
+     *
      * @throws Exception if an error occurs during the request
      */
     @Test
@@ -38,7 +41,6 @@ class CommunityEmailResponseControllerTest {
         String city = "Culver";
 
         Set<String> response = Set.of("john@email.com", "tenley@email.com");
-
 
 
         when(service.getCommunityEmailResponse(city))

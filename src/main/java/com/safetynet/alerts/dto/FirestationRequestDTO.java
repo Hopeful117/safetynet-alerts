@@ -14,5 +14,4 @@ public class FirestationRequestDTO {
     private int station;
 
 
-
 }

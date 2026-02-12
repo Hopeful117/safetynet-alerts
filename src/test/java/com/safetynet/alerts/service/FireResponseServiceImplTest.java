@@ -1,7 +1,6 @@
 package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.dto.FireResponseDTO;
-import com.safetynet.alerts.dto.ResidentsDTO;
 import com.safetynet.alerts.model.Firestation;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
@@ -14,8 +13,11 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 /**
  * Test class for FireResponseServiceImpl.
  */
@@ -33,7 +35,8 @@ class FireResponseServiceImplTest {
         medicalRecordRepository = mock(MedicalRecordRepository.class);
         service = new FireResponseServiceImpl(firestationRepository, personRepository, medicalRecordRepository);
     }
-/**
+
+    /**
      * Test for getFireResponseByAddress method.
      */
     @Test
@@ -62,8 +65,6 @@ class FireResponseServiceImplTest {
         assertNotNull(response);
         assertEquals(3, response.getStationNumber());
         assertNotNull(response.getResidents());
-
-
 
 
     }

@@ -4,7 +4,6 @@ import com.safetynet.alerts.dto.PersonRequestDTO;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.repository.PersonRepositoryImpl;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,8 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 /**
  * Test class for PersonServiceImpl.
  */
@@ -27,6 +29,7 @@ class PersonServiceImplTest {
         personRepository = mock(PersonRepositoryImpl.class);
         service = new PersonServiceImpl(personRepository);
     }
+
     /**
      * Test for addPerson method.
      */
@@ -51,6 +54,7 @@ class PersonServiceImplTest {
         // THEN
         assertTrue(result);
     }
+
     /**
      * Test for updatePerson method.
      */
@@ -80,6 +84,7 @@ class PersonServiceImplTest {
         assertTrue(updated);
 
     }
+
     /**
      * Test for updatePerson method when person does not exist.
      */
@@ -104,6 +109,7 @@ class PersonServiceImplTest {
         // THEN
         assertFalse(updated);
     }
+
     /**
      * Test for deletePerson method.
      */
@@ -114,7 +120,7 @@ class PersonServiceImplTest {
                 "John", "Doe", "Street", "City", "00000", "000", "mail@mail.com"
         );
         List<Person> persons = new ArrayList<>(List.of(person));
-        when(personRepository.findByFirstnameAndLastname(person.getFirstName(),person.getLastName())).thenReturn(Optional.of(person));
+        when(personRepository.findByFirstnameAndLastname(person.getFirstName(), person.getLastName())).thenReturn(Optional.of(person));
 
         // WHEN
         boolean deleted = service.deletePerson("John", "Doe");
@@ -123,6 +129,7 @@ class PersonServiceImplTest {
         assertTrue(deleted);
 
     }
+
     /**
      * Test for deletePerson method when person does not exist.
      */

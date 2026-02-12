@@ -2,15 +2,13 @@ package com.safetynet.alerts.controller;
 
 import com.safetynet.alerts.dto.PersonRequestDTO;
 import com.safetynet.alerts.model.Person;
-import com.safetynet.alerts.service.FirestationService;
 import com.safetynet.alerts.service.PersonService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 /**
  * Controller pour gérer les requêtes liées aux personnes.
  */
@@ -23,6 +21,7 @@ public class PersonController {
 
     /**
      * Gère les requêtes POST pour ajouter une nouvelle personne.
+     *
      * @param person contenant les informations de la personne à ajouter
      * @return ResponseEntity avec le statut de la création et éventuellement le corps de la réponse
      */
@@ -39,15 +38,16 @@ public class PersonController {
 
             log.error("La personne existe deja: {} {}", person.getFirstName(), person.getLastName());
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Erreur lors de l'ajout de la personne: {} {}", person.getFirstName(), person.getLastName(), e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
     }
+
     /**
      * Gère les requêtes PUT pour mettre à jour une personne existante.
+     *
      * @param person contenant les informations de la personne à mettre à jour
      * @return ResponseEntity avec le statut de la mise à jour et éventuellement le corps de la réponse
      */
@@ -63,18 +63,18 @@ public class PersonController {
 
             log.error("Personne introuvable : {} {}", person.getFirstName(), person.getLastName());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Erreur lors de la mise à jour de la personne: {} {}", person.getFirstName(), person.getLastName(), e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
 
-      }
+    }
 
-/**
+    /**
      * Gère les requêtes DELETE pour supprimer une personne existante.
+     *
      * @param firstName de la personne à supprimer
-     * @param lastName de la personne à supprimer
+     * @param lastName  de la personne à supprimer
      * @return ResponseEntity avec le statut de la suppression et éventuellement le corps de la réponse
      */
     @DeleteMapping("/person")
@@ -88,8 +88,7 @@ public class PersonController {
 
             log.error("Personne non trouvée: {} {}", firstName, lastName);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Erreur lors de la suppression de la personne: {} {}", firstName, lastName, e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }

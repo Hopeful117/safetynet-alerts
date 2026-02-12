@@ -18,46 +18,48 @@ public class MedicalRecordRepositoryTest {
     SafetyNetRepository safetyNetRepository;
     MedicalRecordRepositoryImpl medicalRecordRepository;
 
-     @BeforeEach
+    @BeforeEach
     void setUp() {
         medicalRecordRepository = new MedicalRecordRepositoryImpl(safetyNetRepository);
-        when (safetyNetRepository.getMedicalRecords()).thenReturn(new ArrayList<>(List.of(
+        when(safetyNetRepository.getMedicalRecords()).thenReturn(new ArrayList<>(List.of(
                 new MedicalRecord("John", "Boyd", "03/06/1984", List.of("aznol:350mg", "hydrapermazol:100mg"), List.of("nillacilan")),
                 new MedicalRecord("Jacob", "Boyd", "03/06/1989", List.of(), List.of())
         )));
-     }
+    }
 
-     @Test
+    @Test
     void getAll_ShouldReturnAllMedicalRecords() {
         List<MedicalRecord> medicalRecords = medicalRecordRepository.getAll();
         assert medicalRecords.size() == 2;
-     }
+    }
 
-     @Test
+    @Test
     void findByFirstNameAndLastName_ShouldReturnMedicalRecord() {
         MedicalRecord medicalRecord = medicalRecordRepository.findByFirstAndLastName("John", "Boyd").orElse(null);
         assert medicalRecord != null;
         assert medicalRecord.getFirstName().equals("John");
         assert medicalRecord.getLastName().equals("Boyd");
-     }
+    }
 
-     @Test
+    @Test
     void findByFirstNameAndLastName_ShouldReturnEmpty() {
         assert medicalRecordRepository.findByFirstAndLastName("Jane", "Doe").isEmpty();
-     }
-     @Test
+    }
+
+    @Test
     void save_ShouldAddMedicalRecord() {
         MedicalRecord newRecord = new MedicalRecord("Jane", "Doe", "01/01/1990", List.of(), List.of());
         medicalRecordRepository.save(newRecord);
         assert medicalRecordRepository.getAll().size() == 3;
-     }
-     @Test
+    }
+
+    @Test
     void delete_ShouldRemoveMedicalRecord() {
         MedicalRecord medicalRecord = medicalRecordRepository.findByFirstAndLastName("John", "Boyd").orElse(null);
         assert medicalRecord != null;
         medicalRecordRepository.delete(medicalRecord);
         assert medicalRecordRepository.getAll().size() == 1;
-     }
+    }
 
 
 }

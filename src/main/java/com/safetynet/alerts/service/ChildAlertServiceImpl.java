@@ -4,12 +4,9 @@ import com.safetynet.alerts.dto.ChildAlertResponseDTO;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Service;
-
 
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +36,7 @@ public class ChildAlertServiceImpl implements ChildAlertService {
 
         final List<MedicalRecord> medicalRecords = personRepository.getAllByAddress(address)
                 .stream()
-                .map(person ->medicalRecordRepository.getAll().stream()
+                .map(person -> medicalRecordRepository.getAll().stream()
                         .filter(m -> m.getFirstName().trim().equalsIgnoreCase(person.getFirstName())
                                 && m.getLastName().trim().equalsIgnoreCase(person.getLastName()))
                         .findFirst())

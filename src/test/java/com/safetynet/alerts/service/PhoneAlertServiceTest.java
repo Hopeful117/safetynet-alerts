@@ -15,12 +15,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 /**
  * Test class for PhoneAlertServiceImpl.
  */
 class PhoneAlertServiceTest {
-    private  FirestationRepository firestationRepository;
-    private  PersonRepository personRepository;
+    private FirestationRepository firestationRepository;
+    private PersonRepository personRepository;
     private PhoneAlertServiceImpl service;
 
     @BeforeEach
@@ -29,6 +30,7 @@ class PhoneAlertServiceTest {
         personRepository = mock(PersonRepository.class);
         service = new PhoneAlertServiceImpl(firestationRepository, personRepository);
     }
+
     /**
      * Test for getPhoneAlertByStationNumber method.
      */
@@ -46,7 +48,7 @@ class PhoneAlertServiceTest {
                 new Person("Tenley", "Boyd", "29 15th St", "Culver", "97451", "222", "c")
         ));
 
-       Set<String> response =
+        Set<String> response =
                 service.getPhoneAlertByStationNumber(3);
 
         assertEquals(2, response.size());

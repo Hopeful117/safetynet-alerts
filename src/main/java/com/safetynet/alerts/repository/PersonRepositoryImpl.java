@@ -22,6 +22,7 @@ public class PersonRepositoryImpl implements PersonRepository {
 
     /**
      * Retrieves all Person entities from the SafetyNetRepository.
+     *
      * @return a list of all Person entities
      */
     @Override
@@ -32,6 +33,7 @@ public class PersonRepositoryImpl implements PersonRepository {
 
     /**
      * Retrieves a list of Person entities that match the specified address.
+     *
      * @param address the address to filter by
      * @return a list of Person entities with the specified address
      */
@@ -43,11 +45,12 @@ public class PersonRepositoryImpl implements PersonRepository {
     }
 
     /**
-    * Retrieves a Person entity that matches the specified first and last name.
-    * @param firstName the first name of the person to find
-    * @param lastName the last name of the person to find
-    * @return an Optional containing the found Person entity, or empty if not found
-    */
+     * Retrieves a Person entity that matches the specified first and last name.
+     *
+     * @param firstName the first name of the person to find
+     * @param lastName  the last name of the person to find
+     * @return an Optional containing the found Person entity, or empty if not found
+     */
     @Override
     public Optional<Person> findByFirstnameAndLastname(String firstName, String lastName) {
         return getAll()
@@ -60,6 +63,7 @@ public class PersonRepositoryImpl implements PersonRepository {
 
     /**
      * Saves a Person entity to the repository. If the person already exists, it will be updated.
+     *
      * @param person the Person entity to save
      */
     @Override
@@ -69,10 +73,11 @@ public class PersonRepositoryImpl implements PersonRepository {
 
     /**
      * Deletes a Person entity from the repository.
+     *
      * @param person the Person entity to delete
      */
     @Override
-    public void delete(Person person){
+    public void delete(Person person) {
         getAll().remove(person);
     }
 }

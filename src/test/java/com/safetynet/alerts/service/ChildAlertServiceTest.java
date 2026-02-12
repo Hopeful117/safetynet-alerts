@@ -5,8 +5,6 @@ import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
-import com.safetynet.alerts.repository.PersonRepositoryImpl;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 /**
  * Test class for ChildAlertService.
  */
@@ -23,19 +22,21 @@ class ChildAlertServiceTest {
     private PersonRepository personRepository;
     private MedicalRecordRepository medicalRecordRepository;
     private ChildAlertService service;
+
     @BeforeEach
     void setUp() {
         personRepository = mock(PersonRepository.class);
         medicalRecordRepository = mock(MedicalRecordRepository.class);
-        service = new ChildAlertServiceImpl(personRepository,medicalRecordRepository);
+        service = new ChildAlertServiceImpl(personRepository, medicalRecordRepository);
     }
+
     /**
      * Test for getChildAlertByAddress method.
      */
     @Test
     void getChildAlertByAddress_shouldReturnChildrenAndAdults() {
         // GIVEN
-       when(personRepository.getAllByAddress("1509 Culver St")).thenReturn(List.of(
+        when(personRepository.getAllByAddress("1509 Culver St")).thenReturn(List.of(
                 new Person("John", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6512", "a"),
                 new Person("Jacob", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6513", "b"),
                 new Person("Tenley", "Boyd", "1509 Culver St", "Culver", "97451", "841-874-6514", "c")
@@ -55,6 +56,7 @@ class ChildAlertServiceTest {
         assertEquals(1, response.getChildren().size());
         assertEquals(2, response.getAdults().size());
     }
+
     /**
      * Test for getChildAlertByAddress method when no child is present.
      */

@@ -1,4 +1,5 @@
 package com.safetynet.alerts.model;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -6,6 +7,7 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
 /**
  * Model representing a medical record.
  */
@@ -19,7 +21,7 @@ public class MedicalRecord {
     private List<String> allergies;
 
 
-    public int getAge(){
+    public int getAge() {
         DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
         LocalDate birthDate = LocalDate.parse(birthdate, FORMATTER);
         return Period.between(birthDate, LocalDate.now()).getYears();
@@ -30,7 +32,7 @@ public class MedicalRecord {
         return getAge() < 18;
     }
 
-    public boolean isMajor(){
-        return !isMinor() ;
+    public boolean isMajor() {
+        return !isMinor();
     }
 }

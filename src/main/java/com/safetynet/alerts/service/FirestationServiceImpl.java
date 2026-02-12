@@ -1,17 +1,18 @@
 package com.safetynet.alerts.service;
 
-import java.util.List;
-import java.util.Optional;
+import com.safetynet.alerts.dto.FireStationResponseDTO;
 import com.safetynet.alerts.model.Firestation;
+import com.safetynet.alerts.model.MedicalRecord;
+import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.FirestationRepository;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import com.safetynet.alerts.dto.FireStationResponseDTO;
-import com.safetynet.alerts.model.MedicalRecord;
-import com.safetynet.alerts.model.Person;
+
+import java.util.List;
+import java.util.Optional;
 
 /**
  * Service implementation for firestation-related operations.
@@ -25,24 +26,20 @@ public class FirestationServiceImpl implements FirestationService {
     private final MedicalRecordRepository medicalRecordRepository;
 
 
-
-
-/**
+    /**
      * Retrieves coverage information for a specific fire station number.
      *
      * @param stationNumber The fire station number.
      * @return A FireStationResponseDTO containing the list of persons covered
-     *         by the station, along with counts of adults and children.
+     * by the station, along with counts of adults and children.
      */
     @Override
     public FireStationResponseDTO getFirestationCoverage(int stationNumber) {
         log.debug("Calcul couverture pour la station numéro {}", stationNumber);
 
 
-
         List<String> addresses = firestationRepository.getAllByStationNumber(stationNumber)
-                        .stream().map(Firestation::getAddress).toList();
-
+                .stream().map(Firestation::getAddress).toList();
 
 
         log.debug("Adresses couvertes par la station {}: {}", stationNumber, addresses);
@@ -62,10 +59,10 @@ public class FirestationServiceImpl implements FirestationService {
 
 
         return new FireStationResponseDTO(coveredPersons, medicalRecords);
-            }
+    }
 
 
-            /**
+    /**
      * Adds a new firestation mapping.
      *
      * @param address The address to map.
@@ -77,7 +74,7 @@ public class FirestationServiceImpl implements FirestationService {
     @Override
     public boolean addFirestationMapping(String address, int station) {
         // Vérifie si l'adresse existe déjà
-        log.info("Tentative d'ajout d'un mapping Firestation: adresse='{}', station={}", address, station);
+        log.debug("Tentative d'ajout d'un mapping Firestation: adresse='{}', station={}", address, station);
 
         Optional<Firestation> existing = firestationRepository.findByAddress(address);
 
@@ -90,9 +87,10 @@ public class FirestationServiceImpl implements FirestationService {
 
         Firestation newMapping = new Firestation(address, station);
         firestationRepository.save(newMapping);
-        log.info("Mapping Firestation ajouté avec succès: {}", newMapping);
+        log.debug("Mapping Firestation ajouté avec succès: {}", newMapping);
         return true;
     }
+
     /**
      * Updates an existing firestation mapping.
      *
@@ -102,18 +100,18 @@ public class FirestationServiceImpl implements FirestationService {
      */
     @Override
     public boolean updateFirestationMapping(String address, int station) {
-        log.info("Tentative de mise à jour Firestation: adresse='{}', nouvelle station={}", address, station);
+        log.debug("Tentative de mise à jour Firestation: adresse='{}', nouvelle station={}", address, station);
 
-        Optional<Firestation> firestation =firestationRepository.findByAddress(address);
-                if (firestation.isEmpty()) {
-                    log.error("Aucune Firestation trouvée pour l'adresse '{}'", address);
-                    return false;
-                }
+        Optional<Firestation> firestation = firestationRepository.findByAddress(address);
+        if (firestation.isEmpty()) {
+            log.error("Aucune Firestation trouvée pour l'adresse '{}'", address);
+            return false;
+        }
 
         int oldStation = firestation.get().getStation();
         firestation.get().setStation(station);
 
-        log.info("Firestation mise à jour: adresse='{}', station {} → {}", address, oldStation, station);
+        log.debug("Firestation mise à jour: adresse='{}', station {} → {}", address, oldStation, station);
         return true;
     }
 
@@ -122,23 +120,21 @@ public class FirestationServiceImpl implements FirestationService {
      *
      * @param address The address of the mapping to delete.
      * @return true if the mapping was successfully deleted, false if no mapping was found for the given address.
-
      */
     @Override
     public boolean deleteFirestationMapping(String address) {
-        log.info("Tentative de suppression Firestation pour l'adresse '{}'", address);
+        log.debug("Tentative de suppression Firestation pour l'adresse '{}'", address);
         Optional<Firestation> station = firestationRepository.findByAddress(address);
-        if(station.isEmpty()) {
+        if (station.isEmpty()) {
             log.error("Suppression impossible: aucune Firestation trouvée pour '{}'", address);
             return false;
         }
 
 
         firestationRepository.delete(station.get());
-        log.info("Firestation supprimée avec succès pour l'adresse '{}'", address);
+        log.debug("Firestation supprimée avec succès pour l'adresse '{}'", address);
         return true;
     }
-
 
 
 }

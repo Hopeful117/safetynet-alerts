@@ -1,7 +1,6 @@
 package com.safetynet.alerts.dto;
 
 import com.safetynet.alerts.model.MedicalRecord;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -16,7 +15,6 @@ import java.util.List;
  * filtering minors as children and others as adults.
  * The ChildDTO class represents a child with their first name, last name, and age,
  * while the HouseholdMemberDTO class represents an adult household member with their first and last name.
-
  */
 @Data
 @AllArgsConstructor

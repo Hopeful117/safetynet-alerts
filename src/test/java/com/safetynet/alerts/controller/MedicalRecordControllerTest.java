@@ -6,7 +6,6 @@ import com.safetynet.alerts.service.MedicalRecordService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -19,6 +18,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 /**
  * Test class for MedicalRecordController.
  */
@@ -58,6 +58,7 @@ class MedicalRecordControllerTest {
 
     /**
      * Test for addMedicalRecord endpoint.
+     *
      * @throws Exception when an exception occurs during the test execution.
      */
     @Test
@@ -83,6 +84,7 @@ class MedicalRecordControllerTest {
 
     /**
      * Test for addMedicalRecord endpoint when an exception is thrown.
+     *
      * @throws Exception
      */
     @Test
@@ -95,6 +97,7 @@ class MedicalRecordControllerTest {
                         .content("{}"))
                 .andExpect(status().isConflict());
     }
+
     @Test
     void addMedicalRecord_shouldReturnBadRequest_whenExceptionThrown() throws Exception {
         when(medicalRecordService.addMedicalRecord(any()))
@@ -105,8 +108,10 @@ class MedicalRecordControllerTest {
                         .content("{}"))
                 .andExpect(status().isBadRequest());
     }
+
     /**
      * Test for updateMedicalRecord endpoint.
+     *
      * @throws Exception
      */
     @Test
@@ -129,8 +134,10 @@ class MedicalRecordControllerTest {
 
         verify(medicalRecordService).updateMedicalRecord(any(MedicalRecordDTO.class));
     }
+
     /**
      * Test for updateMedicalRecord endpoint when an exception is thrown.
+     *
      * @throws Exception
      */
     @Test
@@ -143,6 +150,7 @@ class MedicalRecordControllerTest {
                         .content("{}"))
                 .andExpect(status().isNotFound());
     }
+
     @Test
     void updateMedicalRecord_shouldReturnBadRequest_whenExceptionThrown() throws Exception {
         when(medicalRecordService.updateMedicalRecord(any()))
@@ -153,8 +161,10 @@ class MedicalRecordControllerTest {
                         .content("{}"))
                 .andExpect(status().isBadRequest());
     }
+
     /**
      * Test for deleteMedicalRecord endpoint.
+     *
      * @throws Exception
      */
     @Test
@@ -169,8 +179,10 @@ class MedicalRecordControllerTest {
 
         verify(medicalRecordService).deleteMedicalRecord("John", "Doe");
     }
+
     /**
      * Test for deleteMedicalRecord endpoint when record not found.
+     *
      * @throws Exception
      */
     @Test
@@ -183,8 +195,10 @@ class MedicalRecordControllerTest {
                         .param("lastName", "Doe"))
                 .andExpect(status().isNotFound());
     }
+
     /**
      * Test for deleteMedicalRecord endpoint when an exception is thrown.
+     *
      * @throws Exception
      */
 
@@ -197,6 +211,6 @@ class MedicalRecordControllerTest {
                         .param("lastName", "Doe"))
                 .andExpect(status().isBadRequest());
 
-}
+    }
 }
 
