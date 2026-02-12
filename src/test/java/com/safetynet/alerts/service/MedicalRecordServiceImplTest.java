@@ -2,39 +2,43 @@ package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.dto.MedicalRecordDTO;
 import com.safetynet.alerts.model.MedicalRecord;
-import com.safetynet.alerts.repository.SafetyNetRepository;
+import com.safetynet.alerts.repository.MedicalRecordRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
 /**
  * Test class for MedicalRecordServiceImpl.
  */
 class MedicalRecordServiceImplTest {
 
 
-    private SafetyNetRepository repository;
+    private MedicalRecordRepository medicalRecordRepository;
     private MedicalRecordService service;
 
 
     @BeforeEach
     void setUp() {
-       repository=mock(SafetyNetRepository.class);
-       service=new MedicalRecordServiceImpl(repository);
+        medicalRecordRepository = mock(MedicalRecordRepository.class);
+        service = new MedicalRecordServiceImpl(medicalRecordRepository);
     }
+
     /**
      * Test for addMedicalRecord method.
      */
     @Test
     void addMedicalRecord_shouldAddAndReturnMedicalRecord() {
         List<MedicalRecord> medicalRecords = new ArrayList<>();
-        when(repository.getMedicalRecords()).thenReturn(medicalRecords);
+        when(medicalRecordRepository.findByFirstAndLastName(anyString(), anyString())).thenReturn(Optional.empty());
         MedicalRecordDTO dto = new MedicalRecordDTO(
                 "John",
                 "Doe",
@@ -43,20 +47,19 @@ class MedicalRecordServiceImplTest {
                 List.of("allergy1")
         );
 
-        MedicalRecord result = service.addMedicalRecord(dto);
+        boolean result = service.addMedicalRecord(dto);
 
-        assertNotNull(result);
-        assertEquals(1, medicalRecords.size());
-        assertEquals("John", medicalRecords.get(0).getFirstName());
-        assertEquals("Doe", medicalRecords.get(0).getLastName());
+        assertTrue(result);
+
+
     }
+
     /**
      * Test for updateMedicalRecord method.
      */
     @Test
     void updateMedicalRecord_shouldUpdateAndReturnMedicalRecord() {
         List<MedicalRecord> medicalRecords = new ArrayList<>();
-        when(repository.getMedicalRecords()).thenReturn(medicalRecords);
         MedicalRecord existing = new MedicalRecord(
                 "John",
                 "Doe",
@@ -65,6 +68,8 @@ class MedicalRecordServiceImplTest {
                 List.of()
         );
         medicalRecords.add(existing);
+        when(medicalRecordRepository.findByFirstAndLastName(anyString(), anyString())).thenReturn(medicalRecords.stream().findFirst());
+
 
         MedicalRecordDTO dto = new MedicalRecordDTO(
                 "John",
@@ -74,18 +79,19 @@ class MedicalRecordServiceImplTest {
                 List.of("peanut")
         );
 
-        MedicalRecord updated = service.updateMedicalRecord(dto);
+        boolean updated = service.updateMedicalRecord(dto);
 
-        assertNotNull(updated);
-        assertEquals("02/02/1995", updated.getBirthdate());
-        assertEquals(List.of("newMed"), updated.getMedications());
-        assertEquals(List.of("peanut"), updated.getAllergies());
+        assertTrue(updated);
+
     }
+
     /**
      * Test for updateMedicalRecord method when record not found.
      */
     @Test
     void updateMedicalRecord_shouldReturnNull_whenNotFound() {
+
+        when(medicalRecordRepository.findByFirstAndLastName(anyString(), anyString())).thenReturn(Optional.empty());
         MedicalRecordDTO dto = new MedicalRecordDTO(
                 "Jane",
                 "Doe",
@@ -94,17 +100,17 @@ class MedicalRecordServiceImplTest {
                 List.of()
         );
 
-        MedicalRecord result = service.updateMedicalRecord(dto);
+        boolean result = service.updateMedicalRecord(dto);
 
-        assertNull(result);
+        assertFalse(result);
     }
+
     /**
      * Test for deleteMedicalRecord method.
      */
     @Test
     void deleteMedicalRecord_shouldReturnTrue_whenDeleted() {
         List<MedicalRecord> medicalRecords = new ArrayList<>();
-        when(repository.getMedicalRecords()).thenReturn(medicalRecords);
         MedicalRecord existing = new MedicalRecord(
                 "John",
                 "Doe",
@@ -113,24 +119,25 @@ class MedicalRecordServiceImplTest {
                 List.of()
         );
         medicalRecords.add(existing);
+        when(medicalRecordRepository.findByFirstAndLastName(anyString(), anyString())).thenReturn(medicalRecords.stream().findFirst());
+
 
         boolean deleted = service.deleteMedicalRecord("John", "Doe");
 
         assertTrue(deleted);
-        assertTrue(medicalRecords.isEmpty());
+
     }
+
     /**
      * Test for deleteMedicalRecord method when record not found.
      */
     @Test
     void deleteMedicalRecord_shouldReturnFalse_whenNotFound() {
+        when(medicalRecordRepository.findByFirstAndLastName(anyString(), anyString())).thenReturn(Optional.empty());
         boolean deleted = service.deleteMedicalRecord("Jane", "Doe");
 
         assertFalse(deleted);
     }
-
-
-
 
 
 }

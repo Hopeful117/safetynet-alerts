@@ -1,12 +1,12 @@
 package com.safetynet.alerts.service;
 
-import com.safetynet.alerts.dto.PersonInfolastNameDTO;
 
+import com.safetynet.alerts.dto.ResidentsDTO;
 
 /**
  * Service interface for retrieving person information by last name.
  */
 
 public interface PersonInfolastNameService {
-    public PersonInfolastNameDTO getPersonInfoByLastName(String lastName);
+    public ResidentsDTO getPersonInfoByLastName(String lastName);
 }

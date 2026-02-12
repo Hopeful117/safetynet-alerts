@@ -1,37 +1,51 @@
 package com.safetynet.alerts.dto;
+
+import com.safetynet.alerts.model.MedicalRecord;
+import com.safetynet.alerts.model.Person;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
 import java.util.List;
 
 /**
  * DTO representing the response for a fire station query,
  * including a list of persons covered by the station
+ * and counts of adults and children based on their medical records.
  */
+
+@Data
+@AllArgsConstructor
 public class FireStationResponseDTO {
-    private List <FireStationPersonDTO> persons;
+    private List<FireStationPersonDTO> persons;
     private int adultCount;
     private int childCount;
-    public FireStationResponseDTO() {
+
+    public FireStationResponseDTO(List<Person> coveredPersons, List<MedicalRecord> medicalRecords) {
+        this.persons = coveredPersons.stream().map(FireStationPersonDTO::new).toList();
+        this.adultCount = medicalRecords.stream().filter(m -> !m.isMinor()).toList().size();
+        this.childCount = medicalRecords.stream().filter(MedicalRecord::isMinor).toList().size();
     }
-    public FireStationResponseDTO(List<FireStationPersonDTO> persons, int adultCount, int childCount) {
-        this.persons = persons;
-        this.adultCount = adultCount;
-        this.childCount = childCount;
+
+
+    @Data
+    @AllArgsConstructor
+    public static class FireStationPersonDTO {
+        private String firstName;
+        private String lastName;
+        private String address;
+        private String phone;
+
+        public FireStationPersonDTO(Person person) {
+            this.firstName = person.getFirstName();
+            this.lastName = person.getLastName();
+            this.address = person.getAddress();
+            this.phone = person.getPhone();
+
+
+        }
+
+
     }
-    public void setPersons(List<FireStationPersonDTO> persons) {
-        this.persons = persons;
-    }
-    public List<FireStationPersonDTO> getPersons() {
-        return persons;
-}
-    public int getAdultCount() {
-        return adultCount;
-    }
-    public void setAdultCount(int adultCount) {
-        this.adultCount = adultCount;
-    }
-    public int getChildCount() {
-        return childCount;
-    }
-    public void setChildCount(int childCount) {
-        this.childCount = childCount;
-    }
+
+
 }

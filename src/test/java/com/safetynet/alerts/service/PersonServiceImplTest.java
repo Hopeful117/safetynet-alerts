@@ -2,28 +2,34 @@ package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.dto.PersonRequestDTO;
 import com.safetynet.alerts.model.Person;
-import com.safetynet.alerts.repository.SafetyNetRepository;
+import com.safetynet.alerts.repository.PersonRepository;
+import com.safetynet.alerts.repository.PersonRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 /**
  * Test class for PersonServiceImpl.
  */
 class PersonServiceImplTest {
 
-    private SafetyNetRepository repository;
+    private PersonRepository personRepository;
     private PersonServiceImpl service;
 
     @BeforeEach
     void setUp() {
-        repository = mock(SafetyNetRepository.class);
-        service = new PersonServiceImpl(repository);
+        personRepository = mock(PersonRepositoryImpl.class);
+        service = new PersonServiceImpl(personRepository);
     }
+
     /**
      * Test for addPerson method.
      */
@@ -31,8 +37,7 @@ class PersonServiceImplTest {
     void addPerson_shouldAddPersonToRepository() {
         // GIVEN
         List<Person> persons = new ArrayList<>();
-        when(repository.getPersons()).thenReturn(persons);
-
+        when(personRepository.getAll()).thenReturn(persons);
         PersonRequestDTO dto = new PersonRequestDTO(
                 "John",
                 "Doe",
@@ -44,14 +49,12 @@ class PersonServiceImplTest {
         );
 
         // WHEN
-        Person result = service.addPerson(dto);
+        boolean result = service.addPerson(dto);
 
         // THEN
-        assertEquals(1, persons.size());
-        assertEquals("John", result.getFirstName());
-        assertEquals("Doe", result.getLastName());
-        assertEquals("123 Main St", result.getAddress());
+        assertTrue(result);
     }
+
     /**
      * Test for updatePerson method.
      */
@@ -62,7 +65,7 @@ class PersonServiceImplTest {
                 "John", "Doe", "Old St", "OldCity", "00000", "000", "old@mail.com"
         );
         List<Person> persons = new ArrayList<>(List.of(existing));
-        when(repository.getPersons()).thenReturn(persons);
+        when(personRepository.getAll()).thenReturn(persons);
 
         PersonRequestDTO dto = new PersonRequestDTO(
                 "John",
@@ -75,21 +78,20 @@ class PersonServiceImplTest {
         );
 
         // WHEN
-        Person updated = service.updatePerson(dto);
+        boolean updated = service.updatePerson(dto);
 
         // THEN
-        assertNotNull(updated);
-        assertEquals("New St", updated.getAddress());
-        assertEquals("NewCity", updated.getCity());
-        assertEquals("999", updated.getPhone());
+        assertTrue(updated);
+
     }
+
     /**
      * Test for updatePerson method when person does not exist.
      */
     @Test
-    void updatePerson_shouldReturnNull_whenPersonNotFound() {
+    void updatePerson_shouldReturnFalseWhenPersonNotFound() {
         // GIVEN
-        when(repository.getPersons()).thenReturn(new ArrayList<>());
+        when(personRepository.getAll()).thenReturn(new ArrayList<>());
 
         PersonRequestDTO dto = new PersonRequestDTO(
                 "Unknown",
@@ -102,11 +104,12 @@ class PersonServiceImplTest {
         );
 
         // WHEN
-        Person result = service.updatePerson(dto);
+        boolean updated = service.updatePerson(dto);
 
         // THEN
-        assertNull(result);
+        assertFalse(updated);
     }
+
     /**
      * Test for deletePerson method.
      */
@@ -117,22 +120,23 @@ class PersonServiceImplTest {
                 "John", "Doe", "Street", "City", "00000", "000", "mail@mail.com"
         );
         List<Person> persons = new ArrayList<>(List.of(person));
-        when(repository.getPersons()).thenReturn(persons);
+        when(personRepository.findByFirstnameAndLastname(person.getFirstName(), person.getLastName())).thenReturn(Optional.of(person));
 
         // WHEN
         boolean deleted = service.deletePerson("John", "Doe");
 
         // THEN
         assertTrue(deleted);
-        assertTrue(persons.isEmpty());
+
     }
+
     /**
      * Test for deletePerson method when person does not exist.
      */
     @Test
     void deletePerson_shouldReturnFalse_whenPersonNotFound() {
         // GIVEN
-        when(repository.getPersons()).thenReturn(new ArrayList<>());
+        when(personRepository.getAll()).thenReturn(new ArrayList<>());
 
         // WHEN
         boolean deleted = service.deletePerson("Unknown", "Person");

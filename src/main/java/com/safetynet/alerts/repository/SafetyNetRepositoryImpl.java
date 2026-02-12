@@ -1,63 +1,57 @@
 package com.safetynet.alerts.repository;
-import java.util.List;
-import java.io.InputStream;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
 
-
-import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.model.Firestation;
 import com.safetynet.alerts.model.MedicalRecord;
-import jakarta.annotation.PostConstruct;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.stereotype.Repository;
+import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.model.SafetyNetData;
+import jakarta.annotation.PostConstruct;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Repository;
+import tools.jackson.databind.ObjectMapper;
+
+import java.io.InputStream;
+import java.util.List;
+
 /**
  * Implementation of SafetyNetRepository that loads data from a JSON file.
+ * The data is loaded once at application startup and stored in memory for fast access.
+ * The JSON file is expected to be located in the resources folder and named "data.json".
+ * The JSON structure should match the SafetyNetData class, which contains lists of persons, firestations, and medical records.
+ * This implementation uses Jackson's ObjectMapper to parse the JSON file and populate the in-memory data structures.
+ * If the JSON file is not found or cannot be parsed, an error is logged and an exception is thrown.
  */
+@Getter
 @Repository
+@Slf4j
 public class SafetyNetRepositoryImpl implements SafetyNetRepository {
     private List<Person> persons;
     private List<Firestation> firestations;
     private List<MedicalRecord> medicalRecords;
-    private static final Logger LOGGER = LogManager.getLogger(SafetyNetRepositoryImpl.class);
+
 
     @PostConstruct
     public void loadData() {
-        LOGGER.info("Loading data from JSON file");
+        log.info("Loading data from JSON file");
         try {
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("data.json");
-        if (inputStream == null) {
-            LOGGER.error("data.json not found in resources");
-            throw new IllegalStateException("data.json not found in resources");
-        }
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("data.json");
 
-        ObjectMapper mapper = new ObjectMapper();
+            if (inputStream == null) {
+                log.error("data.json not found in resources");
+                throw new IllegalStateException("data.json not found in resources");
+            }
+
+            ObjectMapper mapper = new ObjectMapper();
 
             SafetyNetData data = mapper.readValue(inputStream, SafetyNetData.class);
             this.persons = data.getPersons();
             this.firestations = data.getFirestations();
-            this.medicalRecords = data.getMedicalRecords();
-        LOGGER.info("Data loaded successfully from JSON");
+            this.medicalRecords = data.getMedicalrecords();
+            log.info("Data loaded successfully from JSON");
         } catch (Exception e) {
 
-            LOGGER.error("Error loading data from JSON", e);
+            log.error("Error loading data from JSON", e);
         }
-    }
-
-    @Override
-    public List<Person> getPersons() {
-        return persons;
-    }
-
-    @Override
-    public List<Firestation> getFirestations() {
-        return firestations;
-    }
-
-    @Override
-    public List<MedicalRecord> getMedicalRecords() {
-        return medicalRecords;
     }
 }
 

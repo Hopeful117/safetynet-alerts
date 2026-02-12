@@ -1,19 +1,20 @@
 package com.safetynet.alerts.controller;
 
-import com.safetynet.alerts.dto.PersonInfolastNameDTO;
 import com.safetynet.alerts.dto.ResidentsDTO;
 import com.safetynet.alerts.service.PersonInfolastNameService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 /**
  * Test class for PersonInfolastNameController.
  */
@@ -23,10 +24,12 @@ class PersonInfolastNameControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private PersonInfolastNameService personInfolastNameService;
-/**
+
+    /**
      * Test for getPersonInfolastName endpoint.
+     *
      * @throws Exception if an error occurs during the request
      */
     @Test
@@ -34,28 +37,23 @@ class PersonInfolastNameControllerTest {
         // GIVEN
         String lastName = "Boyd";
 
-        PersonInfolastNameDTO responseDTO = new PersonInfolastNameDTO(
+        ResidentsDTO responseDTO = new ResidentsDTO(
                 List.of(
-                        new ResidentsDTO(
-                                "John",
-                                "Boyd",
-                                "1509 Culver St",
-                                "111-111",
-                                40,
-                                List.of("med1"),
-                                List.of("peanut")
+                        new ResidentsDTO.Resident(
+                                "John", "Boyd", "1509 Culver St",
+                                "841-874-6512", 40,
+                                List.of("med1:100mg"),
+                                List.of("allergy1")
                         ),
-                        new ResidentsDTO(
-                                "Tenley",
-                                "Boyd",
-                                "1509 Culver St",
-                                "222-222",
-                                12,
-                                List.of(),
-                                List.of("dust")
+                        new ResidentsDTO.Resident(
+                                "Jane", "Doe", "1509 Culver St",
+                                "841-874-6513", 35,
+                                List.of("med2:200mg"),
+                                List.of("allergy2")
                         )
                 )
         );
+
 
         when(personInfolastNameService.getPersonInfoByLastName(lastName))
                 .thenReturn(responseDTO);
@@ -69,11 +67,13 @@ class PersonInfolastNameControllerTest {
                 .andExpect(jsonPath("$.residents[0].firstName").value("John"))
                 .andExpect(jsonPath("$.residents[0].lastName").value("Boyd"))
                 .andExpect(jsonPath("$.residents[0].age").value(40))
-                .andExpect(jsonPath("$.residents[1].firstName").value("Tenley"))
-                .andExpect(jsonPath("$.residents[1].age").value(12));
+                .andExpect(jsonPath("$.residents[1].firstName").value("Jane"))
+                .andExpect(jsonPath("$.residents[1].age").value(35));
     }
-/**
+
+    /**
      * Test for getPersonInfolastName endpoint when no results are found.
+     *
      * @throws Exception if an error occurs during the request
      */
     @Test
@@ -82,7 +82,7 @@ class PersonInfolastNameControllerTest {
         String lastName = "Unknown";
 
         when(personInfolastNameService.getPersonInfoByLastName(lastName))
-                .thenReturn(new PersonInfolastNameDTO(List.of()));
+                .thenReturn(new ResidentsDTO(List.of()));
 
         // WHEN / THEN
         mockMvc.perform(get("/personInfolastName/lastName")

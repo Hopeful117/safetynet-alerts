@@ -1,35 +1,43 @@
 package com.safetynet.alerts.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.safetynet.alerts.dto.FireStationResponseDTO;
 import com.safetynet.alerts.model.Firestation;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
-import com.safetynet.alerts.repository.SafetyNetRepository;
-
+import com.safetynet.alerts.repository.FirestationRepository;
+import com.safetynet.alerts.repository.MedicalRecordRepository;
+import com.safetynet.alerts.repository.PersonRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 /**
  * Test class for FirestationServiceImpl.
  */
 class FirestationServiceImplTest {
 
-    private SafetyNetRepository repository;
+    private FirestationRepository firestationRepository;
+    private PersonRepository personRepository;
+    private MedicalRecordRepository medicalRecordRepository;
     private FirestationServiceImpl service;
 
     @BeforeEach
     void setUp() {
-        repository = mock(SafetyNetRepository.class);
-        service = new FirestationServiceImpl(repository);
+        firestationRepository = Mockito.mock(FirestationRepository.class);
+        personRepository = Mockito.mock(PersonRepository.class);
+        medicalRecordRepository = Mockito.mock(MedicalRecordRepository.class);
+        service = new FirestationServiceImpl(firestationRepository, personRepository, medicalRecordRepository);
     }
-/**
+
+    /**
      * Test for getFirestationCoverage method.
      */
     @Test
@@ -48,13 +56,15 @@ class FirestationServiceImplTest {
 
         List<MedicalRecord> medicalRecords = Arrays.asList(
                 new MedicalRecord("John", "Boyd", "03/06/1984", null, null),
-                new MedicalRecord("Jacob", "Boyd", "03/06/2010", null, null),
-                new MedicalRecord("Tenley", "Boyd", "02/18/2012", null, null)
+                new MedicalRecord("Jacob", "Boyd", "03/06/2020", null, null),
+                new MedicalRecord("Tenley", "Boyd", "02/18/2022", null, null)
         );
 
-        when(repository.getFirestations()).thenReturn(firestations);
-        when(repository.getPersons()).thenReturn(persons);
-        when(repository.getMedicalRecords()).thenReturn(medicalRecords);
+        when(firestationRepository.getAllByStationNumber(anyInt())).thenReturn(firestations);
+        when(personRepository.getAll()).thenReturn(persons);
+        when(medicalRecordRepository.findByFirstAndLastName("John", "Boyd")).thenReturn(Optional.ofNullable(medicalRecords.get(0)));
+        when(medicalRecordRepository.findByFirstAndLastName("Jacob", "Boyd")).thenReturn(Optional.ofNullable(medicalRecords.get(1)));
+        when(medicalRecordRepository.findByFirstAndLastName("Tenley", "Boyd")).thenReturn(Optional.ofNullable(medicalRecords.get(2)));
 
         // 2️⃣ Appel du service
         FireStationResponseDTO response = service.getFirestationCoverage(3);
@@ -64,19 +74,18 @@ class FirestationServiceImplTest {
         assertEquals(2, response.getChildCount());  // Jacob et Tenley → enfants
         assertEquals(3, response.getPersons().size()); // 3 personnes
     }
+
     /**
      * Test for addFirestationMapping method.
      */
     @Test
     void testAddFirestationMappingSuccess() {
-        List<Firestation> firestations = new ArrayList<>();
-        when(repository.getFirestations()).thenReturn(firestations);
 
-        Firestation result = service.addFirestationMapping("123 New St", 5);
+        when(firestationRepository.findByAddress(anyString())).thenReturn(Optional.empty());
 
-        assertEquals("123 New St", result.getAddress());
-        assertEquals(5, result.getStation());
-        assertEquals(1, firestations.size());
+        boolean result = service.addFirestationMapping("123 New St", 5);
+
+        assertTrue(result);
     }
 
     /**
@@ -86,14 +95,12 @@ class FirestationServiceImplTest {
     void testAddFirestationMappingAlreadyExists() {
         List<Firestation> firestations = new ArrayList<>();
         firestations.add(new Firestation("123 New St", 3));
-        when(repository.getFirestations()).thenReturn(firestations);
-
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            service.addFirestationMapping( "123 New St", 5);
-        });
-
-        assertEquals("Cette adresse a déjà un mapping.", exception.getMessage());
+        when(firestationRepository.findByAddress(anyString())).thenReturn(Optional.ofNullable(firestations.getFirst()));
+        boolean result = service.addFirestationMapping("123 New St", 5);
+        assertFalse(result);
     }
+
+
     /**
      * Test for updateFirestationMapping method.
      */
@@ -102,24 +109,25 @@ class FirestationServiceImplTest {
         // GIVEN
         List<Firestation> firestations = new ArrayList<>();
         firestations.add(new Firestation("1509 Culver St", 2));
-        when(repository.getFirestations()).thenReturn(firestations);
+        when(firestationRepository.findByAddress(anyString())).thenReturn(Optional.ofNullable(firestations.getFirst()));
 
         // WHEN
-        Firestation updated = service.updateFirestationMapping( "1509 Culver St", 3);
+        boolean updated = service.updateFirestationMapping("1509 Culver St", 3);
 
         // THEN
-        assertEquals(3, updated.getStation());
+        assertTrue(updated);
     }
+
     /**
      * Test for updateFirestationMapping method when address does not exist.
      */
     @Test
-    void updateFirestationMapping_shouldThrowException_whenAddressNotFound() {
-        // WHEN / THEN
-        assertThrows(IllegalArgumentException.class, () ->
-                service.updateFirestationMapping( "Unknown Address", 2)
-        );
+    void updateFirestationMapping_shouldReturnFalse_whenAddressDoesntExists() {
+        when(firestationRepository.findByAddress(anyString())).thenReturn(Optional.empty());
+        boolean updated = service.updateFirestationMapping("Unknown Address", 3);
+        assertFalse(updated);
     }
+
     /**
      * Test for deleteFirestationMapping method.
      */
@@ -128,23 +136,25 @@ class FirestationServiceImplTest {
         // GIVEN
         List<Firestation> firestations = new ArrayList<>();
         firestations.add(new Firestation("1509 Culver St", 2));
-        when(repository.getFirestations()).thenReturn(firestations);
+        when(firestationRepository.findByAddress(anyString())).thenReturn(firestations.stream().findFirst());
 
         // WHEN
-        service.deleteFirestationMapping("1509 Culver St");
+        boolean result = service.deleteFirestationMapping("1509 Culver St");
 
         // THEN
-        assertTrue(repository.getFirestations().isEmpty());
+        assertTrue(result);
     }
+
     /**
      * Test for deleteFirestationMapping method when address does not exist.
      */
     @Test
-    void deleteFirestationMapping_shouldThrowException_whenAddressNotFound() {
-        // WHEN / THEN
-        assertThrows(IllegalArgumentException.class, () ->
-                service.deleteFirestationMapping("Unknown Address")
-        );
+    void deleteFirestationMapping_shouldReturnFalse_whenAddressNotFound() {
+        when(firestationRepository.findByAddress(anyString())).thenReturn(Optional.empty());
+
+        boolean result = service.deleteFirestationMapping("Unknown Address");
+
+        assertFalse(result);
     }
 
 }

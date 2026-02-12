@@ -2,79 +2,108 @@ package com.safetynet.alerts.controller;
 
 import com.safetynet.alerts.dto.MedicalRecordDTO;
 import com.safetynet.alerts.model.MedicalRecord;
-import com.safetynet.alerts.service.FloodResponseService;
 import com.safetynet.alerts.service.MedicalRecordService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 /**
  * Controller pour gérer les requêtes liées aux dossiers médicaux.
  */
+@Slf4j
+@RequiredArgsConstructor
 @RestController
 public class MedicalRecordController {
-    private static final Logger LOGGER = LogManager.getLogger(MedicalRecordController.class);
+
     private final MedicalRecordService service;
 
-    public MedicalRecordController(MedicalRecordService service) {
-        this.service = service;
-    }
 
     /**
      * Gère les requêtes POST pour ajouter un nouveau dossier médical.
-     * @param medicalRecordDTO
-     * @return
+     *
+     * @param medicalRecordDTO le DTO du dossier médical à ajouter.
+     * @return une réponse HTTP avec le dossier médical ajouté ou une erreur.
      */
     @PostMapping("/medicalRecord")
     public ResponseEntity<MedicalRecord> addMedicalRecord(@RequestBody MedicalRecordDTO medicalRecordDTO) {
+
+        log.info("Requête POST /medicalRecord reçue");
         try {
-            LOGGER.info("Requête POST /medicalRecord reçue");
-            MedicalRecord medicalRecord = service.addMedicalRecord(medicalRecordDTO);
-            LOGGER.info("Dossier médical ajouté pour : {} {}", medicalRecordDTO.getFirstName(), medicalRecordDTO.getLastName());
-            return ResponseEntity.status(201).body(medicalRecord);
-        } catch (IllegalArgumentException e) {
-            LOGGER.error("Erreur lors de l'ajout du dossier médical: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(null);
+            boolean medicalRecord = service.addMedicalRecord(medicalRecordDTO);
+            if (medicalRecord) {
+                MedicalRecord medicalRecord1 = new MedicalRecord(medicalRecordDTO.getFirstName(),
+                        medicalRecordDTO.getLastName(),
+                        medicalRecordDTO.getBirthdate(),
+                        medicalRecordDTO.getMedications(),
+                        medicalRecordDTO.getAllergies());
+                log.info("Dossier médical ajouté pour : {} {}", medicalRecordDTO.getFirstName(), medicalRecordDTO.getLastName());
+                return ResponseEntity.status(HttpStatus.CREATED).body(medicalRecord1);
+            }
+
+            log.error("Dossier médical déjà existant pour : {} {}", medicalRecordDTO.getFirstName(), medicalRecordDTO.getLastName());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+
+        } catch (Exception e) {
+            log.error("Exception lors de l'ajout du dossier médical: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
-/**
+
+    /**
      * Gère les requêtes PUT pour mettre à jour un dossier médical existant.
-     * @param medicalRecordDTO
-     * @return
+     *
+     * @param medicalRecordDTO le DTO du dossier médical à mettre à jour.
+     * @return une réponse HTTP avec le dossier médical mis à jour ou une erreur.
      */
     @PutMapping("/medicalRecord")
     public ResponseEntity<MedicalRecord> updateMedicalRecord(@RequestBody MedicalRecordDTO medicalRecordDTO) {
+
+        log.info("Requête PUT /medicalRecord reçue pour : {} {}", medicalRecordDTO.getFirstName(), medicalRecordDTO.getLastName());
         try {
-            LOGGER.info("Requête PUT /medicalRecord reçue pour : {} {}", medicalRecordDTO.getFirstName(), medicalRecordDTO.getLastName());
-            MedicalRecord updatedRecord = service.updateMedicalRecord(medicalRecordDTO);
-            if (updatedRecord == null) {
-                return ResponseEntity.notFound().build();
+            boolean updatedRecord = service.updateMedicalRecord(medicalRecordDTO);
+            if (updatedRecord) {
+                log.info("Dossier médical mis à jour pour : {} {}", medicalRecordDTO.getFirstName(), medicalRecordDTO.getLastName());
+                MedicalRecord medicalRecord = new MedicalRecord(medicalRecordDTO.getFirstName(),
+                        medicalRecordDTO.getLastName(),
+                        medicalRecordDTO.getBirthdate(),
+                        medicalRecordDTO.getMedications(),
+                        medicalRecordDTO.getAllergies());
+                return ResponseEntity.accepted().body(medicalRecord);
             }
-            LOGGER.info("Dossier médical mis à jour pour : {} {}", medicalRecordDTO.getFirstName(), medicalRecordDTO.getLastName());
-            return ResponseEntity.ok(updatedRecord);
-        } catch (IllegalArgumentException e) {
-            LOGGER.error("Erreur lors de la mise à jour du dossier médical: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(null);
+            log.error("Dossier médical non trouvé pour mise à jour: {} {}", medicalRecordDTO.getFirstName(), medicalRecordDTO.getLastName());
+            return ResponseEntity.notFound().build();
+
+        } catch (Exception e) {
+            log.error("Exception lors de la mise à jour du dossier médical: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
-/**
+
+    /**
      * Gère les requêtes DELETE pour supprimer un dossier médical existant.
-     * @param firstName
-     * @param lastName
-     * @return
+     *
+     * @param firstName le prénom de la personne dont le dossier médical doit être supprimé.
+     * @param lastName  le nom de famille de la personne dont le dossier médical doit être
+     * @return une réponse HTTP indiquant le résultat de la suppression du dossier médical.
      */
     @DeleteMapping("/medicalRecord")
     public ResponseEntity<MedicalRecord> deleteMedicalRecord(@RequestParam String firstName, @RequestParam String lastName) {
+
+        log.info("Requête DELETE /medicalRecord reçue pour : {} {}", firstName, lastName);
         try {
-            LOGGER.info("Requête DELETE /medicalRecord reçue pour : {} {}", firstName, lastName);
             boolean deleted = service.deleteMedicalRecord(firstName, lastName);
-            if (!deleted) {
-                return ResponseEntity.notFound().build();
+            if (deleted) {
+                return ResponseEntity.noContent().build();
             }
-            return ResponseEntity.status(204).build();
-        } catch (IllegalArgumentException e) {
-            LOGGER.error("Erreur lors de la suppression du dossier médical: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(null);
+
+
+            log.error("Dossier médical non trouvé pour suppression: {} {}", firstName, lastName);
+            return ResponseEntity.notFound().build();
+        } catch (Exception e) {
+            log.error("Exception lors de la suppression du dossier médical: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 }

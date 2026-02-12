@@ -2,17 +2,17 @@ package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.dto.FireStationResponseDTO;
 
-import com.safetynet.alerts.model.Firestation;
-
-
 
 /**
  * Service interface for managing firestation-related operations.
  */
 public interface FirestationService {
-     FireStationResponseDTO getFirestationCoverage(int stationNumber);
-     Firestation addFirestationMapping( String address,int stationNumber);
-     Firestation updateFirestationMapping(String address,int stationNumber);
-     void deleteFirestationMapping(String address);
+    FireStationResponseDTO getFirestationCoverage(int stationNumber);
+
+    boolean addFirestationMapping(String address, int stationNumber);
+
+    boolean updateFirestationMapping(String address, int stationNumber);
+
+    boolean deleteFirestationMapping(String address);
 
 }

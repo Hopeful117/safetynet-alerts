@@ -1,37 +1,38 @@
 package com.safetynet.alerts.service;
 
-import com.safetynet.alerts.dto.CommunityEmailResponseDTO;
-import com.safetynet.alerts.repository.SafetyNetRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.safetynet.alerts.model.Person;
+import com.safetynet.alerts.repository.PersonRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
+import java.util.stream.Collectors;
+
 /**
  * Service implementation for retrieving community email responses.
  */
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class CommunityEmailResponseServiceImpl implements CommunityEmailResponseService {
-    private static final Logger LOGGER = LogManager.getLogger(CommunityEmailResponseServiceImpl.class);
-    private final SafetyNetRepository repository;
+    private final PersonRepository personRepository;
 
-    public CommunityEmailResponseServiceImpl(SafetyNetRepository repository) {
-        this.repository = repository;
-    }
-/**
+
+    /**
      * Retrieves a list of unique email addresses for all residents in the specified city.
      *
      * @param city The name of the city.
-     * @return A CommunityEmailResponseDTO containing the list of email addresses.
+     * @return A set of unique email addresses for residents in the specified city.
      */
     @Override
-    public CommunityEmailResponseDTO getCommunityEmailResponse(String city) {
-        LOGGER.info("Recherche des emails pour la ville : {}", city);
-        var emails = repository.getPersons().stream()
-                .filter(p -> p.getCity().equalsIgnoreCase(city))
-                .map(p -> p.getEmail())
-                .distinct()
-                .toList();
-        LOGGER.debug("Nombre d'emails trouvés pour la ville {}: {}", city, emails.size());
-        return new CommunityEmailResponseDTO(emails);
+    public Set<String> getCommunityEmailResponse(String city) {
+        log.debug("Recherche des emails pour la ville : {}", city);
+
+        return personRepository.getAll().stream()
+                .filter(p -> p.getCity().trim().equalsIgnoreCase(city))
+                .map(Person::getEmail)
+                .collect(Collectors.toSet());
 
     }
 }

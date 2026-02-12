@@ -5,17 +5,20 @@ import com.safetynet.alerts.dto.ResidentsDTO;
 import com.safetynet.alerts.service.FloodResponseService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 /**
  * Test class for FloodController.
  */
@@ -25,51 +28,54 @@ class FloodControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private FloodResponseService floodResponseService;
 
     /**
      * Test for flood endpoint.
-     * @throws Exception
+     *
+     * @throws Exception if an error occurs during the test execution.
      */
     @Test
     void flood_shouldReturnHouseholdsGroupedByAddress() throws Exception {
         // GIVEN
-        List<Integer> stations = List.of(3);
+        Set<Integer> stations = Set.of(3);
 
         FloodResponseDTO responseDTO = new FloodResponseDTO(
                 Map.of(
-                        "1509 Culver St", List.of(
-                                new ResidentsDTO(
-                                        "John",
-                                        "Boyd",
-                                        "1509 Culver St",
-                                        "111-111",
-                                        40,
-                                        List.of("med1"),
-                                        List.of("allergy1")
-                                ),
-                                new ResidentsDTO(
-                                        "Tenley",
-                                        "Boyd",
-                                        "1509 Culver St",
-                                        "222-222",
-                                        12,
-                                        List.of(),
-                                        List.of("peanut")
-                                )
-                        ),
-                        "29 15th St", List.of(
-                                new ResidentsDTO(
-                                        "Peter",
-                                        "Duncan",
-                                        "29 15th St",
-                                        "333-333",
-                                        34,
-                                        List.of("med2"),
-                                        List.of()
+                        "1509 Culver St",
+
+                        (
+                                List.of(
+                                        new ResidentsDTO.Resident(
+                                                "John", "Boyd", "1509 Culver St",
+                                                "841-874-6512", 40,
+                                                List.of("med1:100mg"),
+                                                List.of("allergy1")
+                                        ),
+                                        new ResidentsDTO.Resident(
+                                                "Jane", "Doe", "1509 Culver St",
+                                                "841-874-6513", 35,
+                                                List.of("med2:200mg"),
+                                                List.of("allergy2")
+                                        )
                                 )
                         )
+                        ,
+
+                        "29 15th St",
+
+                        (
+                                List.of(
+                                        new ResidentsDTO.Resident(
+                                                "Peter", "Smith", "29 15th St",
+                                                "841-874-6514", 25,
+                                                List.of("med3:300mg"),
+                                                List.of("allergy3")
+                                        )
+                                )
+                        )
+
                 )
         );
 
@@ -78,7 +84,7 @@ class FloodControllerTest {
 
         // WHEN + THEN
         mockMvc.perform(get("/flood/stations")
-                        .param("stations", "3"))
+                        .param("station", "3"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.households").exists())
                 .andExpect(jsonPath("$.households['1509 Culver St']").isArray())

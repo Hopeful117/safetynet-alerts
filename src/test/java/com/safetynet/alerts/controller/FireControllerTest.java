@@ -3,19 +3,19 @@ package com.safetynet.alerts.controller;
 import com.safetynet.alerts.dto.FireResponseDTO;
 import com.safetynet.alerts.dto.ResidentsDTO;
 import com.safetynet.alerts.service.FireResponseService;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 /**
  * Test class for FireController.
  */
@@ -25,10 +25,12 @@ class FireControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private FireResponseService fireResponseService;
-/**
+
+    /**
      * Test for fire endpoint.
+     *
      * @throws Exception if an error occurs during the request
      */
     @Test
@@ -37,28 +39,30 @@ class FireControllerTest {
         String address = "1509 Culver St";
 
         FireResponseDTO responseDTO = new FireResponseDTO(
-                List.of(
-                        new ResidentsDTO(
-                                "John",
-                                "Boyd",
-                                address,
-                                "111-111",
-                                40,
-                                List.of("med1"),
-                                List.of("allergy1")
-                        ),
-                        new ResidentsDTO(
-                                "Tenley",
-                                "Boyd",
-                                address,
-                                "222-222",
-                                12,
-                                List.of(),
-                                List.of("peanut")
-                        )
-                ),
-                3
-        );
+
+
+                (
+                        List.of
+                                (new ResidentsDTO.Resident(
+                                                "Tenley",
+                                                "Boyd",
+                                                "address",
+                                                "111-111",
+                                                12,
+                                                List.of("med2"),
+                                                List.of("allergy2")
+                                        ),
+                                        new ResidentsDTO.Resident(
+                                                "John",
+                                                "Boyd",
+                                                "address",
+                                                "111-111",
+                                                40,
+                                                List.of("med1"),
+                                                List.of("allergy1")
+                                        )
+                                )), 3);
+
 
         when(fireResponseService.getFireResponseByAddress(address))
                 .thenReturn(responseDTO);
@@ -70,9 +74,9 @@ class FireControllerTest {
                 .andExpect(jsonPath("$.stationNumber").value(3))
                 .andExpect(jsonPath("$.residents").isArray())
                 .andExpect(jsonPath("$.residents.length()").value(2))
-                .andExpect(jsonPath("$.residents[0].firstName").value("John"))
-                .andExpect(jsonPath("$.residents[0].age").value(40))
-                .andExpect(jsonPath("$.residents[1].firstName").value("Tenley"))
-                .andExpect(jsonPath("$.residents[1].age").value(12));
+                .andExpect(jsonPath("$.residents[0].firstName").value("Tenley"))
+                .andExpect(jsonPath("$.residents[0].age").value(12))
+                .andExpect(jsonPath("$.residents[1].firstName").value("John"))
+                .andExpect(jsonPath("$.residents[1].age").value(40));
     }
 }

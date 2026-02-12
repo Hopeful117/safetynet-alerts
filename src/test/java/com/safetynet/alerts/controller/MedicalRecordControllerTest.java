@@ -6,9 +6,9 @@ import com.safetynet.alerts.service.MedicalRecordService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -18,6 +18,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 /**
  * Test class for MedicalRecordController.
  */
@@ -27,12 +28,15 @@ class MedicalRecordControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private MedicalRecordService medicalRecordService;
 
     private MedicalRecordDTO dto;
     private MedicalRecord medicalRecord;
 
+    /**
+     * Set up test data before each test.
+     */
     @BeforeEach
     void setUp() {
         dto = new MedicalRecordDTO(
@@ -54,12 +58,13 @@ class MedicalRecordControllerTest {
 
     /**
      * Test for addMedicalRecord endpoint.
-     * @throws Exception
+     *
+     * @throws Exception when an exception occurs during the test execution.
      */
     @Test
     void addMedicalRecord_shouldReturnCreated() throws Exception {
         when(medicalRecordService.addMedicalRecord(any(MedicalRecordDTO.class)))
-                .thenReturn(medicalRecord);
+                .thenReturn(true);
 
         mockMvc.perform(post("/medicalRecord")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -79,26 +84,40 @@ class MedicalRecordControllerTest {
 
     /**
      * Test for addMedicalRecord endpoint when an exception is thrown.
+     *
      * @throws Exception
      */
     @Test
+    void addMedicalRecord_shouldReturnConflictWhenRecordExist() throws Exception {
+        when(medicalRecordService.addMedicalRecord(any()))
+                .thenReturn(false);
+
+        mockMvc.perform(post("/medicalRecord")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
     void addMedicalRecord_shouldReturnBadRequest_whenExceptionThrown() throws Exception {
         when(medicalRecordService.addMedicalRecord(any()))
-                .thenThrow(new IllegalArgumentException("Invalid data"));
+                .thenThrow(new RuntimeException("Test exception"));
 
         mockMvc.perform(post("/medicalRecord")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
                 .andExpect(status().isBadRequest());
     }
+
     /**
      * Test for updateMedicalRecord endpoint.
+     *
      * @throws Exception
      */
     @Test
-    void updateMedicalRecord_shouldReturnOk() throws Exception {
+    void updateMedicalRecord_shouldReturnAccepted() throws Exception {
         when(medicalRecordService.updateMedicalRecord(any(MedicalRecordDTO.class)))
-                .thenReturn(medicalRecord);
+                .thenReturn(true);
 
         mockMvc.perform(put("/medicalRecord")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -111,26 +130,41 @@ class MedicalRecordControllerTest {
                                   "allergies": []
                                 }
                                 """))
-                .andExpect(status().isOk());
+                .andExpect(status().isAccepted());
 
         verify(medicalRecordService).updateMedicalRecord(any(MedicalRecordDTO.class));
     }
+
     /**
      * Test for updateMedicalRecord endpoint when an exception is thrown.
+     *
      * @throws Exception
      */
     @Test
+    void updateMedicalRecord_shouldReturnNotFoundWhenRecordDoesntExist() throws Exception {
+        when(medicalRecordService.updateMedicalRecord(any()))
+                .thenReturn(false);
+
+        mockMvc.perform(put("/medicalRecord")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void updateMedicalRecord_shouldReturnBadRequest_whenExceptionThrown() throws Exception {
         when(medicalRecordService.updateMedicalRecord(any()))
-                .thenThrow(new IllegalArgumentException("Invalid update"));
+                .thenThrow(new RuntimeException("Test exception"));
 
         mockMvc.perform(put("/medicalRecord")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
                 .andExpect(status().isBadRequest());
     }
+
     /**
      * Test for deleteMedicalRecord endpoint.
+     *
      * @throws Exception
      */
     @Test
@@ -145,8 +179,10 @@ class MedicalRecordControllerTest {
 
         verify(medicalRecordService).deleteMedicalRecord("John", "Doe");
     }
+
     /**
      * Test for deleteMedicalRecord endpoint when record not found.
+     *
      * @throws Exception
      */
     @Test
@@ -159,19 +195,22 @@ class MedicalRecordControllerTest {
                         .param("lastName", "Doe"))
                 .andExpect(status().isNotFound());
     }
+
     /**
      * Test for deleteMedicalRecord endpoint when an exception is thrown.
+     *
      * @throws Exception
      */
+
     @Test
     void deleteMedicalRecord_shouldReturnBadRequest_whenExceptionThrown() throws Exception {
-        when(medicalRecordService.deleteMedicalRecord(any(), any()))
-                .thenThrow(new IllegalArgumentException("Error"));
-
+        when(medicalRecordService.deleteMedicalRecord("John", "Doe"))
+                .thenThrow(new RuntimeException("Test exception"));
         mockMvc.perform(delete("/medicalRecord")
                         .param("firstName", "John")
                         .param("lastName", "Doe"))
                 .andExpect(status().isBadRequest());
+
     }
 }
 

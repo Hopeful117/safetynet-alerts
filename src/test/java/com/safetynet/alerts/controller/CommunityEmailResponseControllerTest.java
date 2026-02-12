@@ -1,18 +1,20 @@
 package com.safetynet.alerts.controller;
 
-import com.safetynet.alerts.dto.CommunityEmailResponseDTO;
 import com.safetynet.alerts.service.CommunityEmailResponseService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.databind.ObjectMapper;
 
-import java.util.List;
+import java.util.Set;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 /**
  * Test class for CommunityEmailResponseController.
  */
@@ -22,10 +24,15 @@ class CommunityEmailResponseControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private CommunityEmailResponseService service;
-/**
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    /**
      * Test for getCommunityEmailResponse endpoint.
+     *
      * @throws Exception if an error occurs during the request
      */
     @Test
@@ -33,21 +40,17 @@ class CommunityEmailResponseControllerTest {
         // GIVEN
         String city = "Culver";
 
-        CommunityEmailResponseDTO responseDTO =
-                new CommunityEmailResponseDTO(
-                        List.of("john@email.com", "tenley@email.com")
-                );
+        Set<String> response = Set.of("john@email.com", "tenley@email.com");
+
 
         when(service.getCommunityEmailResponse(city))
-                .thenReturn(responseDTO);
+                .thenReturn(response);
 
         // WHEN + THEN
         mockMvc.perform(get("/communityEmail")
                         .param("city", city))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.emails").isArray())
-                .andExpect(jsonPath("$.emails.length()").value(2))
-                .andExpect(jsonPath("$.emails[0]").value("john@email.com"))
-                .andExpect(jsonPath("$.emails[1]").value("tenley@email.com"));
+                .andExpect(content().json(objectMapper.writeValueAsString(response)));
+
     }
 }

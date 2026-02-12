@@ -4,8 +4,8 @@ import com.safetynet.alerts.dto.FireStationResponseDTO;
 import com.safetynet.alerts.dto.FirestationRequestDTO;
 import com.safetynet.alerts.model.Firestation;
 import com.safetynet.alerts.service.FirestationService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,15 +13,14 @@ import org.springframework.web.bind.annotation.*;
 /**
  * Contrôleur REST pour gérer les opérations liées aux Firestations.
  */
+@Slf4j
+@RequiredArgsConstructor
 @RestController
 public class FirestationController {
     private final FirestationService firestationService;
-    private static final Logger LOGGER = LogManager.getLogger(FirestationController.class);
 
-    public FirestationController(FirestationService firestationService) {
-        this.firestationService = firestationService;
-    }
-/**
+
+    /**
      * Récupère la couverture d'une station de pompiers donnée.
      *
      * @param stationNumber Le numéro de la station de pompiers.
@@ -29,68 +28,93 @@ public class FirestationController {
      */
     @GetMapping("/firestation")
     public FireStationResponseDTO getFirestationCoverage(@RequestParam int stationNumber) {
-        LOGGER.info("Requête GET /firestation?stationNumber={} reçue", stationNumber);
+        log.info("Requête GET /firestation?stationNumber={} reçue", stationNumber);
         FireStationResponseDTO response = firestationService.getFirestationCoverage(stationNumber);
-        LOGGER.info("Réponse GET /firestation: {} adultes, {} enfants", response.getAdultCount(), response.getChildCount());
+        log.info("Réponse GET /firestation: {} adultes, {} enfants", response.getAdultCount(), response.getChildCount());
         return response;
     }
-/**
+
+    /**
      * Ajoute un nouveau mapping Firestation.
      *
      * @param request Le DTO contenant l'adresse et le numéro de la station.
-     * @return Le mapping Firestation créé.
+     * @return Le mapping Firestation créé, ou une réponse d'erreur en cas de conflit ou de données invalides.
      */
     @PostMapping("/firestation")
     public ResponseEntity<Firestation> addFirestation(@RequestBody FirestationRequestDTO request) {
-        LOGGER.info("Requête POST /firestation reçue: adresse='{}', station={}", request.getAddress(), request.getStation());
+        log.info("Requête POST /firestation reçue: adresse='{}', station={}", request.getAddress(), request.getStation());
         try {
-            Firestation created = firestationService.addFirestationMapping(request.getAddress(), request.getStation());
-            LOGGER.info("Mapping Firestation créé avec succès: {}", created);
-            return ResponseEntity.status(HttpStatus.CREATED).body(created);
-        } catch (IllegalArgumentException e) {
-            LOGGER.error("Échec création mapping Firestation: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+            boolean created = firestationService.addFirestationMapping(request.getAddress(), request.getStation());
+            if (created) {
+                Firestation firestation = new Firestation(request.getAddress(), request.getStation());
+                log.debug("Mapping Firestation créé avec succès: {}", firestation);
+                return ResponseEntity.status(HttpStatus.CREATED).body(firestation);
+            }
+
+            log.error("Échec création mapping Firestation (conflit): {}{}", request.getAddress(), request.getStation());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+        } catch (Exception e) {
+            log.error("Erreur lors de la création du mapping Firestation: {}{}", request.getAddress(), request.getStation(), e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
+
     }
-/**
+
+
+    /**
      * Met à jour un mapping Firestation existant.
      *
      * @param request Le DTO contenant l'adresse et le nouveau numéro de la station.
-     * @return Le mapping Firestation mis à jour.
+     * @return Le mapping Firestation mis à jour, ou une réponse d'erreur en cas de non-trouvabilité ou de données invalides.
      */
     @PutMapping("/firestation")
     public ResponseEntity<Firestation> updateFirestation(@RequestBody FirestationRequestDTO request) {
-        LOGGER.info("Requête PUT /firestation reçue: adresse='{}', station={}", request.getAddress(), request.getStation());
+        log.info("Requête PUT /firestation reçue: adresse='{}', station={}", request.getAddress(), request.getStation());
         try {
-            Firestation updated = firestationService.updateFirestationMapping(
+            boolean updated = firestationService.updateFirestationMapping(
 
                     request.getAddress(),
                     request.getStation()
             );
-            LOGGER.info("Mapping Firestation mis à jour avec succès: {}", updated);
-            return ResponseEntity.ok(updated);
 
-        } catch (IllegalArgumentException e) {
-            LOGGER.error("Échec mise à jour mapping Firestation: {}", e.getMessage());
+            if (updated) {
+                Firestation updatedMapping = new Firestation(request.getAddress(), request.getStation());
+                log.debug("Mapping Firestation mis à jour avec succès: {}{}", request.getAddress(), request.getStation());
+                return ResponseEntity.accepted().body(updatedMapping);
+            }
+
+
+            log.error("Firestation non trouvé pour mise à jour: {}{}", request.getAddress(), request.getStation());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        } catch (Exception e) {
+            log.error("Erreur lors de la mise à jour du mapping Firestation: {}{}", request.getAddress(), request.getStation(), e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
-/**
+
+    /**
      * Supprime un mapping Firestation existant.
      *
      * @param address L'adresse du mapping à supprimer.
-     * @return Une réponse HTTP indiquant le résultat de l'opération.
+     * @return Une réponse indiquant le succès ou l'échec de la suppression, avec un code d'état approprié.
      */
     @DeleteMapping("/firestation")
     public ResponseEntity<Void> deleteFirestation(@RequestParam String address) {
-        LOGGER.info("Requête DELETE /firestation reçue: adresse='{}'", address);
+        log.info("Requête DELETE /firestation reçue: adresse='{}'", address);
         try {
-            firestationService.deleteFirestationMapping(address);
-            LOGGER.info("Mapping Firestation supprimé avec succès pour l'adresse '{}'", address);
-            return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
-            LOGGER.error("Échec suppression mapping Firestation: {}", e.getMessage());
+            boolean deleted = firestationService.deleteFirestationMapping(address);
+            if (deleted) {
+                log.info("Mapping Firestation supprimé avec succès pour l'adresse '{}'", address);
+                return ResponseEntity.ok().build();
+            }
+
+            log.error("Firestation non trouvé pour suppression: adresse='{}'", address);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        } catch (Exception e) {
+            log.error("Erreur lors de la suppression du mapping Firestation: {}", address, e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }

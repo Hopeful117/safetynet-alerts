@@ -2,81 +2,60 @@ package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.dto.FireResponseDTO;
 import com.safetynet.alerts.dto.ResidentsDTO;
+import com.safetynet.alerts.model.Firestation;
 import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
-import com.safetynet.alerts.repository.SafetyNetRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.safetynet.alerts.repository.FirestationRepository;
+import com.safetynet.alerts.repository.MedicalRecordRepository;
+import com.safetynet.alerts.repository.PersonRepository;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
+
 /**
  * Service implementation for handling fire response information.
  */
+@Slf4j
+@AllArgsConstructor
 @Service
 public class FireResponseServiceImpl implements FireResponseService {
-    private static final Logger LOGGER = LogManager.getLogger(FireResponseServiceImpl.class);
-    private final SafetyNetRepository repository;
-    private static final DateTimeFormatter FORMATTER= DateTimeFormatter.ofPattern("MM/dd/yyyy");
-    public FireResponseServiceImpl(SafetyNetRepository repository) {
-        this.repository = repository;
-    }
+    private final FirestationRepository firestationRepository;
+    private final PersonRepository personRepository;
+    private final MedicalRecordRepository medicalRecordRepository;
+
+
     /**
      * Retrieves fire response information for a given address.
      *
      * @param address The address to retrieve fire response information for.
-     * @return A FireResponseDTO containing residents and station number.
+     * @return A FireResponseDTO containing the residents and station number for the given address, or null if the address is not found.
+     * @throws IllegalArgumentException if the address is not found in the firestation repository.
+     * @throws RuntimeException         if there is an error during data retrieval or processing.
      */
     @Override
     public FireResponseDTO getFireResponseByAddress(String address) {
-        LOGGER.info("Recherche des résidents pour l'adresse {}", address);
-        int stationNumber = repository.getFirestations().stream()
-                .filter(fs -> fs.getAddress().equals(address))
-                .map(fs -> fs.getStation())
-                .findFirst()
-                .orElseThrow(() ->
+        log.debug("Recherche des résidents pour l'adresse {}", address);
+        Optional<Firestation> station = firestationRepository.findByAddress(address);
+        if (station.isPresent()) {
+            int stationNumber = station.get().getStation();
 
-                new IllegalArgumentException("Aucune caserne trouvée pour cette adresse"));
-        ;
-        // Récupération des personnes à l'adresse donnée
-        List<Person> residents = repository.getPersons().stream()
-                .filter(p -> p.getAddress().equals(address))
-                .toList();
-        LOGGER.info("{} résidents trouvés à l'adresse {}", residents.size(), address);
-        List<MedicalRecord> medicalRecords= repository.getMedicalRecords().stream().filter(mr->residents.stream().anyMatch(p->p.getFirstName().equals (mr.getFirstName()) && p.getLastName().equals(mr.getLastName()))).toList();
-        // Transformation en DTO
-        List<ResidentsDTO> residentDTOs = residents.stream()
-                .map(p -> {
-                    MedicalRecord mr = medicalRecords.stream()
-                            .filter(record -> record.getFirstName().equals(p.getFirstName())
-                                    && record.getLastName().equals(p.getLastName()))
-                            .findFirst()
-                            .orElse(null);
-                    int age = 0;
-                    List<String> medications = List.of();
-                    List<String> allergies = List.of();
-                    if (mr != null) {
-                        LocalDate birthDate = LocalDate.parse(mr.getBirthdate(), FORMATTER);
-                        age = Period.between(birthDate, LocalDate.now()).getYears();;
-                        medications = mr.getMedications();
-                        allergies = mr.getAllergies();
-                    }
-                    return new ResidentsDTO(
-                            p.getFirstName(),
-                            p.getLastName(),
-                            p.getAddress(),
-                            p.getPhone(),
-                            age,
-                            medications,
-                            allergies
-                    );
-                })
-                .toList();
+            // Récupération des personnes à l'adresse donnée
+            List<Person> residents = personRepository.getAllByAddress(address);
+            List<MedicalRecord> medicalRecords = medicalRecordRepository.getAll().stream().filter(mr -> residents.stream()
+                            .anyMatch(p -> p.getFirstName().trim().equalsIgnoreCase(mr.getFirstName()) && p.getLastName().trim().equalsIgnoreCase(mr.getLastName())))
+                    .toList();
+            ;
+            ResidentsDTO residentDTOs = new ResidentsDTO(residents, medicalRecords);
 
-       return new FireResponseDTO(residentDTOs, stationNumber);
+
+            return new FireResponseDTO(residentDTOs.getResidents(), stationNumber);
+        }
+
+        return null;
     }
+
 
 }

@@ -1,63 +1,43 @@
 package com.safetynet.alerts.service;
 
-import com.safetynet.alerts.dto.PersonInfolastNameDTO;
 import com.safetynet.alerts.dto.ResidentsDTO;
-import com.safetynet.alerts.repository.SafetyNetRepository;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.safetynet.alerts.model.MedicalRecord;
+import com.safetynet.alerts.model.Person;
+import com.safetynet.alerts.repository.MedicalRecordRepository;
+import com.safetynet.alerts.repository.PersonRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
+
 /**
  * Service implementation for retrieving person information by last name.
  */
+@Slf4j
+@RequiredArgsConstructor
 @Service
+
 public class PersonInfolastNameServiceImpl implements PersonInfolastNameService {
-    private final SafetyNetRepository repository;
-    private static final DateTimeFormatter FORMATTER =
-            DateTimeFormatter.ofPattern("MM/dd/yyyy");
-    private static final Logger LOGGER = LogManager.getLogger(PersonInfolastNameServiceImpl.class);
-    public PersonInfolastNameServiceImpl(SafetyNetRepository repository) {
-        this.repository = repository;
-    }
+    private final PersonRepository personRepository;
+    private final MedicalRecordRepository medicalRecordRepository;
+
     /**
      * Retrieves person information for all residents with the specified last name.
      *
      * @param lastName The last name to search for.
-     * @return A PersonInfolastNameDTO containing a list of residents with that last name.
+     * @return A ResidentsDTO containing the list of residents and their medical records.
      */
     @Override
-    public PersonInfolastNameDTO getPersonInfoByLastName(String lastName) {
-        List<ResidentsDTO> residentDTOs = repository.getPersons().stream()
+    public ResidentsDTO getPersonInfoByLastName(String lastName) {
+        log.debug("Retrieving person information for last name: {}", lastName);
+        final List<Person> residents = personRepository.getAll().stream()
                 .filter(p -> p.getLastName().equalsIgnoreCase(lastName))
-                .map(p -> {
-                    var mrOpt = repository.getMedicalRecords().stream()
-                            .filter(record -> record.getFirstName().equals(p.getFirstName())
-                                    && record.getLastName().equals(p.getLastName()))
-                            .findFirst();
-                    int age = 0;
-                    List<String> medications = List.of();
-                    List<String> allergies = List.of();
-                    if (mrOpt.isPresent()) {
-                        var mr = mrOpt.get();
-                        var birthDate = java.time.LocalDate.parse(mr.getBirthdate(), FORMATTER);
-                        age = java.time.Period.between(birthDate, java.time.LocalDate.now()).getYears();
-                        medications = mr.getMedications();
-                        allergies = mr.getAllergies();
-                    }
-                    return new ResidentsDTO(
-                            p.getFirstName(),
-                            p.getLastName(),
-                            p.getAddress(),
-                            p.getPhone(),
-                            age,
-                            medications,
-                            allergies);
-                })
                 .toList();
-        LOGGER.info("{} résidents trouvés avec le nom de famille {}", residentDTOs.size(), lastName);
-        return new PersonInfolastNameDTO(residentDTOs);
+        final List<MedicalRecord> records = medicalRecordRepository.getAll();
+
+
+        return new ResidentsDTO(residents, records);
     }
 
 }

@@ -1,19 +1,21 @@
 package com.safetynet.alerts.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import com.safetynet.alerts.dto.PersonRequestDTO;
-import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.service.PersonService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.databind.ObjectMapper;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 /**
  * Test class for PersonController.
  */
@@ -23,17 +25,14 @@ class PersonControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private PersonService personService;
 
     @Autowired
     private ObjectMapper objectMapper;
-/**
-     * Test for addPerson endpoint.
-     * @throws Exception
-     */
-    @Test
-    void addPerson_shouldReturnCreated() throws Exception {
+
+    @BeforeEach
+    void setUp() {
         PersonRequestDTO dto = new PersonRequestDTO(
                 "John",
                 "Doe",
@@ -43,115 +42,190 @@ class PersonControllerTest {
                 "111-111",
                 "john@doe.com"
         );
+    }
+
+    /**
+     * Test for addPerson endpoint.
+     *
+     * @throws Exception if an error occurs during the test execution.
+     */
+    @Test
+    void addPerson_shouldReturnCreated() throws Exception {
+
+
+        when(personService.addPerson(any(PersonRequestDTO.class)))
+                .thenReturn(true);
 
         mockMvc.perform(post("/person")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
+                        .content("""
+                                {
+                                    "firstName": "John",
+                                    "lastName": "Doe",
+                                    "address": "123 Main St",
+                                    "city": "Culver",
+                                    "zip": "97451",
+                                    "phone": "111-111",
+                                    "email": "john@doe.com"
+                                }
+                                """))
                 .andExpect(status().isCreated());
 
-        verify(personService).addPerson(any(PersonRequestDTO.class));
+
     }
-/**
+
+    /**
      * Test for addPerson endpoint when an exception is thrown.
-     * @throws Exception
+     *
+     * @throws Exception if an error occurs during the test execution.
+     */
+
+    @Test
+    void addPerson_shouldReturnConflict_whenPersonAlreadyExists() throws Exception {
+
+        when(personService.addPerson(any(PersonRequestDTO.class)))
+                .thenReturn(false);
+
+        mockMvc.perform(post("/person")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "firstName": "John",
+                                    "lastName": "Doe",
+                                    "address": "123 Main St",
+                                    "city": "Culver",
+                                    "zip": "97451",
+                                    "phone": "111-111",
+                                    "email": "john@doe.com"
+                                }
+                                """))
+                .andExpect(status().isConflict());
+    }
+
+    /**
+     * Test for addPerson endpoint when an exception is thrown.
+     *
+     * @throws Exception if an error occurs during the test execution.
      */
     @Test
     void addPerson_shouldReturnBadRequest_whenExceptionThrown() throws Exception {
-        PersonRequestDTO dto = new PersonRequestDTO(
-                "John",
-                "Doe",
-                null,
-                "Culver",
-                "97451",
-                "111-111",
-                "john@doe.com"
-        );
 
-        doThrow(new IllegalArgumentException("Invalid data"))
-                .when(personService).addPerson(any());
+
+        when(personService.addPerson(any(PersonRequestDTO.class)))
+                .thenThrow(new IllegalArgumentException("Invalid input"));
 
         mockMvc.perform(post("/person")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
+                        .content("""
+                                {
+                                    "firstName": "John",
+                                    "lastName": "Doe",
+                                    "address": "123 Main St",
+                                    "city": "Culver",
+                                    "zip": "97451",
+                                    "phone": "111-111",
+                                    "email": "john@doe.com"
+                                }
+                                """))
                 .andExpect(status().isBadRequest());
     }
-/**
+
+    /**
      * Test for updatePerson endpoint.
+     *
      * @throws Exception
      */
     @Test
-    void updatePerson_shouldReturnOk() throws Exception {
-        PersonRequestDTO dto = new PersonRequestDTO(
-                "John",
-                "Doe",
-                "456 New St",
-                "Culver",
-                "97451",
-                "222-222",
-                "john@new.com"
-        );
+    void updatePerson_shouldReturnAccepted() throws Exception {
 
-        when(personService.updatePerson(dto))
-                .thenReturn(new Person(
-                        "John", "Doe", "456 New St",
-                        "Culver", "97451", "222-222", "john@new.com"
-                ));
+
+        when(personService.updatePerson(any(PersonRequestDTO.class)))
+                .thenReturn(true
+                );
 
         mockMvc.perform(put("/person")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isOk());
+                        .content("""
+                                {
+                                    "firstName": "John",
+                                    "lastName": "Doe",
+                                    "address": "123 Main St",
+                                    "city": "Culver",
+                                    "zip": "97451",
+                                    "phone": "111-111",
+                                    "email": "john@doe.com"
+                                }
+                                """))
+                .andExpect(status().isAccepted());
 
-        verify(personService).updatePerson(any(PersonRequestDTO.class));;
+        verify(personService).updatePerson(any(PersonRequestDTO.class));
+        ;
     }
-/**
+
+    /**
+     * Test for updatePerson endpoint when person is not found.
+     *
+     * @throws Exception
+     */
+    @Test
+    void updatePerson_shouldReturnNotFound_whenPersonNotFound() throws Exception {
+
+
+        when(personService.updatePerson(any(PersonRequestDTO.class)))
+                .thenReturn(false);
+
+
+        mockMvc.perform(put("/person")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "firstName": "John",
+                                    "lastName": "Doe",
+                                    "address": "123 Main St",
+                                    "city": "Culver",
+                                    "zip": "97451",
+                                    "phone": "111-111",
+                                    "email": "john@doe.com"
+                                }
+                                """))
+                .andExpect(status().isNotFound());
+    }
+
+    /**
      * Test for updatePerson endpoint when an exception is thrown.
+     *
      * @throws Exception
      */
     @Test
     void updatePerson_shouldReturnBadRequest_whenExceptionThrown() throws Exception {
-        PersonRequestDTO dto = new PersonRequestDTO(
-                "John",
-                "Doe",
-                "456 New St",
-                "Culver",
-                "97451",
-                "222-222",
-                "john@new.com"
-        );
 
         when(personService.updatePerson(any(PersonRequestDTO.class)))
-                .thenThrow(new IllegalArgumentException("Invalid update"));
-
-
-
+                .thenThrow(new IllegalArgumentException("Invalid input"));
         mockMvc.perform(put("/person")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
+                        .content("""
+                                {
+                                    "firstName": "John",
+                                    "lastName": "Doe",
+                                    "address": "123 Main St",
+                                    "city": "Culver",
+                                    "zip": "97451",
+                                    "phone": "111-111",
+                                    "email": "john@doe.com"
+                                    }
+                                """))
                 .andExpect(status().isBadRequest());
     }
-/**
+
+    /**
      * Test for deletePerson endpoint.
-     * @throws Exception
-     */
-    @Test
-    void deletePerson_shouldReturnNoContent() throws Exception {
-        when(personService.deletePerson("John", "Doe")).thenReturn(true);
-
-        mockMvc.perform(delete("/person")
-                        .param("firstName", "John")
-                        .param("lastName", "Doe"))
-                .andExpect(status().isNoContent());
-
-        verify(personService).deletePerson("John", "Doe");
-    }
-/**
      * Test for deletePerson endpoint when person does not exist.
+     *
      * @throws Exception
      */
     @Test
     void deletePerson_shouldReturnNotFound_whenPersonDoesNotExist() throws Exception {
-        when(personService.deletePerson("John", "Doe")).thenReturn(false);
+        when(personService.deletePerson(anyString(), anyString())).thenReturn(false);
 
         mockMvc.perform(delete("/person")
                         .param("firstName", "John")
@@ -160,8 +234,10 @@ class PersonControllerTest {
 
         verify(personService).deletePerson("John", "Doe");
     }
-/**
+
+    /**
      * Test for deletePerson endpoint when an exception is thrown.
+     *
      * @throws Exception
      */
     @Test

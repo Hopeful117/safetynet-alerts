@@ -1,9 +1,10 @@
 package com.safetynet.alerts.service;
 
-import com.safetynet.alerts.dto.CommunityEmailResponseDTO;
+import java.util.Set;
+
 /**
  * Service interface for retrieving community email responses based on city.
  */
 public interface CommunityEmailResponseService {
-    public CommunityEmailResponseDTO getCommunityEmailResponse(String city);
+    public Set<String> getCommunityEmailResponse(String city);
 }
